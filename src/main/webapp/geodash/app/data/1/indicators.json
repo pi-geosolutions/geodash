@@ -1,0 +1,21 @@
+[{
+  "id": 1,
+  "name": "averagerain",
+  "title": "Pluies sur l'Afrique",
+  "type": "line",
+  "config": {
+    "start_date": "01/01/2005",
+    "end_date": "01/01/2006",
+    "step_date": "month"
+  }
+}, {
+  "id": 2,
+  "name": "dailyrain",
+  "title": "Pluies sur l'Afrique",
+  "type": "column",
+  "config": {
+    "start_date": "01/01/2005",
+    "end_date": "01/01/2006",
+    "step_date": "month"
+  }
+}]
