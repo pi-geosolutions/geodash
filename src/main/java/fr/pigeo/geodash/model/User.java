@@ -17,6 +17,8 @@ public class User {
 
     private String firstname;
     private String lastname;
+    private String login;
+    private String password;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private List<Indicator> indicators;
@@ -45,6 +47,22 @@ public class User {
         this.lastname = lastname;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public List<Indicator> getIndicators() {
         return indicators;
     }
@@ -64,6 +82,7 @@ public class User {
         res.put("id", this.id);
         res.put("firstname", this.firstname);
         res.put("lastname", this.lastname);
+        res.put("login", this.login);
         return res;
     }
 }

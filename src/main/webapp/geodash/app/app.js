@@ -26,7 +26,10 @@ angular.module('geodash', [
       suffix: '.json'
     });
 
+}]).config(['$resourceProvider', function($resourceProvider) {
+  $resourceProvider.defaults.stripTrailingSlashes = false;
 }]);
+
 
 require('./components/users/users');
 require('./components/users/users.tpl');
@@ -36,6 +39,8 @@ require('./components/user/user');
 require('./components/user/user.tpl');
 require('./components/home/home');
 require('./components/home/home.tpl');
+require('./components/admin/admin');
+require('./components/admin/admin.tpl');
 require('./components/indicators/indicators');
 require('./components/indicators/indicators.tpl');
 require('./services/analytics');
@@ -50,6 +55,7 @@ function AppController($router) {
   $router.config([
     { path: '/'                 , redirectTo: '/home' },
     { path: '/home'             , component: 'home' },
+    { path: '/admin'             , component: 'admin' },
     { path: '/groups/:id/users' , component: 'users' },
     { path: '/users/:id/:tab'   , component: 'user' },
     { path: '/users/:id/indicators'   , component: 'indicators' }

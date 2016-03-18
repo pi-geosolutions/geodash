@@ -6,7 +6,6 @@ angular.module('geodash')
 function IndicatorsController($routeParams, $timeout, Indicator, ChartFactory) {
   this.results = Indicator.query({id : $routeParams.id}, function() {
 
-
     $timeout(function(){
       this.results.forEach(function(board) {
 

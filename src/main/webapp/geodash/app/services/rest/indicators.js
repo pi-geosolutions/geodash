@@ -8,8 +8,10 @@ angular.module('geodash').factory('Indicator',
         method  : 'GET',
         isArray : true
       },
-      get: {
-        cache: false
+      getAll: {
+        url: '/indicators/',
+        cache: false,
+        isArray:true
       },
       update: {
         method: 'PUT'

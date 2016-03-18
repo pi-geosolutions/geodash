@@ -1,0 +1,90 @@
+<section>
+
+  <!--Left panel-->
+  <div class="col-sm-4">
+    <h4 translate="">indicators</h4>
+
+    <!--Indicators list-->
+    <div class="list-group" >
+      <a href="" class="list-group-item"
+         ng-repeat="indicator in admin.indicators"
+         ng-class="{active: admin.current == indicator}"
+         ng-click="admin.current = indicator">
+        {{indicator.name}}
+      </a>
+    </div>
+
+    <!--New indicator button-->
+    <button class="btn btn-default">
+      <a href="" ng-click="admin.initNew()" translate="">new</a>
+    </button>
+
+  </div>
+
+  <!--Right panel-->
+  <div class="col-sm-8" ng-if="admin.current">
+
+    <!--Create new alert message-->
+    <div ng-if="!admin.current.id" class="alert alert-success" role="alert">createNew</div>
+
+    <form name="indicatorForm" class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">
+          <span translate="">name</span>
+        </label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="name"
+                 ng-model="admin.current.name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">
+          <span translate="">datasource</span>
+        </label>
+        <div class="col-sm-10">
+          <select class="form-control" ng-model="admin.current.config.datasource.type">
+            <option>database</option>
+            <option>filesystem</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel panel-default" ng-if="admin.current.config.datasource.type == 'database'">
+        <div class="panel-heading" translate="">datasource</div>
+        <div class="panel-body">
+
+          <!--Database url-->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">
+              <span translate="">dburl</span>
+            </label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" placeholder="jdbc:postgresql://localhost:5433/ne_risques_geodata?user=geonetwork&password=geonetwork"
+                     ng-model="admin.current.config.datasource.url">
+            </div>
+          </div>
+
+          <!--SQL Query-->
+          <div class="form-group">
+            <label class="col-sm-2 control-label">
+              <span translate="">sqlquery</span>
+            </label>
+            <div class="col-sm-10">
+              <textarea row="5"  class="form-control" placeholder="SELECT * FROM rain;"
+                     ng-model="admin.current.config.datasource.query">
+              </textarea>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <button class="col-lg-offset-2 btn btn-default" ng-click="admin.save()">
+        <span translate="">save</span>
+      </button>
+
+    </form>
+  </div>
+
+</section>

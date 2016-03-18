@@ -1,5 +1,4 @@
 /.idea/
 /target/
 *.iml
-node_modules/
 /src/main/resources/*
