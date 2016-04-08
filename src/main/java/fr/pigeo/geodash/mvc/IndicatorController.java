@@ -2,6 +2,8 @@ package fr.pigeo.geodash.mvc;
 
 import fr.pigeo.geodash.dao.IndicatorDao;
 import fr.pigeo.geodash.dao.UserDao;
+import fr.pigeo.geodash.indicator.DataSourceConfig;
+import fr.pigeo.geodash.indicator.LoaderPostgres;
 import fr.pigeo.geodash.model.Indicator;
 import fr.pigeo.geodash.model.User;
 import org.apache.commons.logging.Log;
@@ -103,4 +105,20 @@ public class IndicatorController {
         return "Indicator created with ID : " + indicator.getId();
 	}
 
+	@RequestMapping(value = "/test/", method = RequestMethod.POST, produces="application/json; charset=utf-8")
+	@ResponseBody
+	public String test(@RequestParam String config) throws JSONException {
+
+		try {
+            DataSourceConfig dsConfig = new DataSourceConfig(config);
+            LoaderPostgres loader = new LoaderPostgres(dsConfig);
+
+            loader.connect();
+            return loader.getData(dsConfig.getSql()).toString();
+
+		}
+		catch(JSONException e) {
+            throw e;
+		}
+    }
 }

@@ -1,12 +1,12 @@
-<section>
+<section class="geodash-admin">
 
   <!--Left panel-->
-  <div class="col-sm-4">
-    <h4 translate="">indicators</h4>
+  <div class="col-sm-4 left-panel">
+    <h4 translate="">Indicators</h4>
 
     <!--Indicators list-->
     <div class="list-group">
-      <a href="" class="list-group-item"
+      <a href="admin" class="list-group-item"
          ng-repeat="indicator in admin.indicators"
          ng-class="{active: admin.current == indicator}"
          ng-click="admin.current = indicator">
@@ -15,85 +15,139 @@
     </div>
 
     <!--New indicator button-->
-    <button class="btn btn-default">
+    <button class="btn btn-standard">
       <a href="" ng-click="admin.initNew()" translate="">new</a>
     </button>
 
   </div>
 
-  <!--Right panel-->
-  <div class="col-sm-8" ng-if="admin.current">
+  <form novalidate name="indicatorForm" class="form-horizontal">
 
-    <!--Create new alert message-->
-    <div ng-if="!admin.current.id" class="alert alert-success" role="alert">
-      createNew
+    <!--Right panel-->
+    <div class="col-sm-8" ng-if="admin.current">
+
+      <h4 translate="">{{admin.current.name}}</h4>
+
+      <!--Create new alert message-->
+      <div ng-if="!admin.current.id" class="alert alert-success" role="alert">
+        createNew
+      </div>
+
+
+      <!--Tab menu-->
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+          <a href="admin" data-target="#global" aria-controls="global" role="tab" data-toggle="tab">global</a>
+        </li>
+        <li role="presentation">
+          <a href="admin" data-target="#datasource" aria-controls="datasource" role="tab" data-toggle="tab">datasource</a>
+        </li>
+        <li role="presentation">
+          <a href="admin" data-target="#graph" aria-controls="graph" role="tab" data-toggle="tab">graph</a>
+        </li>
+        <button class="pull-right btn btn-success" ng-click="admin.save()">
+          <span translate="">save</span>
+        </button>
+
+      </ul>
+
+
+      <div class="tab-content">
+
+        <!--Global tab content-->
+        <div role="tabpanel" class="tab-pane active" id="global">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">
+              <span translate="">name</span>
+            </label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" placeholder="name"
+                     ng-model="admin.current.name">
+            </div>
+          </div>
+        </div>
+
+        <!--Datasource tab content-->
+        <div role="tabpanel" class="tab-pane" id="datasource">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">
+              <span translate="">Type</span>
+            </label>
+
+            <div class="col-sm-10">
+              <select class="form-control"
+                      ng-model="admin.current.config.datasource.type">
+                <option>database</option>
+                <option>filesystem</option>
+              </select>
+            </div>
+          </div>
+
+          <div class=""
+               ng-if="admin.current.config.datasource.type == 'database'">
+
+            <!--Database url-->
+            <div class="form-group" ng-class="{'has-error': !admin.isFormInputValid('dburl')}">
+              <label class="col-sm-2 control-label">
+                <span translate="">dburl</span>
+              </label>
+
+              <div class="col-sm-10">
+                <input type="text" class="form-control" required
+                       name="dburl" id="dburl"
+                       placeholder="jdbc:postgresql://localhost:5433/ne_risques_geodata?user=geonetwork&password=geonetwork"
+                       ng-model="admin.current.config.datasource.url">
+              </div>
+            </div>
+
+            <!--SQL Query-->
+            <div class="form-group" ng-class="{'has-error': !admin.isFormInputValid('sqlquery')}">
+              <label class="col-sm-2 control-label">
+                <span translate="">sqlquery</span>
+              </label>
+
+              <div class="col-sm-10">
+                <div id="sqlquery" required name="sqlquery" ui-ace="{mode: 'sql', showGutter: false, showPrintMargin: false}"
+                     ng-model="admin.current.config.datasource.sql">
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-danger" ng-click="admin.test()">
+            <span translate="">test</span>
+          </button>
+
+          <button ng-if="admin.testData" class="btn btn-danger" ng-click="admin.transformData()">
+            <span translate="">transform</span>
+          </button>
+
+          <geodash-coordspicker ng-if="!indicatorForm.sqlquery.$invalid && !indicatorForm.dburl.$invalid">
+          </geodash-coordspicker>
+
+          <div ng-if="admin.testData" id="testData" ui-ace="admin.aceOptions" ng-model="admin.testData"></div>
+          <div ng-if="admin.testError" class="alert alert-danger" role="alert">
+            {{admin.testError}}
+          </div>
+
+        </div>
+
+        <!--Chart tab content-->
+        <div role="tabpanel" class="tab-pane" id="graph">
+
+          <div id="charConfig" ui-ace="admin.aceOptions" ng-model="admin.current.chartConfig"></div>
+
+          <button class="btn btn-standard" ng-click="admin.viewChart('#chartDemo')">
+            <span translate="">view</span>
+          </button>
+
+          <div id="chartDemo"></div>
+
+        </div>
+      </div>
+
     </div>
+  </form>
 
-    <form name="indicatorForm" class="form-horizontal">
-      <div class="form-group">
-        <label class="col-sm-2 control-label">
-          <span translate="">name</span>
-        </label>
-
-        <div class="col-sm-10">
-          <input type="text" class="form-control" placeholder="name"
-                 ng-model="admin.current.name">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="col-sm-2 control-label">
-          <span translate="">datasource</span>
-        </label>
-
-        <div class="col-sm-10">
-          <select class="form-control"
-                  ng-model="admin.current.config.datasource.type">
-            <option>database</option>
-            <option>filesystem</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="panel panel-default"
-           ng-if="admin.current.config.datasource.type == 'database'">
-        <div class="panel-heading" translate="">datasource</div>
-        <div class="panel-body">
-
-          <!--Database url-->
-          <div class="form-group">
-            <label class="col-sm-2 control-label">
-              <span translate="">dburl</span>
-            </label>
-
-            <div class="col-sm-10">
-              <input type="text" class="form-control"
-                     placeholder="jdbc:postgresql://localhost:5433/ne_risques_geodata?user=geonetwork&password=geonetwork"
-                     ng-model="admin.current.config.datasource.url">
-            </div>
-          </div>
-
-          <!--SQL Query-->
-          <div class="form-group">
-            <label class="col-sm-2 control-label">
-              <span translate="">sqlquery</span>
-            </label>
-
-            <div class="col-sm-10">
-              <textarea row="5" class="form-control"
-                        placeholder="SELECT * FROM rain;"
-                        ng-model="admin.current.config.datasource.query">
-              </textarea>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <button class="col-lg-offset-2 btn btn-default" ng-click="admin.save()">
-        <span translate="">save</span>
-      </button>
-
-    </form>
-  </div>
 </section>

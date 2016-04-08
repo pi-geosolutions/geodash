@@ -8,8 +8,12 @@ public class Indicator {
     private Loader loader;
     private String sqlQuery = "SELECT * from afo_2e1_stations";
 
+    public Indicator(Config config) {
+
+    }
+
     public Indicator() {
-        this.loader = new LoaderPostgres();
+        //this.loader = new LoaderPostgres();
     }
 
     public List getData() throws SQLException {

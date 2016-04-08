@@ -5,7 +5,9 @@ angular.module('geodash', [
   'ngNewRouter',
   'angular-chosen',
   'flash',
-  'pascalprecht.translate'
+  'pascalprecht.translate',
+  'ui.ace',
+  'ngeo'
 ]).controller(
   'AppController', [ '$router', AppController ]
 ).constant(
@@ -41,6 +43,8 @@ require('./components/home/home');
 require('./components/home/home.tpl');
 require('./components/admin/admin');
 require('./components/admin/admin.tpl');
+require('./components/coordspicker/coordspicker');
+require('./components/coordspicker/coordspicker.tpl');
 require('./components/indicators/indicators');
 require('./components/indicators/indicators.tpl');
 require('./services/analytics');

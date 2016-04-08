@@ -10,6 +10,7 @@ $main_color_700: #455A64;
 $main_color_800: #37474F;
 $main_color_900: #263238;
 
+$color_500: #86b3ff;
 
 
 body {
@@ -74,11 +75,13 @@ groups input {
 
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
   background-color: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background-color: rgba(125, 125, 125, 0.7);
 }
+
 
 input[type=range]{
   -webkit-appearance: none;
@@ -89,3 +92,101 @@ svg > text {
   display: none;
 }
 
+.ace_editor  {
+  height : 300px;
+  border: #ccc 1px solid ;
+
+  &.ng-invalid {
+    border-color: #a94442;
+  }
+}
+.nav-tabs {
+  margin-bottom: 30px;
+}
+
+a {
+  &:focus {
+    outline:none;
+  }
+}
+
+.btn {
+  border-radius: 0;
+}
+
+.geodash-admin {
+
+  .left-panel {
+    .list-group-item {
+      background-color: $color_500;
+      border-color: #fff;
+      color: #fff;
+
+      &.active, &:focus {
+        background-color: darken($color_500, 15);
+      }
+      &:hover {
+        background-color: lighten($color_500, 10);
+      }
+    }
+  }
+
+  .nav-tabs li {
+    a {
+      background-color: $color_500;
+      border-color: #fff;
+      color: #fff;
+
+      &:hover {
+        background-color: lighten($color_500, 10);
+      }
+    }
+    &.active a {
+      background-color: darken($color_500, 15);
+      color: #fff;
+    }
+
+  }
+
+  .btn-standard {
+    background-color: $color_500;
+    color: #fff;
+    border-color: $color_500;
+    &:hover, &:focus {
+      color: #fff;
+      background-color: darken($color_500, 5);
+      border-color: darken($color_500, 5);
+    }
+  }
+
+  .form-control {
+    border-radius: 0;
+  }
+
+  #dburl {
+    font-size: 12px;
+  }
+  #sqlquery {
+    height : 200px;
+  }
+}
+
+#coordspicker-map {
+  height: 300px;
+  width: 100%;
+  position: relative;
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAAnRSTlMAAHaTzTgAAAARSURBVHgBY3iKBFEAOp/+MgB+UQnYeBZPWAAAAABJRU5ErkJggg==');
+  .btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 50;
+  }
+}
+
+geodash-coordspicker {
+  .form {
+    margin-top:20px;
+    padding: 10px;
+  }
+}

@@ -21,20 +21,20 @@ public class LoaderPostgres extends Loader {
 
     private static final Logger logger = LoggerFactory.getLogger(LoaderPostgres.class);
 
-    private String dbUrl = "jdbc:postgresql://localhost:5433/ne_risques_geodata?user=geonetwork&password=geonetwork";
-    private String dbUser = "geonetwork";
-    private String dbPassword = "geonetwork";
-
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     private Connection con;
 
+    public LoaderPostgres(DataSourceConfig config) {
+        super(config);
+    }
+
     @Override
     public void connect() {
         try {
 
-            DataSource dataSource = JdbcUtils.getDataSource(dbUrl);
+            DataSource dataSource = JdbcUtils.getDataSource(this.config.getUrl());
             jdbcTemplate = new JdbcTemplate(dataSource);
         } catch (SQLException e) {
             e.printStackTrace();

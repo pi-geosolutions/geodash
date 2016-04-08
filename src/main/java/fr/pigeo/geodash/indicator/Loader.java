@@ -8,6 +8,12 @@ import java.util.List;
  */
 public abstract class Loader {
 
-    abstract void connect() throws SQLException;
-    abstract List getData(String config);
+    protected DataSourceConfig config;
+
+    public Loader(DataSourceConfig config) {
+        this.config = config;
+    }
+
+    abstract public void connect() throws SQLException;
+    abstract public List getData(String config);
 }
