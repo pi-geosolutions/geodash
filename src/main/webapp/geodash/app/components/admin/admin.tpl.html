@@ -48,7 +48,6 @@
         <button class="pull-right btn btn-success" ng-click="admin.save()">
           <span translate="">save</span>
         </button>
-
       </ul>
 
 
@@ -110,35 +109,68 @@
                 <div id="sqlquery" required name="sqlquery" ui-ace="{mode: 'sql', showGutter: false, showPrintMargin: false}"
                      ng-model="admin.current.config.datasource.sql">
                 </div>
-
               </div>
             </div>
           </div>
 
-          <button class="btn btn-danger" ng-click="admin.test()">
-            <span translate="">test</span>
-          </button>
+          <!--Datesource Test section-->
+          <div class="col-md-offset-1">
 
-          <button ng-if="admin.testData" class="btn btn-danger" ng-click="admin.transformData()">
-            <span translate="">transform</span>
-          </button>
+            <!--Nav pills-->
+            <ul class="nav nav-pills test" role="tablist">
+              <li role="presentation" ng-click="admin.showCoordsPicker()" ng-class="{disabled: !admin.isFormInputValid('sqlquery')}">
+                <a href="admin" data-target="#testdatapane" aria-controls="global" role="tab" data-toggle="tab">testquery</a>
+              </li>
+              <li role="presentation" ng-if="admin.testData">
+                <a href="admin" data-target="#testtransformpane" aria-controls="datasource" role="tab" data-toggle="tab">testdata</a>
+              </li>
+            </ul>
 
-          <geodash-coordspicker ng-if="!indicatorForm.sqlquery.$invalid && !indicatorForm.dburl.$invalid">
-          </geodash-coordspicker>
+            <div class="tab-content">
 
-          <div ng-if="admin.testData" id="testData" ui-ace="admin.aceOptions" ng-model="admin.testData"></div>
-          <div ng-if="admin.testError" class="alert alert-danger" role="alert">
-            {{admin.testError}}
+              <!--Test request-->
+              <div role="tabpanel" class="tab-pane" id="testdatapane">
+
+                <!--Coordinates picker-->
+                <geodash-coordspicker coordinates="admin.lonlat" ng-if="!indicatorForm.sqlquery.$invalid && !indicatorForm.dburl.$invalid">
+                </geodash-coordspicker>
+
+                <button class="btn btn-geodash test-btn" ng-disabled="admin.lonlat.length < 2" ng-click="admin.test()">
+                  <span translate="">Test request</span>
+                </button>
+
+                <div ng-if="admin.testData" id="testedData" ui-ace="admin.aceOptions" ng-model="admin.testData"></div>
+                <div ng-if="admin.testError" class="alert alert-danger" role="alert">
+                  {{admin.testError}}
+                </div>
+              </div>
+
+              <!--Transform config & test content-->
+              <div role="tabpanel" class="tab-pane" id="testtransformpane">
+                <label translate="">transformConfig</label>
+
+                <!--Transform config-->
+                <div ng-if="admin.testData" id="transformConfig" ui-ace="{mode: 'json', showGutter: false, showPrintMargin: false}" ng-model="admin.current.config.datasource.transform"></div>
+
+                <button ng-if="admin.testData" ng-disabled="!admin.current.config.datasource.transform" class="btn btn-geodash test-btn" ng-click="admin.exportData()">
+                  <span translate="">Export data</span>
+                </button>
+
+                <!--output series-->
+                <div ng-if="admin.series" id="outputSerie" ui-ace="admin.aceOptions" ng-model="admin.series"></div>
+
+
+              </div>
+            </div>
+
           </div>
-
         </div>
 
         <!--Chart tab content-->
         <div role="tabpanel" class="tab-pane" id="graph">
-
           <div id="charConfig" ui-ace="admin.aceOptions" ng-model="admin.current.chartConfig"></div>
 
-          <button class="btn btn-standard" ng-click="admin.viewChart('#chartDemo')">
+          <button class="btn btn-geodash test-btn" ng-click="admin.viewChart('#chartDemo')">
             <span translate="">view</span>
           </button>
 

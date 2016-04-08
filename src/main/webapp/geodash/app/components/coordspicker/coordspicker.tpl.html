@@ -1,4 +1,4 @@
-<div class="row">
+<div class="">
   <div class="col-md-4 form">
 
     <div class="form-group">
@@ -8,7 +8,7 @@
       <div class="col-sm-10">
         <input type="number" step="any" class="form-control"
                placeholder="6.8598"
-               ng-model="ctrl.lat"
+               ng-model="ctrl.coordinates[1]"
                ng-change="ctrl.handleFormChange()">
 
       </div>
@@ -21,7 +21,7 @@
       <div class="col-sm-10">
         <input type="number" step="any" class="form-control"
                placeholder="45.3565"
-               ng-model="ctrl.lon"
+               ng-model="ctrl.coordinates[0]"
                ng-change="ctrl.handleFormChange()">
       </div>
     </div>

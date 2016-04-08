@@ -1,16 +1,18 @@
 angular.module('geodash')
     .component('geodashCoordspicker', {
       bindings    : {
+        coordinates: '='
       },
       controller  : CoordspickerController,
       controllerAs: 'ctrl',
       templateUrl : 'components/coordspicker/coordspicker.tpl.html'
     });
 
-function CoordspickerController($scope, ngeoDecorateInteraction) {
+function CoordspickerController($scope, $timeout, ngeoDecorateInteraction) {
 
   this.ngeoDecorateInteraction_ = ngeoDecorateInteraction;
   this.$scope = $scope;
+  this.coordinates = [];
 
   this.map = new ol.Map({
     layers: [new ol.layer.Tile({
@@ -64,14 +66,20 @@ function CoordspickerController($scope, ngeoDecorateInteraction) {
   drawPoint.on('drawstart', this.handleDrawStart_.bind(this));
   drawPoint.on('drawend', this.handleDrawEnd_.bind(this));
 
+  $scope.$on('showMap', function() {
+    $timeout(function(){
+      this.map.updateSize();
+    }.bind(this), 500);
+  }.bind(this));
 };
 
 CoordspickerController.prototype.handleFormChange = function() {
-  var lon = this.lon,
-      lat = this.lat;
+  var lon = this.coordinates[0],
+      lat = this.coordinates[1];
 
   if(lon && lat) {
-    this.feature.setGeometry(new ol.geom.Point(ol.proj.transform([lon, lat], 'EPSG:4326', this.map.getView().getProjection())));
+    this.feature.setGeometry(new ol.geom.Point(ol.proj.transform([lon, lat],
+        'EPSG:4326', this.map.getView().getProjection())));
     this.featureOverlay.changed();
   }
 };
@@ -88,10 +96,11 @@ CoordspickerController.prototype.handleDrawEnd_ = function(event) {
     var coords = this.feature.getGeometry().getCoordinates();
     coords = ol.proj.transform(coords, this.map.getView().getProjection(),
         'EPSG:4326');
-    this.lon = Number(coords[0].toFixed(3));
-    this.lat = Number(coords[1].toFixed(3));
+    this.coordinates[0] = Number(coords[0].toFixed(3));
+    this.coordinates[1] = Number(coords[1].toFixed(3));
     this.featureOverlay.changed();
   }.bind(this));
 };
 
-CoordspickerController.$inject = ['$scope', 'ngeoDecorateInteraction'];
+CoordspickerController.$inject = ['$scope','$timeout',
+  'ngeoDecorateInteraction'];
