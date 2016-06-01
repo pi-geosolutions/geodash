@@ -180,6 +180,11 @@
       <version>${geotools.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-geotiff</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.geotools.jdbc</groupId>
       <artifactId>gt-jdbc-postgis</artifactId>
       <version>${geotools.version}</version>
@@ -220,6 +225,7 @@
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
+          <excludes><exclude>geodash/node_modules</exclude></excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -237,6 +243,7 @@
         <version>9.2.11.v20150529</version>
         <configuration>
           <scanIntervalSeconds>5</scanIntervalSeconds>
+          <webApp><contextPath>/geodash</contextPath></webApp>
           <scanTargets>
 <!--
             <scanTarget>src/main/java/</scanTarget>

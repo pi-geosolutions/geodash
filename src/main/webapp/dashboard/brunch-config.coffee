@@ -1,7 +1,7 @@
 module.exports = config:
   plugins:
     ng_templates:
-      module: 'geodash'
+      module: 'dashboard'
       relativePath: 'app/'
   files:
     javascripts:
@@ -9,6 +9,7 @@ module.exports = config:
         'app.js': /^app/
         'libraries.js': [
           'vendor/jquery.js',
+          'vendor/jquery-ui.js',
           'vendor/angular.js',
           'vendor/bootstrap.js',
           'vendor/angular-resource.js',

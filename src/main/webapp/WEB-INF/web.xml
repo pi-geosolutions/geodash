@@ -29,7 +29,7 @@
 
   <servlet-mapping>
     <servlet-name>default</servlet-name>
-    <url-pattern>/geodash/*</url-pattern>
+    <url-pattern>/dashboard/*</url-pattern>
   </servlet-mapping>
 
   <context-param>

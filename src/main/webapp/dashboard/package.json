@@ -28,6 +28,7 @@
     "css-brunch": "^1.7.0",
     "javascript-brunch": "1.8.0",
     "jquery": "^2.2.0",
+    "jquery-ui": "^2.2.0",
     "highcharts": "",
     "ngeo": "0.0.1",
     "openlayers": "3.15.0",

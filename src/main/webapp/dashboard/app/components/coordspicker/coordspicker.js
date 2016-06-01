@@ -69,7 +69,7 @@ function CoordspickerController($scope, $timeout, ngeoDecorateInteraction) {
   $scope.$on('showMap', function() {
     $timeout(function(){
       this.map.updateSize();
-    }.bind(this), 500);
+    }.bind(this), 100);
   }.bind(this));
 };
 
