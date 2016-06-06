@@ -1,5 +1,7 @@
 package fr.pigeo.geodash.indicator;
 
+import fr.pigeo.geodash.indicator.config.Config;
+
 import java.sql.SQLException;
 import java.util.List;
 

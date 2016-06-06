@@ -4,8 +4,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>Login page</title>
-    <link href="<c:url value='/geodash/vendor/bootstrap.css' />"  rel="stylesheet">
-    <link href="<c:url value='/geodash/app/styles/app.css' />" rel="stylesheet">
+    <link href="<c:url value='/dashboard/vendor/bootstrap.css' />"  rel="stylesheet">
+    <link href="<c:url value='/dashboard/app/styles/app.css' />" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" />
     <style>
         html{

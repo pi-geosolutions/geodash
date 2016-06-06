@@ -60,7 +60,7 @@ groups input {
   z-index     : 2000;
 }
 
-.panel-default {
+.panel-ddefault {
   border: none;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
   border-radius: 0;
@@ -239,4 +239,11 @@ geodash-coordspicker {
     margin-top:20px;
     padding: 10px;
   }
+}
+
+
+
+
+#sortable li.ui-sortable-helper {
+  opacity: 1;
 }

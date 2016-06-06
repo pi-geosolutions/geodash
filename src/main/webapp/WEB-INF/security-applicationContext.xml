@@ -7,9 +7,8 @@
   <http auto-config="true" >
     <csrf disabled="true"/>
     <intercept-url pattern="/" access="permitAll" />
-    <intercept-url pattern="/home" access="permitAll" />
     <intercept-url pattern="/indicators/**" access="permitAll" />
-    <intercept-url pattern="/admin**" access="hasRole('ADMIN')" />
+    <intercept-url pattern="/dashboard/private/**" access="hasRole('ADMIN')" />
     <form-login  login-page="/login" username-parameter="ssoId" password-parameter="password" authentication-failure-url="/login?error" />
   </http>
 

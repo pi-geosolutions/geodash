@@ -1,0 +1,46 @@
+.fa-counter-spin {
+  -webkit-animation: spin-counter 5s infinite linear;
+  -moz-animation: spin-counter 5s infinite linear;
+  -o-animation: spin-counter 5s infinite linear;
+  animation: spin-counter 5s infinite linear;
+}
+@-moz-keyframes spin-counter {
+  0% {
+    -moz-transform: rotate(359deg);
+  }
+  100% {
+    -moz-transform: rotate(0deg);
+  }
+}
+@-webkit-keyframes spin-counter {
+  0% {
+    -webkit-transform: rotate(359deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+  }
+}
+@-o-keyframes spin-counter {
+  0% {
+    -o-transform: rotate(359deg);
+  }
+  100% {
+    -o-transform: rotate(0deg);
+  }
+}
+@-ms-keyframes spin-counter {
+  0% {
+    -ms-transform: rotate(359deg);
+  }
+  100% {
+    -ms-transform: rotate(0deg);
+  }
+}
+@keyframes spin-counter {
+  0% {
+    transform: rotate(359deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}

@@ -1,5 +1,7 @@
 package fr.pigeo.geodash.indicator;
 
+import fr.pigeo.geodash.indicator.config.DataSourceConfig;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -8,10 +10,7 @@ import java.util.List;
  */
 public abstract class Loader {
 
-    protected DataSourceConfig config;
-
-    public Loader(DataSourceConfig config) {
-        this.config = config;
+    public Loader() {
     }
 
     abstract public void connect() throws SQLException;

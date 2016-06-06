@@ -9,7 +9,7 @@ angular.module('geodash').factory('Indicator',
         isArray : true
       },
       getAll: {
-        url: '/indicators/',
+        url: '../../indicators/',
         cache: false,
         isArray:true
       },

@@ -20,7 +20,7 @@ public class User {
     private String login;
     private String password;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REFRESH)
     private List<Indicator> indicators;
 
     public Long getId() {

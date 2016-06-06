@@ -15,6 +15,8 @@ public class Indicator {
     private Long id;
 
     private String name;
+
+    @Column(columnDefinition = "TEXT")
     private String config;
 
     @ManyToOne(fetch= FetchType.EAGER)

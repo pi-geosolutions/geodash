@@ -1,5 +1,7 @@
 package fr.pigeo.geodash.indicator;
 
+import fr.pigeo.geodash.indicator.config.DataSourceConfig;
+import fr.pigeo.geodash.indicator.config.PostgresDataSourceConfig;
 import fr.pigeo.geodash.util.JdbcUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +23,15 @@ public class LoaderPostgres extends Loader {
 
     private static final Logger logger = LoggerFactory.getLogger(LoaderPostgres.class);
 
+    protected PostgresDataSourceConfig config;
+
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     private Connection con;
 
-    public LoaderPostgres(DataSourceConfig config) {
-        super(config);
+    public LoaderPostgres(PostgresDataSourceConfig config) {
+        this.config = config;
     }
 
     @Override

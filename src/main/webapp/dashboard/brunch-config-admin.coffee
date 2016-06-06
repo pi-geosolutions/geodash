@@ -1,6 +1,6 @@
 module.exports = config:
   conventions: {
-    assets: /assets\/public[\\/]/
+    assets: /assets\/private[\\/]/
   }
   plugins:
     ng_templates:
@@ -44,3 +44,6 @@ module.exports = config:
     templates:
       joinTo:
         'templates.js': /^app/
+  paths: {
+    public: 'private'
+  }

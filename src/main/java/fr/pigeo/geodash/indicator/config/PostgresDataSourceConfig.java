@@ -1,20 +1,21 @@
-package fr.pigeo.geodash.indicator;
+package fr.pigeo.geodash.indicator.config;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by IRD-Flow on 02/04/2016.
+ * Created by fgravin on 25/04/2016.
  */
-public class DataSourceConfig {
+public class PostgresDataSourceConfig extends DataSourceConfig {
+
     private String url;
     private String sql;
 
-    public DataSourceConfig(final String config) throws JSONException {
+    public PostgresDataSourceConfig(final String config) throws JSONException {
         JSONObject configObj = new JSONObject(config);
         this.fromJSON(configObj);
     }
-    public DataSourceConfig(final JSONObject config) throws JSONException {
+    public PostgresDataSourceConfig(final JSONObject config) throws JSONException {
         this.fromJSON(config);
     }
 
@@ -39,4 +40,5 @@ public class DataSourceConfig {
         this.url = config.getString("url");
 
     }
+
 }

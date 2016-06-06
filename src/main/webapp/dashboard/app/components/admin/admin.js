@@ -147,7 +147,7 @@ AdminController.prototype.save = function() {
   }
 
   this.$http({
-    url : '/indicators/save/',
+    url : '../../indicators/save/',
     method: 'POST',
     data: $.param(form),
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
@@ -164,7 +164,7 @@ AdminController.prototype.delete = function() {
   };
 
   this.$http({
-    url : '/indicators/delete/' + this.current.id,
+    url : '../../indicators/delete/' + this.current.id,
     method: 'DELETE'
   });
 };
@@ -192,7 +192,7 @@ AdminController.prototype.viewChart = function(selector) {
 
 AdminController.prototype.test = function() {
   this.$http({
-    url : '/indicators/test/',
+    url : '../../indicators/test/',
     method: 'POST',
     data: $.param({config: JSON.stringify(this.current.config.datasource)}),
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}

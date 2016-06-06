@@ -32,6 +32,9 @@ angular.module('geodash')
 
 var chartConfig = {
   averagerain: {
+    chart: {
+      height: 300
+    },
     title: {
       text: 'Average Rain fall'
     },
@@ -85,6 +88,9 @@ var chartConfig = {
     }]
   },
   dailyrain: {
+    chart: {
+      height: 300
+    },
     title: {
       text: 'Daily Rain fall'
     },
@@ -111,12 +117,12 @@ var chartConfig = {
       },
       plotLines: [{
         color: 'red',
-        width: 2,
+        width: 1,
         value: 10,
         zIndex: 20
       }, {
         color: 'red',
-        width: 2,
+        width: 1,
         value: 20,
         zIndex: 20
       }]
@@ -152,7 +158,8 @@ var chartConfig = {
   },
   default: {
     chart: {
-      type: 'bar'
+      type: 'bar',
+      height: 300,
     },
     title: {
       text: 'default'
