@@ -1,7 +1,11 @@
 module.exports = config:
   conventions: {
-    assets: /assets\/public[\\/]/
+    assets: /assets\/private[\\/]/
   }
+  paths: {
+    public: 'private'
+  }
+
   plugins:
     ng_templates:
       module: 'geodash'

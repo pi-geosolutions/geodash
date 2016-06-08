@@ -1,0 +1,164 @@
+$color_500: #86b3ff;
+
+
+.geodash-admin {
+
+  .tab-content {
+    border-left: lightblue 1px solid;
+    margin-bottom: 100px;
+  }
+
+  .left-panel {
+    .list-group-item {
+      background-color: $color_500;
+      border-color: #fff;
+      color: #fff;
+
+      &.active, &:focus {
+        background-color: darken($color_500, 15);
+      }
+      &:hover {
+        background-color: lighten($color_500, 10);
+      }
+    }
+  }
+
+  .nav-tabs li {
+    a {
+      background-color: $color_500;
+      border-color: #fff;
+      color: #fff;
+
+      &:hover {
+        background-color: lighten($color_500, 10);
+      }
+    }
+    &.active a {
+      background-color: darken($color_500, 15);
+      color: #fff;
+    }
+  }
+
+  .nav-pills > li {
+    a {
+      background-color: #7E57C2;
+      border-color: #fff;
+      color: #fff;
+
+      &:hover {
+        background-color: lighten(#7E57C2, 10);
+      }
+    }
+    &.active a {
+      background-color: darken(#7E57C2, 15);
+      color: #fff;
+    }
+    + li {
+      margin-left: 8px;
+    }
+  }
+
+  .btn-standard {
+    background-color: $color_500;
+    color: #fff;
+    border-color: $color_500;
+    &:hover, &:focus {
+      color: #fff;
+      background-color: darken($color_500, 5);
+      border-color: darken($color_500, 5);
+    }
+  }
+
+  .btn-geodash {
+    background-color: #3F51B5;
+    color: #fff;
+    border-color: #3F51B5;
+    &:hover, &:focus {
+      color: #fff;
+      background-color: darken(#3F51B5, 5);
+      border-color: darken(#3F51B5, 5);
+    }
+  }
+
+  .form-control {
+    border-radius: 0;
+  }
+
+  #dburl {
+    font-size: 12px;
+  }
+  #sqlquery, #transformConfig {
+    height : 200px;
+  }
+
+  gd-datasources {
+
+    > ul {
+      margin-left: 20px;
+      padding-bottom: 20px;
+      border-bottom: solid 1px #0B710B;
+      margin-bottom: 30px;
+
+      li.list-group-item {
+        border: none;
+        border-radius: 0;
+        padding: 2px 10px;
+        a {
+          color: #0B710B;
+          &:hover, &:focus {
+            text-decoration: none;
+            color: #3E953E;
+          }
+        }
+
+        &.active {
+          background-color: transparent;
+          a {
+            font-weight: bold;
+          }
+        }
+      }
+      .glyphicon-plus {
+        &:hover {
+          color: #3E953E;
+        }
+      }
+    }
+
+    .glyphicon-remove {
+      color: darkred;
+      cursor: pointer;
+    }
+
+    .nav-pills.test {
+      margin-top: 30px;
+      margin-bottom: 15px;
+      border-bottom: solid 1px #593696;
+      font-size: 12px;
+      li > a {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+    }
+
+    #viewserie {
+      .input-sm {
+        margin-bottom: 5px;
+        width: 200px;
+      }
+    }
+    .tab-content {
+      border-left: none;
+    }
+    .test-btn {
+      margin: 15px;
+    }
+    #testedData {
+      margin-left: 15px;
+    }
+    #testtransformpane {
+      margin-left: 15px;
+    }
+
+  }
+}

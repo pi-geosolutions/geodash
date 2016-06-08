@@ -72,10 +72,22 @@ var AdminController = function($routeParams, $http, $location, Indicator, Transf
   this.Transformer = Transformer;
 
   this.indicators = Indicator.getAll(undefined, function() {
+    this.indicators.forEach(function(indicator) {
+      if (!indicator.config.datasources) {
+        indicator.config.datasources = [];
+      }
+    });
 
     if($routeParams.id) {
       this.edit = true;
       this.indicators.forEach(function(indicator) {
+        //TODO: remove when it's up to date
+        if(!indicator.config.datasources) {
+          indicator.config.datasources = [];
+        }
+        if(indicator.config.datasource) {
+          indicator.config.datasources.push(indicator.config.datasource)
+        }
         if(indicator.id == $routeParams.id) {
           this.current = indicator;
         }
@@ -174,7 +186,10 @@ AdminController.prototype.initNew = function() {
     name: '',
     description: '',
     config: {
-      type: ''
+      type: '',
+      description: '',
+      label: '',
+      datasources: []
     }
   };
 };
@@ -190,11 +205,11 @@ AdminController.prototype.viewChart = function(selector) {
   $(selector).highcharts(conf);
 };
 
-AdminController.prototype.test = function() {
+AdminController.prototype.test = function(lon, lat) {
   this.$http({
-    url : '../../indicators/test/',
+    url : '../../geodata/' + this.lonlat[0] + '/' + this.lonlat[1] + '/',
     method: 'POST',
-    data: $.param({config: JSON.stringify(this.current.config.datasource)}),
+    data: $.param({config: JSON.stringify(this.current.config)}),
     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
   }).then(function(response){
     this.testData = this.aceStringify_(response.data);

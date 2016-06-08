@@ -2,6 +2,9 @@ module.exports = config:
   conventions: {
     assets: /assets\/private[\\/]/
   }
+  paths: {
+    public: 'toto'
+  }
   plugins:
     ng_templates:
       module: 'geodash'
@@ -44,6 +47,3 @@ module.exports = config:
     templates:
       joinTo:
         'templates.js': /^app/
-  paths: {
-    public: 'private'
-  }

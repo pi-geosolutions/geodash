@@ -225,7 +225,7 @@
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
-          <excludes><exclude>geodash/node_modules</exclude></excludes>
+          <excludes><exclude>dashboard/node_modules</exclude></excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -245,10 +245,6 @@
           <scanIntervalSeconds>5</scanIntervalSeconds>
           <webApp><contextPath>/geodash</contextPath></webApp>
           <scanTargets>
-<!--
-            <scanTarget>src/main/java/</scanTarget>
-            <scanTarget>src/main/resources/</scanTarget>
--->
           </scanTargets>
           <httpConnector>
             <port>8080</port>

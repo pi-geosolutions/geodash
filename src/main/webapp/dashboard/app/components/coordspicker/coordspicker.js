@@ -99,6 +99,7 @@ CoordspickerController.prototype.handleDrawEnd_ = function(event) {
     this.coordinates[0] = Number(coords[0].toFixed(3));
     this.coordinates[1] = Number(coords[1].toFixed(3));
     this.featureOverlay.changed();
+    this.drawPoint.active = false;
   }.bind(this));
 };
 

@@ -25,7 +25,6 @@ public class ConfigTest {
     @Test
     public void testFromJSON() throws Exception {
 
-        assertEquals(config.getName(), "name");
         assertEquals(config.getDescription(), "description");
         assertNotNull(config.getDataSourceConfig());
     }

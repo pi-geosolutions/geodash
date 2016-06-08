@@ -45,7 +45,11 @@ public class LoaderPostgres extends Loader {
         }
     }
 
-    public List getData(final String query) {
+    public List getData(final double lon, final double lat) {
+        String query = this.config.getSql().
+                replace("${lon}", String.valueOf(lon)).
+                replace("${lat}", String.valueOf(lat));
+
         return jdbcTemplate.query(query, new DataRowMapper());
     }
 

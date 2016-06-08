@@ -40,6 +40,8 @@ public class GetDataServiceTest {
 
         double[] res = service.getValue(file, 14.605, 8.207);
 
+        assertTrue(res.length == 1);
+        assertEquals(res[0], 66.0, 0.1);
 
     }
 }

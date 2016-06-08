@@ -31,6 +31,10 @@ angular.module('geodash', [
 
 require('./components/admin/admin');
 require('./components/admin/admin.tpl');
+require('./components/admin/datasource');
+require('./components/admin/datasource.tpl');
+require('./components/admin/datasources');
+require('./components/admin/datasources.tpl');
 require('./components/coordspicker/coordspicker');
 require('./components/coordspicker/coordspicker.tpl');
 require('./components/indicators/indicators');
@@ -38,6 +42,7 @@ require('./components/indicators/indicators.tpl');
 require('./services/analytics');
 require('./services/messages');
 require('./services/chart_factory');
+require('./services/utils');
 require('./services/rest/indicators');
 
 function AppController($router) {

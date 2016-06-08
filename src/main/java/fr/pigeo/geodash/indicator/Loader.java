@@ -13,6 +13,6 @@ public abstract class Loader {
     public Loader() {
     }
 
-    abstract public void connect() throws SQLException;
-    abstract public List getData(String config);
+    abstract public void connect() throws Exception;
+    abstract public List getData(final double lon, final double lat) throws Exception;
 }

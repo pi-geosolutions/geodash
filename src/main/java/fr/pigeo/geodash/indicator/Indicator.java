@@ -1,6 +1,7 @@
 package fr.pigeo.geodash.indicator;
 
 import fr.pigeo.geodash.indicator.config.Config;
+import fr.pigeo.geodash.indicator.config.DataSourceConfig;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -8,18 +9,24 @@ import java.util.List;
 public class Indicator {
 
     private Loader loader;
-    private String sqlQuery = "SELECT * from afo_2e1_stations";
+
 
     public Indicator(Config config) {
-
+        this.loader = LoaderFactory.createLoader(config.getDataSourceConfig());
     }
 
-    public Indicator() {
-        //this.loader = new LoaderPostgres();
+    public Indicator(DataSourceConfig config) {
+        this.loader = LoaderFactory.createLoader(config);
     }
 
-    public List getData() throws SQLException {
+
+    public List process(double lon, double lat) throws Exception {
+        return this.process(lon, lat, this.loader);
+    }
+
+    public List process(double lon, double lat, Loader loader) throws Exception {
         loader.connect();
-        return loader.getData(sqlQuery);
+        return loader.getData(lon, lat);
     }
+
 }

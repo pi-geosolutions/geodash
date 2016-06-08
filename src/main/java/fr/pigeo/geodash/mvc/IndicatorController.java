@@ -31,15 +31,15 @@ public class IndicatorController {
 
 	private static final Log LOG = LogFactory.getLog(IndicatorController.class.getName());
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/", method = RequestMethod.GET, produces="application/json;charset=utf-8")
 	@ResponseBody
-	public String findAll(HttpServletRequest request, HttpServletResponse response ) throws IOException {
+	public byte[] findAll(HttpServletRequest request, HttpServletResponse response ) throws IOException {
 		try {
 			JSONArray ret = new JSONArray();
 			for(Indicator indicator : this.indicatorRepository.findAll()) {
 				ret.put(indicator.toJSON());
 			}
-			return ret.toString();
+			return ret.toString().getBytes("UTF-8");
 
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
@@ -110,7 +110,8 @@ public class IndicatorController {
 
 	@RequestMapping(value = "/save/", method = RequestMethod.POST, produces="application/json; charset=utf-8")
 	@ResponseBody
-	public String create(@RequestParam String name, @RequestParam(required = false) Long id,
+	public String create(@RequestParam String name,
+						 @RequestParam(required = false) Long id,
 						 @RequestParam String config) throws JSONException {
 
 		Indicator indicator;
@@ -135,16 +136,18 @@ public class IndicatorController {
 		this.indicatorRepository.delete(id);
 	}
 
-	@RequestMapping(value = "/test/", method = RequestMethod.POST, produces="application/json; charset=utf-8")
+	@RequestMapping(value = "/test/{lon}/{lat}", method = RequestMethod.POST, produces="application/json; charset=utf-8")
 	@ResponseBody
-	public String test(@RequestParam String config) throws JSONException {
+	public String test(@RequestParam String config,
+                       @PathVariable String lon,
+                       @PathVariable String lat) throws JSONException {
 
 		try {
             PostgresDataSourceConfig dsConfig = new PostgresDataSourceConfig(config);
             LoaderPostgres loader = new LoaderPostgres(dsConfig);
 
             loader.connect();
-            return loader.getData(dsConfig.getSql()).toString();
+            return loader.getData(Double.parseDouble(lon), Double.parseDouble(lat)).toString();
 
 		}
 		catch(JSONException e) {

@@ -1,5 +1,7 @@
 package fr.pigeo.geodash.indicator.config;
 
+import fr.pigeo.geodash.indicator.LoaderFileSystem;
+import fr.pigeo.geodash.indicator.LoaderPostgres;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,8 +12,8 @@ public class Config {
 
     private DataSourceConfig dataSourceConfig;
 
-    private String name;
     private String description;
+    private String label;
 
     public Config(final String config) throws JSONException {
         JSONObject configObj = new JSONObject(config);
@@ -29,14 +31,6 @@ public class Config {
         this.dataSourceConfig = dataSourceConfig;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -45,9 +39,17 @@ public class Config {
         this.description = description;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public void fromJSON(JSONObject config) throws JSONException {
-        this.name = config.getString("name");
         this.description = config.optString("description");
-        this.dataSourceConfig = new DataSourceConfig(config.getJSONObject("datasource"));
+        this.label = config.optString("label");
+        this.dataSourceConfig = DataSourceConfig.createConfig(config.getJSONObject("datasource"));
     }
 }

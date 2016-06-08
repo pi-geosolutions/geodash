@@ -38,6 +38,7 @@ public class PostgresDataSourceConfig extends DataSourceConfig {
     public void fromJSON(JSONObject config) throws JSONException {
         this.sql = config.getString("sql");
         this.url = config.getString("url");
+        this.type = config.getString("type");
 
     }
 

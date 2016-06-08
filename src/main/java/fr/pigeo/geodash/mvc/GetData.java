@@ -1,14 +1,14 @@
 package fr.pigeo.geodash.mvc;
 
 import fr.pigeo.geodash.indicator.Indicator;
+import fr.pigeo.geodash.indicator.config.Config;
+import fr.pigeo.geodash.indicator.config.DataSourceConfig;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,24 +27,46 @@ public class GetData
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @RequestMapping(value="/{type}/{lon}/{lat}", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/{lon}/{lat}", method = RequestMethod.POST, produces= MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public String exec(HttpServletRequest request,
                        HttpServletResponse response,
-                       @PathVariable String type,
+                       @RequestParam String config,
                        @PathVariable String lon,
-                       @PathVariable String lat) throws IOException {
+                       @PathVariable String lat) throws IOException, JSONException {
 
-        Indicator indicator = new Indicator();
+        Config oConfig = new Config(config);
+        Indicator indicator = new Indicator(oConfig);
         List res = null;
         try {
-            res = indicator.getData();
-        } catch (SQLException e) {
+            res = indicator.process(Double.parseDouble(lon), Double.parseDouble(lat));
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return res.toString();
 
 	}
+
+    @RequestMapping(value="/serie/{lon}/{lat}", method = RequestMethod.POST, produces= MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String getSerie(HttpServletRequest request,
+                       HttpServletResponse response,
+                       @RequestParam String config,
+                       @PathVariable String lon,
+                       @PathVariable String lat) throws IOException, JSONException {
+
+        DataSourceConfig dsConfig = DataSourceConfig.createConfig(config);
+        Indicator indicator = new Indicator(dsConfig);
+        List res = null;
+        try {
+            res = indicator.process(Double.parseDouble(lon), Double.parseDouble(lat));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return res.toString();
+
+    }
 
 }

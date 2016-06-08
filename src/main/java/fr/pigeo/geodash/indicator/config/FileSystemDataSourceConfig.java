@@ -12,7 +12,9 @@ import java.util.Map;
  */
 public class FileSystemDataSourceConfig extends DataSourceConfig {
 
-    private Map<String, Path> paths = new HashMap<String, Path>();
+    private String path;
+    private String pattern;
+    private int amount;
 
     public FileSystemDataSourceConfig(final String config) throws JSONException {
         JSONObject configObj = new JSONObject(config);
@@ -22,6 +24,35 @@ public class FileSystemDataSourceConfig extends DataSourceConfig {
         this.fromJSON(config);
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
     public void fromJSON(JSONObject config) throws JSONException {
+        this.path = config.getString("path");
+        this.pattern = config.getString("pattern");
+        this.amount = config.getInt("amount");
+        this.type = config.getString("type");
+
     }
 }

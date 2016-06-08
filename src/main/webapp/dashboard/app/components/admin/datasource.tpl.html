@@ -1,0 +1,101 @@
+<div class="form-group">
+  <label class="col-sm-2 control-label">
+    <span translate="">Name</span>
+  </label>
+  <div class="col-sm-8">
+    <input type="text" class="form-control"
+           ng-model="ctrl.datasource.name">
+  </div>
+</div>
+
+<!--Type select-->
+<div class="form-group">
+  <label class="col-sm-2 control-label">
+    <span translate="">Type</span>
+  </label>
+
+  <div class="col-sm-10">
+    <select class="form-control"
+            ng-model="ctrl.datasource.type">
+      <option>database</option>
+      <option>filesystem</option>
+    </select>
+  </div>
+</div>
+
+<!--Database options-->
+<div class=""
+     ng-if="ctrl.datasource.type == 'database'">
+
+  <!--Database url-->
+  <div class="form-group" ng-class="{'has-error': !ctrl.isFormInputValid('dburl')}">
+    <label class="col-sm-2 control-label">
+      <span translate="">dburl</span>
+    </label>
+
+    <div class="col-sm-10">
+      <input type="text" class="form-control" required
+             name="dburl" id="dburl"
+             placeholder="jdbc:postgresql://localhost:5433/ne_risques_geodata?user=geonetwork&password=geonetwork"
+             ng-model="ctrl.datasource.url">
+    </div>
+  </div>
+
+  <!--SQL Query-->
+  <div class="form-group" ng-class="{'has-error': !ctrl.isFormInputValid('sqlquery')}">
+    <label class="col-sm-2 control-label">
+      <span translate="">sqlquery</span>
+    </label>
+
+    <div class="col-sm-10">
+      <div id="sqlquery" required name="sqlquery" ui-ace="{mode: 'sql', showGutter: false, showPrintMargin: false}"
+           ng-model="ctrl.datasource.sql">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Filesystem options-->
+<div class=""
+     ng-if="ctrl.datasource.type == 'filesystem'">
+
+  <!--Path -->
+  <div class="form-group" ng-class="{'has-error': !ctrl.isFormInputValid('fsPath')}">
+    <label class="col-sm-2 control-label">
+      <span translate="">Path</span>
+    </label>
+
+    <div class="col-sm-10">
+      <input type="text" class="form-control" required
+             name="fsPath" id="fsPath"
+             placeholder="/home/philippe/data/cpc/rfe2/02_moyennes_pluies"
+             ng-model="ctrl.datasource.path">
+    </div>
+  </div>
+
+  <div class="form-group" ng-class="{'has-error': !ctrl.isFormInputValid('fsPattern')}">
+    <label class="col-sm-2 control-label">
+      <span translate="">Pattern</span>
+    </label>
+
+    <div class="col-sm-10">
+      <input type="text" class="form-control" required
+             name="fsPattern" id="fsPattern"
+             placeholder="Rain0Mm_${year}_days.tif"
+             ng-model="ctrl.datasource.pattern">
+    </div>
+  </div>
+  <div class="form-group" ng-class="{'has-error': !ctrl.isFormInputValid('fsAmount')}">
+    <label class="col-sm-2 control-label">
+      <span translate="">Amount</span>
+    </label>
+
+    <div class="col-sm-2">
+      <input type="number" class="form-control" required
+             name="fsAmount" id="fsAmount"
+             ng-model="ctrl.datasource.amount">
+    </div>
+
+  </div>
+</div>
+

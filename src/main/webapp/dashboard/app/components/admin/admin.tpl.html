@@ -10,7 +10,7 @@
          ng-repeat="indicator in admin.indicators"
          ng-class="{active: admin.current == indicator}"
          ng-click="admin.current = indicator">
-        {{indicator.name}}
+        {{indicator.config.label || indicator.name}}
       </a>
     </div>
 
@@ -83,64 +83,22 @@
             </label>
             <div class="col-sm-8">
               <textarea type="text" class="form-control"
-                     ng-model="admin.current.config.description"></textarea>
+                        ng-model="admin.current.config.description"></textarea>
             </div>
           </div>
         </div>
 
         <!--Datasource tab content-->
         <div role="tabpanel" class="tab-pane" id="datasource">
-          <div class="form-group">
-            <label class="col-sm-2 control-label">
-              <span translate="">Type</span>
-            </label>
 
-            <div class="col-sm-10">
-              <select class="form-control"
-                      ng-model="admin.current.config.datasource.type">
-                <option>database</option>
-                <option>filesystem</option>
-              </select>
-            </div>
-          </div>
-
-          <div class=""
-               ng-if="admin.current.config.datasource.type == 'database'">
-
-            <!--Database url-->
-            <div class="form-group" ng-class="{'has-error': !admin.isFormInputValid('dburl')}">
-              <label class="col-sm-2 control-label">
-                <span translate="">dburl</span>
-              </label>
-
-              <div class="col-sm-10">
-                <input type="text" class="form-control" required
-                       name="dburl" id="dburl"
-                       placeholder="jdbc:postgresql://localhost:5433/ne_risques_geodata?user=geonetwork&password=geonetwork"
-                       ng-model="admin.current.config.datasource.url">
-              </div>
-            </div>
-
-            <!--SQL Query-->
-            <div class="form-group" ng-class="{'has-error': !admin.isFormInputValid('sqlquery')}">
-              <label class="col-sm-2 control-label">
-                <span translate="">sqlquery</span>
-              </label>
-
-              <div class="col-sm-10">
-                <div id="sqlquery" required name="sqlquery" ui-ace="{mode: 'sql', showGutter: false, showPrintMargin: false}"
-                     ng-model="admin.current.config.datasource.sql">
-                </div>
-              </div>
-            </div>
-          </div>
+          <gd-datasources gd-datasources-array="admin.current.config.datasources"></gd-datasources>
 
           <!--Datesource Test section-->
           <div class="col-md-offset-1" ng-if="admin.current.config.datasource.type">
 
             <!--Nav pills-->
             <ul class="nav nav-pills test" role="tablist">
-              <li role="presentation" ng-click="admin.showCoordsPicker()" ng-class="{disabled: !admin.isFormInputValid('sqlquery')}">
+              <li role="presentation" ng-click="admin.showCoordsPicker()" ng-class="{disabled: !admin.isFormInputValid___('sqlquery')}">
                 <a href="admin" data-target="#testdatapane" aria-controls="global" role="tab" data-toggle="tab">testquery</a>
               </li>
               <li role="presentation" ng-if="admin.testData">
