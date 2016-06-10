@@ -95,7 +95,87 @@
              name="fsAmount" id="fsAmount"
              ng-model="ctrl.datasource.amount">
     </div>
-
   </div>
 </div>
+<div class="checkbox col-sm-offset-2" ng-if="!$first">
+  <label>
+    <input type="checkbox" ng-model="ctrl.datasource.merge"><span translate="">Merge with previous</span>
+  </label>
+</div>
 
+
+<!--Test section-->
+<div class="col-md-offset-1" ng-if="ctrl.isValid()">
+
+  <!--Nav pills-->
+  <ul class="nav nav-pills test" role="tablist">
+    <li role="presentation" ng-click="ctrl.showCoordsPicker()">
+      <a href="" data-target="{{::'#testdatapane' + ctrl.datasource.$$hashKey.replace(':', '_')}}" aria-controls="global" role="tab" data-toggle="tab">data</a>
+    </li>
+    <li role="presentation" ng-if="ctrl.testData">
+      <a href="" data-target="#testtransformpane" aria-controls="datasource" role="tab" data-toggle="tab">transform</a>
+    </li>
+    <li role="presentation" ng-if="ctrl.testData">
+      <a href="" data-target="#viewserie" aria-controls="datasource" role="tab" data-toggle="tab">view</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+
+    <!--Test request-->
+    <div role="tabpanel" class="tab-pane" id="{{::'testdatapane' + ctrl.datasource.$$hashKey.replace(':', '_')}}">
+
+      <!--Coordinates picker-->
+      <geodash-coordspicker coordinates="ctrl.lonlat">
+      </geodash-coordspicker>
+
+      <button class="btn btn-geodash test-btn" ng-disabled="ctrl.lonlat.length < 2" ng-click="ctrl.test()">
+        <span translate="">Test request</span>
+      </button>
+
+      <div ng-if="ctrl.testData" id="testedData" ui-ace="ctrl.aceOptions" ng-model="ctrl.testData"></div>
+      <div ng-if="ctrl.testError" class="alert alert-danger" role="alert">
+        {{ctrl.testError}}
+      </div>
+    </div>
+
+    <!--Transform config & test content-->
+    <div role="tabpanel" class="tab-pane" id="testtransformpane">
+      <label translate="">transformConfig</label>
+
+      <!--Transform config-->
+      <div ng-if="ctrl.testData" id="transformConfig" ui-ace="{mode: 'json', showGutter: false, showPrintMargin: false}" ng-model="ctrl.datasource.transform"></div>
+
+      <button ng-if="ctrl.testData" ng-disabled="!ctrl.datasource.transform" class="btn btn-geodash test-btn" ng-click="ctrl.exportData()">
+        <span translate="">Export data</span>
+      </button>
+
+      <!--output series-->
+      <div ng-if="ctrl.series" id="outputSerie" ui-ace="ctrl.aceOptions" ng-model="ctrl.series"></div>
+
+
+    </div>
+
+    <!--view serie-->
+    <div role="tabpanel" class="tab-pane" id="viewserie">
+      <input type="text" class="form-control input-sm"
+             placeholder="{{::'Name' | translate}}"
+             ng-model="ctrl.serieChart.name">
+      <select class="form-control input-sm"
+              placeholder="{{::'Type' | translate}}"
+              ng-model="ctrl.serieChart.type">
+        <option>column</option>
+        <option>arearange</option>
+        <option>spline</option>
+      </select>
+
+      <button class="btn btn-geodash test-btn" ng-click="ctrl.viewChart('#chartDemo')">
+        <span translate="">view</span>
+      </button>
+
+      <div id="testSerieChart"></div>
+    </div>
+
+  </div>
+
+</div>

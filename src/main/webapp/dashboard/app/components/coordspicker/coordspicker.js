@@ -8,7 +8,8 @@ angular.module('geodash')
       templateUrl : 'components/coordspicker/coordspicker.tpl.html'
     });
 
-function CoordspickerController($scope, $timeout, ngeoDecorateInteraction) {
+function CoordspickerController($scope, $timeout, $element,
+                                ngeoDecorateInteraction) {
 
   this.ngeoDecorateInteraction_ = ngeoDecorateInteraction;
   this.$scope = $scope;
@@ -23,7 +24,7 @@ function CoordspickerController($scope, $timeout, ngeoDecorateInteraction) {
       zoom: 2
     })
   });
-  this.map.setTarget('coordspicker-map');
+  this.map.setTarget($element.find('.coordspicker-map')[0]);
 
   var style =  new ol.style.Style({
     image: new ol.style.Circle({
@@ -103,5 +104,5 @@ CoordspickerController.prototype.handleDrawEnd_ = function(event) {
   }.bind(this));
 };
 
-CoordspickerController.$inject = ['$scope','$timeout',
+CoordspickerController.$inject = ['$scope','$timeout', '$element',
   'ngeoDecorateInteraction'];

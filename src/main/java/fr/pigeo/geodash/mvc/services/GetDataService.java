@@ -30,7 +30,7 @@ public class GetDataService {
             throw new RuntimeException(giveUp);
         }
 
-        DirectPosition pos = new DirectPosition2D(cov.getCoordinateReferenceSystem(),lon, lat);
+        DirectPosition pos = new DirectPosition2D(cov.getCoordinateReferenceSystem(),lat, lon);
         double[] val = cov.evaluate(pos, (double[]) null);
         return val;
     }

@@ -44,6 +44,7 @@ require('./services/messages');
 require('./services/chart_factory');
 require('./services/utils');
 require('./services/rest/indicators');
+require('./services/indicators');
 
 function AppController($router) {
   $router.config([

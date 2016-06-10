@@ -156,6 +156,7 @@ require('./services/messages');
 require('./services/chart_factory');
 require('./services/utils');
 require('./services/rest/indicators');
+require('./services/indicators');
 
 function AppController($router) {
   $router.config([
@@ -232,7 +233,8 @@ var chartConfig = {
   }]
 };
 
-var AdminController = function($routeParams, $http, $location, Indicator, Transformer) {
+var AdminController = function($routeParams, $http, $location, Indicator,
+                               Transformer, IndicatorService) {
 
   this.aceOptions = {
     mode: 'json',
@@ -240,6 +242,7 @@ var AdminController = function($routeParams, $http, $location, Indicator, Transf
   };
   this.$http = $http;
   this.Transformer = Transformer;
+  this.IndicatorService = IndicatorService;
 
   this.indicators = Indicator.getAll(undefined, function() {
     this.indicators.forEach(function(indicator) {
@@ -366,49 +369,19 @@ AdminController.prototype.initNew = function() {
 
 AdminController.prototype.viewChart = function(selector) {
 
-  var conf = JSON.parse(this.current.config.chartConfig);
-  var series = JSON.parse(this.series);
-  series.forEach(function(serie, idx) {
-    conf.series[idx].data = serie;
-  });
-
-  $(selector).highcharts(conf);
+  this.IndicatorService.getGraph(this.current.config, -14.326, 13.923).then(
+      function(chartConfig) {
+        $(selector).highcharts(chartConfig);
+      });
 };
 
-AdminController.prototype.test = function(lon, lat) {
-  this.$http({
-    url : '../../geodata/' + this.lonlat[0] + '/' + this.lonlat[1] + '/',
-    method: 'POST',
-    data: $.param({config: JSON.stringify(this.current.config)}),
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-  }).then(function(response){
-    this.testData = this.aceStringify_(response.data);
-  }.bind(this), function(response) {
-    this.testError = response.statusText;
-  }.bind(this));
-};
 
-AdminController.prototype.exportData = function() {
-  this.series = this.aceStringify_(
-      this.Transformer.transform(JSON.parse(this.testData)));
-};
 
-AdminController.prototype.aceStringify_ = function(obj) {
-  return JSON.stringify(obj, null, 4);
-};
-
-AdminController.prototype.isFormInputValid = function(name) {
-  //  this.form = angular.element($('form[name="indicatorForm"]')).scope().indicatorForm;
-  return !this.$scope.indicatorForm[name].$invalid;
-};
-
-AdminController.prototype.showCoordsPicker = function() {
-  this.$scope.$broadcast('showMap');
-};
 
 angular.module('geodash')
     .controller('AdminController', [
-      '$routeParams', '$http', '$location', 'Indicator', 'Transformer', AdminController
+      '$routeParams', '$http', '$location', 'Indicator', 'Transformer',
+      'IndicatorService', AdminController
     ]);
 
 });
@@ -417,23 +390,36 @@ require.register("components/admin/datasource", function(exports, require, modul
 var module = angular.module('geodash');
 
 module.directive('gdDatasourceForm', function() {
-      return {
-        restrict: 'E',
-        scope: {
-          datasource: '=gdDatasourceFormConfig'
-        },
-        controller  : 'GdDatasourceController',
-        controllerAs: 'ctrl',
-        bindToController: true,
-        templateUrl: 'components/admin/datasource.tpl.html',
-        require: {
-          sourcesCtrl: '^^gdDatasources'
-        }
-      };
-    });
+  return {
+    restrict: 'E',
+    scope: {
+      datasource: '=gdDatasourceFormConfig'
+    },
+    controller  : 'GdDatasourceController',
+    controllerAs: 'ctrl',
+    bindToController: true,
+    templateUrl: 'components/admin/datasource.tpl.html',
+    require: {
+      sourcesCtrl: '^^gdDatasources'
+    }
+  };
+});
 
-var GdDatasourceController = function($scope) {
-};
+var GdDatasourceController =
+    function($scope, $http, gdUtils, Transformer, IndicatorService) {
+
+      this.$scope = $scope;
+      this.$http = $http;
+      this.gdUtils = gdUtils;
+      this.Transformer = Transformer;
+      this.IndicatorService = IndicatorService;
+
+      $scope.$watch(function(){
+        return this.datasource;
+      }.bind(this), function(n) {
+        this.resetForm();
+      }.bind(this));
+    };
 
 GdDatasourceController.prototype.save = function() {
   //this.sourcesCtrl.add(this.datasource);
@@ -444,8 +430,55 @@ GdDatasourceController.prototype.isFormInputValid = function(name) {
   return !form[name].$invalid;
 };
 
+GdDatasourceController.prototype.isValid = function() {
+  return this.sourcesCtrl.isValid(this.datasource);
+};
+
+GdDatasourceController.prototype.test = function() {
+
+  this.IndicatorService.getSerie(
+      this.datasource, this.lonlat[0], this.lonlat[1]).then(function(data){
+    this.testData = this.gdUtils.aceStringify(data);
+    this.testError = null;
+  }.bind(this), function(response) {
+    this.testError = response.statusText;
+    this.testData = null;
+  }.bind(this));
+};
+
+GdDatasourceController.prototype.exportData = function() {
+  this.series = this.gdUtils.aceStringify(
+      this.Transformer.transform(
+          JSON.parse(this.testData),
+          JSON.parse(this.datasource.transform)));
+};
+
+GdDatasourceController.prototype.viewChart = function() {
+
+  var serie = JSON.parse(this.testData);
+
+  var simpleChart = {
+    series: [{
+      type: this.serieChart.type,
+      name: this.serieChart.name,
+      data: serie
+    }]
+  };
+
+  $('#testSerieChart').highcharts(simpleChart);
+};
+GdDatasourceController.prototype.showCoordsPicker = function() {
+  this.$scope.$broadcast('showMap');
+};
+
+GdDatasourceController.prototype.resetForm = function() {
+  this.serieChart = {};
+  this.testError = null;
+  this.testData = null;
+};
+
 module.controller('GdDatasourceController', [
-  '$scope',
+  '$scope', '$http', 'gdUtils', 'Transformer', 'IndicatorService',
   GdDatasourceController]
 );
 
@@ -522,43 +555,8 @@ GdDatasourcesController.prototype.showCoordsPicker = function() {
   this.$scope.$broadcast('showMap');
 };
 
-GdDatasourcesController.prototype.test = function() {
-
-  this.$http({
-    url : '../../geodata/serie/' + this.lonlat[0] + '/' + this.lonlat[1] + '/',
-    method: 'POST',
-    data: $.param({
-      config: JSON.stringify(this.current)
-    }),
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  }).then(function(response){
-    this.testData = this.gdUtils.aceStringify(response.data);
-    this.testError = null;
-  }.bind(this), function(response) {
-    this.testError = response.statusText;
-    this.testData = null;
-  }.bind(this));
-};
-
-GdDatasourcesController.prototype.viewChart = function() {
-
-  var serie = JSON.parse(this.testData);
-
-  var simpleChart = {
-    series: [{
-      type: this.serieChart.type,
-      name: this.serieChart.name,
-      data: serie
-    }]
-  };
-
-  $('#testSerieChart').highcharts(simpleChart);
-};
-
 GdDatasourcesController.prototype.resetForm = function() {
-  this.current = {};
+  this.current = null;
 };
 
 module.controller('GdDatasourcesController', [
@@ -580,7 +578,8 @@ angular.module('geodash')
       templateUrl : 'components/coordspicker/coordspicker.tpl.html'
     });
 
-function CoordspickerController($scope, $timeout, ngeoDecorateInteraction) {
+function CoordspickerController($scope, $timeout, $element,
+                                ngeoDecorateInteraction) {
 
   this.ngeoDecorateInteraction_ = ngeoDecorateInteraction;
   this.$scope = $scope;
@@ -595,7 +594,7 @@ function CoordspickerController($scope, $timeout, ngeoDecorateInteraction) {
       zoom: 2
     })
   });
-  this.map.setTarget('coordspicker-map');
+  this.map.setTarget($element.find('.coordspicker-map')[0]);
 
   var style =  new ol.style.Style({
     image: new ol.style.Circle({
@@ -675,7 +674,7 @@ CoordspickerController.prototype.handleDrawEnd_ = function(event) {
   }.bind(this));
 };
 
-CoordspickerController.$inject = ['$scope','$timeout',
+CoordspickerController.$inject = ['$scope','$timeout', '$element',
   'ngeoDecorateInteraction'];
 
 });
@@ -1051,7 +1050,7 @@ var ChartFactory = function($http, $q) {
         return config;
       }
     });
-  }
+  };
 };
 
 angular.module('geodash')
@@ -1213,6 +1212,82 @@ var chartConfig = {
 
 });
 
+require.register("services/indicators", function(exports, require, module) {
+var module = angular.module('geodash');
+
+
+
+var Indicator = function($http, $q, Transformer, gdUtils) {
+  this.$http = $http;
+  this.$q = $q;
+  this.Transformer = Transformer;
+  this.gdUtils = gdUtils;
+};
+
+Indicator.prototype.getGraph = function(config, lon, lat) {
+
+  var promises = [];
+  config.datasources.forEach(function(ds) {
+    promises.push(this.getSerie(ds, lon, lat));
+  }.bind(this));
+
+  return this.$q.all(promises).then(function(datasources) {
+    var chartConfig = this.gdUtils.aceParse(config.chartConfig);
+
+    var nextIdx = -1;
+    datasources.forEach(function(ds, idx) {
+
+      // Multiple series
+      if(angular.isArray(ds[0][0])) {
+        ds.forEach(function(serie, i) {
+          chartConfig.series[++nextIdx].data = serie;
+        });
+      }
+      else { // single serie
+        // Merge with previous serie
+        if(config.datasources[idx].merge && idx) {
+          var previous = chartConfig.series[nextIdx].data;
+          previous.forEach(function(value, i) {
+            previous[i] = previous[i].concat(ds[i]);
+          });
+        }
+        else {
+          chartConfig.series[++nextIdx].data = ds;
+        }
+      }
+    });
+
+    return chartConfig;
+  }.bind(this));
+};
+
+Indicator.prototype.getSerie = function(datasource, lon, lat) {
+  return this.$http({
+    url : '../../geodata/serie/' + lon + '/' + lat + '/',
+    method: 'POST',
+    data: $.param({
+      config: JSON.stringify(datasource)
+    }),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }).then(function(response) {
+    var serie = response.data;
+    if(datasource.transform) {
+      serie = this.Transformer.transform(serie,
+          JSON.parse(datasource.transform));
+    }
+    return serie;
+  }.bind(this));
+};
+
+angular.module('geodash')
+    .service('IndicatorService', ['$http', '$q', 'Transformer', 'gdUtils',
+      Indicator]);
+
+
+});
+
 require.register("services/messages", function(exports, require, module) {
 angular.module('geodash').factory('Templates',
   ['$resource', 'LDAP_BASE_URI', function($resource, baseUri) {
@@ -1282,9 +1357,36 @@ var module = angular.module('geodash');
 angular.module('geodash')
     .service('gdUtils', [function() {
 
+      var getDay = function() {
+        var now = new Date();
+        var start = new Date(now.getFullYear(), 0, 0);
+        var diff = now - start;
+        var oneDay = 1000 * 60 * 60 * 24;
+        var day = Math.floor(diff / oneDay);
+        return day;
+      };
+
+      var monthInYearAxisLabelFormatter = function() {
+        return this.value / 30;
+      };
+
+      var periodFormatter = function() {
+        return '<b>Début</b>: ' + this.point.low + '<sub>ème</sub> jours<br>' +
+        '<b>Durée</b>: ' + (this.point.high - this.point.low) + ' jours';
+      };
 
       this.aceStringify = function(obj) {
         return JSON.stringify(obj, null, 4);
+      };
+
+      this.aceParse = function(string) {
+        return JSON.parse(string, function(k, v) {
+          if(angular.isString(v) && v.indexOf('$eval:') === 0) {
+            var expr = v.substring(6, v.length);
+            return eval(expr);
+          }
+          return v;
+        });
       };
 
     }]);

@@ -64,43 +64,8 @@ GdDatasourcesController.prototype.showCoordsPicker = function() {
   this.$scope.$broadcast('showMap');
 };
 
-GdDatasourcesController.prototype.test = function() {
-
-  this.$http({
-    url : '../../geodata/serie/' + this.lonlat[0] + '/' + this.lonlat[1] + '/',
-    method: 'POST',
-    data: $.param({
-      config: JSON.stringify(this.current)
-    }),
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  }).then(function(response){
-    this.testData = this.gdUtils.aceStringify(response.data);
-    this.testError = null;
-  }.bind(this), function(response) {
-    this.testError = response.statusText;
-    this.testData = null;
-  }.bind(this));
-};
-
-GdDatasourcesController.prototype.viewChart = function() {
-
-  var serie = JSON.parse(this.testData);
-
-  var simpleChart = {
-    series: [{
-      type: this.serieChart.type,
-      name: this.serieChart.name,
-      data: serie
-    }]
-  };
-
-  $('#testSerieChart').highcharts(simpleChart);
-};
-
 GdDatasourcesController.prototype.resetForm = function() {
-  this.current = {};
+  this.current = null;
 };
 
 module.controller('GdDatasourcesController', [

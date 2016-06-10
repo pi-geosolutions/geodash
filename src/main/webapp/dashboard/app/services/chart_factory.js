@@ -23,7 +23,7 @@ var ChartFactory = function($http, $q) {
         return config;
       }
     });
-  }
+  };
 };
 
 angular.module('geodash')

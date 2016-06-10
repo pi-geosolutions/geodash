@@ -101,13 +101,13 @@ a:focus {
   border-radius: 0; }
 
 /* line 124, E:/Users/Documents/GitHub/geoDash/src/main/webapp/dashboard/app/styles/app.scss */
-#coordspicker-map {
+.coordspicker-map {
   height: 220px;
   width: 100%;
   position: relative;
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAAnRSTlMAAHaTzTgAAAARSURBVHgBY3iKBFEAOp/+MgB+UQnYeBZPWAAAAABJRU5ErkJggg=="); }
   /* line 129, E:/Users/Documents/GitHub/geoDash/src/main/webapp/dashboard/app/styles/app.scss */
-  #coordspicker-map .btn {
+  .coordspicker-map .btn {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -259,16 +259,16 @@ geodash-coordspicker .form {
   border-left: none; }
 
 /* line 153, E:/Users/Documents/GitHub/geoDash/src/main/webapp/dashboard/app/styles/private.scss */
-.geodash-admin gd-datasources .test-btn {
-  margin: 15px; }
-
-/* line 156, E:/Users/Documents/GitHub/geoDash/src/main/webapp/dashboard/app/styles/private.scss */
 .geodash-admin gd-datasources #testedData {
   margin-left: 15px; }
 
-/* line 159, E:/Users/Documents/GitHub/geoDash/src/main/webapp/dashboard/app/styles/private.scss */
+/* line 156, E:/Users/Documents/GitHub/geoDash/src/main/webapp/dashboard/app/styles/private.scss */
 .geodash-admin gd-datasources #testtransformpane {
   margin-left: 15px; }
+
+/* line 161, E:/Users/Documents/GitHub/geoDash/src/main/webapp/dashboard/app/styles/private.scss */
+.geodash-admin .test-btn {
+  margin: 15px; }
 
 /* line 3, E:/Users/Documents/GitHub/geoDash/src/main/webapp/dashboard/app/styles/public.scss */
 .navbar-default {

@@ -26,7 +26,7 @@
     <!--Right panel-->
     <div class="col-sm-8" ng-if="admin.current">
 
-      <h4 translate="">{{admin.current.name}}</h4>
+      <h4 translate="">{{admin.current.config.label || admin.current.name}}</h4>
 
       <!--Create new alert message-->
       <div ng-if="!admin.current.id" class="alert alert-success" role="alert">

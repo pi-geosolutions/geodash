@@ -62,7 +62,8 @@ var chartConfig = {
   }]
 };
 
-var AdminController = function($routeParams, $http, $location, Indicator, Transformer) {
+var AdminController = function($routeParams, $http, $location, Indicator,
+                               Transformer, IndicatorService) {
 
   this.aceOptions = {
     mode: 'json',
@@ -70,6 +71,7 @@ var AdminController = function($routeParams, $http, $location, Indicator, Transf
   };
   this.$http = $http;
   this.Transformer = Transformer;
+  this.IndicatorService = IndicatorService;
 
   this.indicators = Indicator.getAll(undefined, function() {
     this.indicators.forEach(function(indicator) {
@@ -196,47 +198,17 @@ AdminController.prototype.initNew = function() {
 
 AdminController.prototype.viewChart = function(selector) {
 
-  var conf = JSON.parse(this.current.config.chartConfig);
-  var series = JSON.parse(this.series);
-  series.forEach(function(serie, idx) {
-    conf.series[idx].data = serie;
-  });
-
-  $(selector).highcharts(conf);
+  this.IndicatorService.getGraph(this.current.config, -14.326, 13.923).then(
+      function(chartConfig) {
+        $(selector).highcharts(chartConfig);
+      });
 };
 
-AdminController.prototype.test = function(lon, lat) {
-  this.$http({
-    url : '../../geodata/' + this.lonlat[0] + '/' + this.lonlat[1] + '/',
-    method: 'POST',
-    data: $.param({config: JSON.stringify(this.current.config)}),
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-  }).then(function(response){
-    this.testData = this.aceStringify_(response.data);
-  }.bind(this), function(response) {
-    this.testError = response.statusText;
-  }.bind(this));
-};
 
-AdminController.prototype.exportData = function() {
-  this.series = this.aceStringify_(
-      this.Transformer.transform(JSON.parse(this.testData)));
-};
 
-AdminController.prototype.aceStringify_ = function(obj) {
-  return JSON.stringify(obj, null, 4);
-};
-
-AdminController.prototype.isFormInputValid = function(name) {
-  //  this.form = angular.element($('form[name="indicatorForm"]')).scope().indicatorForm;
-  return !this.$scope.indicatorForm[name].$invalid;
-};
-
-AdminController.prototype.showCoordsPicker = function() {
-  this.$scope.$broadcast('showMap');
-};
 
 angular.module('geodash')
     .controller('AdminController', [
-      '$routeParams', '$http', '$location', 'Indicator', 'Transformer', AdminController
+      '$routeParams', '$http', '$location', 'Indicator', 'Transformer',
+      'IndicatorService', AdminController
     ]);
