@@ -63,7 +63,7 @@ var chartConfig = {
 };
 
 var AdminController = function($routeParams, $http, $location, Indicator,
-                               Transformer, IndicatorService) {
+                               Transformer, IndicatorService, ChartFactory) {
 
   this.aceOptions = {
     mode: 'json',
@@ -72,6 +72,7 @@ var AdminController = function($routeParams, $http, $location, Indicator,
   this.$http = $http;
   this.Transformer = Transformer;
   this.IndicatorService = IndicatorService;
+  this.ChartFactory = ChartFactory;
 
   this.indicators = Indicator.getAll(undefined, function() {
     this.indicators.forEach(function(indicator) {
@@ -80,22 +81,7 @@ var AdminController = function($routeParams, $http, $location, Indicator,
       }
     });
 
-    if($routeParams.id) {
-      this.edit = true;
-      this.indicators.forEach(function(indicator) {
-        //TODO: remove when it's up to date
-        if(!indicator.config.datasources) {
-          indicator.config.datasources = [];
-        }
-        if(indicator.config.datasource) {
-          indicator.config.datasources.push(indicator.config.datasource)
-        }
-        if(indicator.id == $routeParams.id) {
-          this.current = indicator;
-        }
-      }.bind(this));
-    }
-    else if($location.path().indexOf('new') >= 0) {
+    if($location.path().indexOf('new') >= 0) {
       this.create = true;
       this.current = {
         name: ''
@@ -103,50 +89,7 @@ var AdminController = function($routeParams, $http, $location, Indicator,
     }
 
   }.bind(this));
-
-
-
-
-/*
-  var sql = "select m.datereleve, rain, avg, (avg+stddev) as e1plus," +
-      "\n\tgreatest(0, avg-stddev) as e1minus," +
-      "\n\t(avg+variance) as e2plus," +
-      "\n\tgreatest(0, avg-variance) as e2minus" +
-      "\n\tfrom afo_2e1_mesures as m," +
-      "\n\t\t      (select datereleve, stddev(rain), variance(rain)," +
-      "\n\t\t     avg(rain)" +
-      "\n\tfrom afo_2e1_mesures" +
-      "\n\tgroup by datereleve) as sd" +
-      "\n\twhere m.code_omm in (" +
-      " \n\t\t     select code_omm" +
-      "\n\tfrom afo_2e1_stat_mes_last" +
-      "\n\torder by st_distance(the_geom,ST_GeomFromText('POINT(-17.887 27.815 )',4326)) LIMIT 1  )" +
-      "\n\tAND m.datereleve = sd.datereleve" +
-      "\n\torder by m.datereleve limit 60";
-
-  var dburl = 'jdbc:postgresql://localhost:5433/ne_risques_geodata?user=geonetwork&password=geonetwork';
-  this.indicators = [{"id":3,"name":"tata","userid":1},{"id":4,"name":"tata","userid":1,"config":{"datasource":{"type":"database"}}},{"id":1,"name":"totocxwcxwcxcxw","userid":1,"config":{"datasource":{"type":"database"}}},{"id":2,"name":"tata2","userid":1}];
-
-  this.indicators.forEach(function(indicator) {
-    indicator.config = {
-      "datasource":{"type":"database",url:dburl, sql:sql, transform: this.aceStringify_({
-        dataType: 'serie',
-        data: {
-          xaxis: 'datereleve',
-          yaxis: ['rain', 'avg', ['e1minus', 'e1plus']/!*, ['e2minus', 'e2plus']*!/]
-        }
-      })}
-    };
-    indicator.config.chartConfig = this.aceStringify_(chartConfig);
-
-  }.bind(this));
-*/
-
 };
-
-AdminController.prototype.activate = ['$scope', function($scope) {
-  this.$scope = $scope;
-}];
 
 
 AdminController.prototype.save = function() {
@@ -200,8 +143,8 @@ AdminController.prototype.viewChart = function(selector) {
 
   this.IndicatorService.getGraph(this.current.config, -14.326, 13.923).then(
       function(chartConfig) {
-        $(selector).highcharts(chartConfig);
-      });
+        this.ChartFactory.render(selector, chartConfig);
+      }.bind(this));
 };
 
 
@@ -210,5 +153,5 @@ AdminController.prototype.viewChart = function(selector) {
 angular.module('geodash')
     .controller('AdminController', [
       '$routeParams', '$http', '$location', 'Indicator', 'Transformer',
-      'IndicatorService', AdminController
+      'IndicatorService', 'ChartFactory', AdminController
     ]);

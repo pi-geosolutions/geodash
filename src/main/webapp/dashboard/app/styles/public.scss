@@ -68,7 +68,7 @@ $panel-color: #A9D0A2;
       font-variant: small-caps;
       color: #3A62B7;
       border-radius: 0;
-      background-color: $panel-color;
+      background-color: rgba(103, 211, 192, 0.2);
       h3:first-letter {
         text-transform: uppercase;
       }

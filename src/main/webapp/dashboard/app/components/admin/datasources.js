@@ -29,6 +29,8 @@ var GdDatasourcesController = function($scope, $http, gdUtils) {
     return this.datasources;
   }.bind(this), function(n) {
     this.resetForm();
+    var chart = $('#chartDemo').highcharts();
+    if(chart) chart.destroy();
   }.bind(this));
 };
 

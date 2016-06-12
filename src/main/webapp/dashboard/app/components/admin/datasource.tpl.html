@@ -97,10 +97,14 @@
     </div>
   </div>
 </div>
-<div class="checkbox col-sm-offset-2" ng-if="!$first">
+<div class="checkbox col-sm-offset-2" ng-show="$parent.$first == false">
   <label>
     <input type="checkbox" ng-model="ctrl.datasource.merge"><span translate="">Merge with previous</span>
   </label>
+  <div class="app-mergetype" ng-if="ctrl.datasource.merge">
+    <label><input type="radio" ng-model="ctrl.datasource.mergeType" checked value="concat"><span translate="">Concat</span> </label>
+    <label><input type="radio" ng-model="ctrl.datasource.mergeType" value="percentage"><span translate="">Percentage</span> </label>
+  </div>
 </div>
 
 
@@ -135,7 +139,7 @@
 
       <div ng-if="ctrl.testData" id="testedData" ui-ace="ctrl.aceOptions" ng-model="ctrl.testData"></div>
       <div ng-if="ctrl.testError" class="alert alert-danger" role="alert">
-        {{ctrl.testError}}
+        {{ctrl.testError | translate}}
       </div>
     </div>
 
@@ -169,7 +173,7 @@
         <option>spline</option>
       </select>
 
-      <button class="btn btn-geodash test-btn" ng-click="ctrl.viewChart('#chartDemo')">
+      <button class="btn btn-geodash test-btn" ng-click="ctrl.viewChart()">
         <span translate="">view</span>
       </button>
 

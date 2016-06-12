@@ -22,6 +22,11 @@ public class GetDataService {
 
     public double[] getValue(File rasterFile, double lat, double lon) throws Exception {
         AbstractGridFormat format = GridFormatFinder.findFormat( rasterFile );
+
+        if(format == null) {
+            throw new RuntimeException("filesystem.getvalue.format");
+        }
+
         reader = format.getReader(rasterFile);
         GridCoverage2D cov = null;
         try {

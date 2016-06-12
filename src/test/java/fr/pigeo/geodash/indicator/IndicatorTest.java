@@ -2,6 +2,7 @@ package fr.pigeo.geodash.indicator;
 
 import fr.pigeo.geodash.indicator.config.Config;
 import fr.pigeo.geodash.indicator.config.FileSystemDataSourceConfig;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.List;
@@ -29,10 +30,10 @@ public class IndicatorTest {
 
         Config config = new Config(sConfig);
         Indicator indicator = new Indicator(config);
-        List<Double> res =  indicator.process(14, 8);
+        JSONObject res =  indicator.process(14, 8);
 
-        assertEquals(res.size(), 10);
-        assertEquals(res.get(0), 71, 0.1);
+        assertEquals(res.getJSONArray("data").length(), 10);
+        assertEquals((Double)res.getJSONArray("data").get(0), 71, 0.1);
     }
 
     @Test
@@ -50,7 +51,7 @@ public class IndicatorTest {
 
         Config config = new Config(sConfig);
         Indicator indicator = new Indicator(config);
-        List<Double> res =  indicator.process(14, 8);
+        JSONObject res =  indicator.process(14, 8);
 
     }
 }

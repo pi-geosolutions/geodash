@@ -2,6 +2,7 @@ package fr.pigeo.geodash.indicator;
 
 import fr.pigeo.geodash.indicator.config.Config;
 import fr.pigeo.geodash.indicator.config.DataSourceConfig;
+import org.json.JSONObject;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,11 +21,11 @@ public class Indicator {
     }
 
 
-    public List process(double lon, double lat) throws Exception {
+    public JSONObject process(double lon, double lat) throws Exception {
         return this.process(lon, lat, this.loader);
     }
 
-    public List process(double lon, double lat, Loader loader) throws Exception {
+    public JSONObject process(double lon, double lat, Loader loader) throws Exception {
         loader.connect();
         return loader.getData(lon, lat);
     }

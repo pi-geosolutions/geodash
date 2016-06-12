@@ -338,7 +338,7 @@ geodash-coordspicker .form {
     font-variant: small-caps;
     color: #3A62B7;
     border-radius: 0;
-    background-color: #A9D0A2; }
+    background-color: rgba(103, 211, 192, 0.2); }
     /* line 72, E:/Users/Documents/GitHub/geoDash/src/main/webapp/dashboard/app/styles/public.scss */
     .app-dashboard .panel-default > .panel-heading h3:first-letter {
       text-transform: uppercase; }

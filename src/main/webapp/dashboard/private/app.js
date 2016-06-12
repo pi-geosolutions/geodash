@@ -234,7 +234,7 @@ var chartConfig = {
 };
 
 var AdminController = function($routeParams, $http, $location, Indicator,
-                               Transformer, IndicatorService) {
+                               Transformer, IndicatorService, ChartFactory) {
 
   this.aceOptions = {
     mode: 'json',
@@ -243,6 +243,7 @@ var AdminController = function($routeParams, $http, $location, Indicator,
   this.$http = $http;
   this.Transformer = Transformer;
   this.IndicatorService = IndicatorService;
+  this.ChartFactory = ChartFactory;
 
   this.indicators = Indicator.getAll(undefined, function() {
     this.indicators.forEach(function(indicator) {
@@ -251,22 +252,7 @@ var AdminController = function($routeParams, $http, $location, Indicator,
       }
     });
 
-    if($routeParams.id) {
-      this.edit = true;
-      this.indicators.forEach(function(indicator) {
-        //TODO: remove when it's up to date
-        if(!indicator.config.datasources) {
-          indicator.config.datasources = [];
-        }
-        if(indicator.config.datasource) {
-          indicator.config.datasources.push(indicator.config.datasource)
-        }
-        if(indicator.id == $routeParams.id) {
-          this.current = indicator;
-        }
-      }.bind(this));
-    }
-    else if($location.path().indexOf('new') >= 0) {
+    if($location.path().indexOf('new') >= 0) {
       this.create = true;
       this.current = {
         name: ''
@@ -274,50 +260,7 @@ var AdminController = function($routeParams, $http, $location, Indicator,
     }
 
   }.bind(this));
-
-
-
-
-/*
-  var sql = "select m.datereleve, rain, avg, (avg+stddev) as e1plus," +
-      "\n\tgreatest(0, avg-stddev) as e1minus," +
-      "\n\t(avg+variance) as e2plus," +
-      "\n\tgreatest(0, avg-variance) as e2minus" +
-      "\n\tfrom afo_2e1_mesures as m," +
-      "\n\t\t      (select datereleve, stddev(rain), variance(rain)," +
-      "\n\t\t     avg(rain)" +
-      "\n\tfrom afo_2e1_mesures" +
-      "\n\tgroup by datereleve) as sd" +
-      "\n\twhere m.code_omm in (" +
-      " \n\t\t     select code_omm" +
-      "\n\tfrom afo_2e1_stat_mes_last" +
-      "\n\torder by st_distance(the_geom,ST_GeomFromText('POINT(-17.887 27.815 )',4326)) LIMIT 1  )" +
-      "\n\tAND m.datereleve = sd.datereleve" +
-      "\n\torder by m.datereleve limit 60";
-
-  var dburl = 'jdbc:postgresql://localhost:5433/ne_risques_geodata?user=geonetwork&password=geonetwork';
-  this.indicators = [{"id":3,"name":"tata","userid":1},{"id":4,"name":"tata","userid":1,"config":{"datasource":{"type":"database"}}},{"id":1,"name":"totocxwcxwcxcxw","userid":1,"config":{"datasource":{"type":"database"}}},{"id":2,"name":"tata2","userid":1}];
-
-  this.indicators.forEach(function(indicator) {
-    indicator.config = {
-      "datasource":{"type":"database",url:dburl, sql:sql, transform: this.aceStringify_({
-        dataType: 'serie',
-        data: {
-          xaxis: 'datereleve',
-          yaxis: ['rain', 'avg', ['e1minus', 'e1plus']/!*, ['e2minus', 'e2plus']*!/]
-        }
-      })}
-    };
-    indicator.config.chartConfig = this.aceStringify_(chartConfig);
-
-  }.bind(this));
-*/
-
 };
-
-AdminController.prototype.activate = ['$scope', function($scope) {
-  this.$scope = $scope;
-}];
 
 
 AdminController.prototype.save = function() {
@@ -371,8 +314,8 @@ AdminController.prototype.viewChart = function(selector) {
 
   this.IndicatorService.getGraph(this.current.config, -14.326, 13.923).then(
       function(chartConfig) {
-        $(selector).highcharts(chartConfig);
-      });
+        this.ChartFactory.render(selector, chartConfig);
+      }.bind(this));
 };
 
 
@@ -381,7 +324,7 @@ AdminController.prototype.viewChart = function(selector) {
 angular.module('geodash')
     .controller('AdminController', [
       '$routeParams', '$http', '$location', 'Indicator', 'Transformer',
-      'IndicatorService', AdminController
+      'IndicatorService', 'ChartFactory', AdminController
     ]);
 
 });
@@ -406,13 +349,14 @@ module.directive('gdDatasourceForm', function() {
 });
 
 var GdDatasourceController =
-    function($scope, $http, gdUtils, Transformer, IndicatorService) {
+    function($scope, $http, gdUtils, Transformer, IndicatorService, ChartFactory) {
 
       this.$scope = $scope;
       this.$http = $http;
       this.gdUtils = gdUtils;
       this.Transformer = Transformer;
       this.IndicatorService = IndicatorService;
+      this.ChartFactory = ChartFactory;
 
       $scope.$watch(function(){
         return this.datasource;
@@ -438,8 +382,14 @@ GdDatasourceController.prototype.test = function() {
 
   this.IndicatorService.getSerie(
       this.datasource, this.lonlat[0], this.lonlat[1]).then(function(data){
-    this.testData = this.gdUtils.aceStringify(data);
-    this.testError = null;
+
+    if(data.error) {
+      this.testError = data.error;
+    }
+    else {
+      this.testData = this.gdUtils.aceStringify(data);
+      this.testError = null;
+    }
   }.bind(this), function(response) {
     this.testError = response.statusText;
     this.testData = null;
@@ -455,7 +405,9 @@ GdDatasourceController.prototype.exportData = function() {
 
 GdDatasourceController.prototype.viewChart = function() {
 
-  var serie = JSON.parse(this.testData);
+  var datas = JSON.parse(this.testData);
+  var serie = datas.data;
+  var categories = datas.categories;
 
   var simpleChart = {
     series: [{
@@ -464,8 +416,12 @@ GdDatasourceController.prototype.viewChart = function() {
       data: serie
     }]
   };
-
-  $('#testSerieChart').highcharts(simpleChart);
+  if(categories) {
+    simpleChart.xAxis = {
+      categories: categories
+    }
+  }
+  this.ChartFactory.render("#testSerieChart", simpleChart);
 };
 GdDatasourceController.prototype.showCoordsPicker = function() {
   this.$scope.$broadcast('showMap');
@@ -478,7 +434,7 @@ GdDatasourceController.prototype.resetForm = function() {
 };
 
 module.controller('GdDatasourceController', [
-  '$scope', '$http', 'gdUtils', 'Transformer', 'IndicatorService',
+  '$scope', '$http', 'gdUtils', 'Transformer', 'IndicatorService', 'ChartFactory',
   GdDatasourceController]
 );
 
@@ -520,6 +476,8 @@ var GdDatasourcesController = function($scope, $http, gdUtils) {
     return this.datasources;
   }.bind(this), function(n) {
     this.resetForm();
+    var chart = $('#chartDemo').highcharts();
+    if(chart) chart.destroy();
   }.bind(this));
 };
 
@@ -1004,7 +962,7 @@ TransformerSerie.prototype.buildSeries = function() {
     output.push([]);
   });
 
-  this.input.forEach(function(row, idx) {
+  this.input.data.forEach(function(row, idx) {
     var dateS = row[this.config.data.xaxis];
     var date = new Date(dateS);
     var dateUTC = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
@@ -1019,7 +977,9 @@ TransformerSerie.prototype.buildSeries = function() {
     });
   }.bind(this));
 
-  return output;
+  return {
+    data: output
+  };
 };
 
 });
@@ -1029,7 +989,7 @@ var module = angular.module('geodash');
 
 
 
-var ChartFactory = function($http, $q) {
+var ChartFactory = function($http, $q, appFlash) {
 
   this.getChart = function(type) {
 
@@ -1051,10 +1011,19 @@ var ChartFactory = function($http, $q) {
       }
     });
   };
+
+  this.render = function(selector, config) {
+    try {
+      $(selector).highcharts(config);
+    }
+    catch (e) {
+      appFlash.create('danger', 'chart.render.error');
+    }
+  };
 };
 
 angular.module('geodash')
-    .service('ChartFactory', ['$http', '$q', ChartFactory]);
+    .service('ChartFactory', ['$http', '$q', 'appFlash', ChartFactory]);
 
 
 var chartConfig = {
@@ -1217,11 +1186,12 @@ var module = angular.module('geodash');
 
 
 
-var Indicator = function($http, $q, Transformer, gdUtils) {
+var Indicator = function($http, $q, Transformer, gdUtils, appFlash) {
   this.$http = $http;
   this.$q = $q;
   this.Transformer = Transformer;
   this.gdUtils = gdUtils;
+  this.appFlash = appFlash;
 };
 
 Indicator.prototype.getGraph = function(config, lon, lat) {
@@ -1232,27 +1202,59 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
   }.bind(this));
 
   return this.$q.all(promises).then(function(datasources) {
-    var chartConfig = this.gdUtils.aceParse(config.chartConfig);
+    try {
+      var chartConfig = this.gdUtils.aceParse(config.chartConfig);
+    }
+    catch (e) {
+      this.appFlash.create('danger', 'chart.json.parse');
+      return;
+    }
 
     var nextIdx = -1;
     datasources.forEach(function(ds, idx) {
 
+      var data = ds.data;
+      var categories = ds.categories;
+
       // Multiple series
-      if(angular.isArray(ds[0][0])) {
-        ds.forEach(function(serie, i) {
+      if(angular.isArray(data[0][0])) {
+        data.forEach(function(serie, i) {
           chartConfig.series[++nextIdx].data = serie;
         });
       }
       else { // single serie
+
+        var c = config.datasources[idx];
         // Merge with previous serie
-        if(config.datasources[idx].merge && idx) {
+        if(c.merge && idx) {
           var previous = chartConfig.series[nextIdx].data;
-          previous.forEach(function(value, i) {
-            previous[i] = previous[i].concat(ds[i]);
-          });
+          if(!c.mergeType || c.mergeType == 'concat') {
+            chartConfig.series[nextIdx].data = previous.map(function(value, i) {
+              return value.concat(data[i]);
+            });
+          }
+          else if(c.mergeType == 'percentage'){
+            chartConfig.series[nextIdx].data = previous.map(function(value, i) {
+              return [parseFloat(((value[0] * 100) / data[i][0]).toFixed(2))];
+            });
+          }
         }
         else {
-          chartConfig.series[++nextIdx].data = ds;
+          chartConfig.series[++nextIdx].data = data;
+        }
+      }
+
+      // Add categories if found in datasource
+      if(categories) {
+        if(!chartConfig.xAxis) {
+          chartConfig.xAxis = {
+            categories: categories
+          }
+        }
+        else {
+          if(!chartConfig.xAxis.categories) {
+            chartConfig.xAxis.categories = categories;
+          }
         }
       }
     });
@@ -1283,47 +1285,22 @@ Indicator.prototype.getSerie = function(datasource, lon, lat) {
 
 angular.module('geodash')
     .service('IndicatorService', ['$http', '$q', 'Transformer', 'gdUtils',
+      'appFlash',
       Indicator]);
 
 
 });
 
 require.register("services/messages", function(exports, require, module) {
-angular.module('geodash').factory('Templates',
-  ['$resource', 'LDAP_BASE_URI', function($resource, baseUri) {
-    return $resource(baseUri + '../emailTemplates', {}, {
-      query: {
-        cache   : true,
-        isArray : false
-      }
-    });
-  }]
-).factory('Mail',
-  ['$resource', 'LDAP_BASE_URI', function($resource, baseUri) {
-    return $resource(baseUri + '../:id/sendEmail', {id: '@id'}, {
-      save: {
-        method: 'POST',
-        headers : {'Content-Type': 'application/x-www-form-urlencoded'},
-        transformRequest: function (data) {
-          return $.param({
-           subject     : data.subject,
-           content     : data.content,
-           attachments : data.attachments
-          });
-        }
-      }
-    });
-  }]
-).factory('Attachments',
-  ['$resource', 'LDAP_BASE_URI', function($resource, baseUri) {
-    return $resource(baseUri + '../attachments', {}, {
-      query: {
-        cache   : true,
-        isArray : false
-      }
-    });
-  }]
-);
+angular.module('geodash').service('appFlash',
+  ['Flash', '$translate', function(Flash, $translate) {
+
+    this.create = function(type, text, addClass ) {
+      $translate(text).then(function(translation) {
+        return Flash.create(type, translation, addClass);
+      });
+    };
+  }]);
 
 });
 

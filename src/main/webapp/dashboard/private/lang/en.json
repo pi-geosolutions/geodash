@@ -1,3 +1,8 @@
 {
-  "addDatasource": "Add a new datasource"
+  "addDatasource": "Add a new datasource",
+  "filesystem.loader.connect.error": "Cannot connect to datasource - The specified folder doesn't exist.",
+  "filesystem.getData.nofile": "No matching file in the folder for the given pattern.",
+  "filesystem.getvalue.format": "Error while reading a file.",
+  "chart.json.parse": "Error while parsing chart config. Check it is a valid JSON.",
+  "chart.render.error": "Error while rendering chart, HighChart config might be wrong."
 }

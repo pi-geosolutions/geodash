@@ -79,7 +79,7 @@ TransformerSerie.prototype.buildSeries = function() {
     output.push([]);
   });
 
-  this.input.forEach(function(row, idx) {
+  this.input.data.forEach(function(row, idx) {
     var dateS = row[this.config.data.xaxis];
     var date = new Date(dateS);
     var dateUTC = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
@@ -94,5 +94,7 @@ TransformerSerie.prototype.buildSeries = function() {
     });
   }.bind(this));
 
-  return output;
+  return {
+    data: output
+  };
 };

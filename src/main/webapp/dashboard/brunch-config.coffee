@@ -24,6 +24,7 @@ module.exports = config:
           'vendor/chosen.jquery.js',
           'vendor/angular-chosen.js',
           'vendor/highcharts.js',
+          'vendor/highcharts-3d.js',
           'vendor/highcharts-more.js',
           'vendor/angular-flash.js',
           'vendor/angular-translate.js',

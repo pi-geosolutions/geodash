@@ -121,7 +121,7 @@
 
                 <div ng-if="admin.testData" id="testedData" ui-ace="admin.aceOptions" ng-model="admin.testData"></div>
                 <div ng-if="admin.testError" class="alert alert-danger" role="alert">
-                  {{admin.testError}}
+                  {{admin.testError || translate}}
                 </div>
               </div>
 

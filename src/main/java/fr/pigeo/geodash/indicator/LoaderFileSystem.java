@@ -5,6 +5,8 @@ import fr.pigeo.geodash.indicator.config.FileSystemDataSourceConfig;
 import fr.pigeo.geodash.indicator.config.PostgresDataSourceConfig;
 import fr.pigeo.geodash.mvc.services.GetDataService;
 import fr.pigeo.geodash.util.JdbcUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,9 +17,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Path;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,37 +38,66 @@ public class LoaderFileSystem extends Loader {
     }
 
     @Override
-    public void connect() {
+    public void connect() throws Exception {
         this.folder = new File(config.getPath());
+        if(!this.folder.isDirectory()) {
+            throw new NoSuchElementException("filesystem.loader.connect.error");
+        }
     }
 
-    public List getData(final double lon, final double lat) throws Exception {
+    public JSONObject getData(final double lon, final double lat) throws Exception {
 
         GetDataService service = new GetDataService();
         List<List<Double>> values = new ArrayList<List<Double>>();
 
+        final List<String> dates = new ArrayList<String>();
+
+        String placeholder = null;
+        String pattern = config.getPattern();
+
+        Matcher matcher = Pattern.compile("\\$(\\w*?)\\$").matcher(pattern);
+        while (matcher.find()) {
+            placeholder = matcher.group(1);
+        }
+        pattern = pattern.replaceAll("([?.])", "\\\\$1");
+        pattern = pattern.replaceAll("\\$"+placeholder+"\\$", "([\\\\w\\\\s]+?)");
+
+        final String fPattern = pattern;
+
         File[] matchingFiles = this.folder.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
-                Pattern pattern = Pattern.compile(config.getPattern());
-                Matcher matcher = pattern.matcher(name);
 
-                if (matcher.find()) {
+                Matcher m = Pattern.compile(fPattern).matcher(name);
+                if (m.matches()) {
+                    dates.add(m.group(1));
                     return true;
                 }
                 return false;
             }
         });
 
-        File[] files = Arrays.copyOfRange(matchingFiles, matchingFiles.length-config.getAmount(), matchingFiles.length);
-
-        for(File file : files) {
-            double[] res = service.getValue(file, lon, lat);
-            List<Double> v = new ArrayList<Double>();
-            v.add(res[0]);
-            values.add(v);
+        if(matchingFiles == null) {
+            throw new NoSuchElementException("filesystem.getData.nofile");
         }
 
-        return values;
+        int nbFiles = Math.max(matchingFiles.length-config.getAmount(), 0);
+        File[] files = Arrays.copyOfRange(matchingFiles, nbFiles, matchingFiles.length);
+        List<String> finalDates = new ArrayList<String>(dates.subList(nbFiles, matchingFiles.length));
+
+        for(File file : files) {
+            double[] value = service.getValue(file, lon, lat);
+            List<Double> v = new ArrayList<Double>();
+            v.add(value[0]);
+            values.add(v);
+        }
+        JSONObject res = new JSONObject();
+        res.put("data", new JSONArray(values));
+
+        if(dates.size() > 0 && placeholder.equals("year")) {
+            res.put("categories", new JSONArray(finalDates));
+        }
+
+        return res;
     }
 
 }

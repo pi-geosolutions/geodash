@@ -4,6 +4,7 @@ import fr.pigeo.geodash.indicator.Indicator;
 import fr.pigeo.geodash.indicator.config.Config;
 import fr.pigeo.geodash.indicator.config.DataSourceConfig;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,19 +34,20 @@ public class GetData
                        HttpServletResponse response,
                        @RequestParam String config,
                        @PathVariable String lon,
-                       @PathVariable String lat) throws IOException, JSONException {
+                       @PathVariable String lat) throws Exception {
 
+        JSONObject res = null;
         Config oConfig = new Config(config);
         Indicator indicator = new Indicator(oConfig);
-        List res = null;
+
         try {
-            res = indicator.process(Double.parseDouble(lon), Double.parseDouble(lat));
+            res =  indicator.process(Double.parseDouble(lon), Double.parseDouble(lat));
         } catch (Exception e) {
-            e.printStackTrace();
+            res = new JSONObject();
+            res.put("error", e.getMessage());
+            res.put("cause", e.getCause());
         }
-
         return res.toString();
-
 	}
 
     @RequestMapping(value="/serie/{lon}/{lat}", method = RequestMethod.POST, produces= MediaType.APPLICATION_JSON_VALUE)
@@ -54,19 +56,20 @@ public class GetData
                        HttpServletResponse response,
                        @RequestParam String config,
                        @PathVariable String lon,
-                       @PathVariable String lat) throws IOException, JSONException {
+                       @PathVariable String lat) throws Exception {
 
+        JSONObject res = null;
         DataSourceConfig dsConfig = DataSourceConfig.createConfig(config);
         Indicator indicator = new Indicator(dsConfig);
-        List res = null;
+
         try {
-            res = indicator.process(Double.parseDouble(lon), Double.parseDouble(lat));
+            res =  indicator.process(Double.parseDouble(lon), Double.parseDouble(lat));
         } catch (Exception e) {
-            e.printStackTrace();
+            res = new JSONObject();
+            res.put("error", e.getMessage());
+            res.put("cause", e.getCause());
         }
-
         return res.toString();
-
     }
 
 }

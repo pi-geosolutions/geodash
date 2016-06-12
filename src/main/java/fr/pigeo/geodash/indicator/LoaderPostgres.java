@@ -1,8 +1,9 @@
 package fr.pigeo.geodash.indicator;
 
-import fr.pigeo.geodash.indicator.config.DataSourceConfig;
 import fr.pigeo.geodash.indicator.config.PostgresDataSourceConfig;
 import fr.pigeo.geodash.util.JdbcUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * Created by fgravin on 11/03/2016.
@@ -45,12 +45,15 @@ public class LoaderPostgres extends Loader {
         }
     }
 
-    public List getData(final double lon, final double lat) {
+    public JSONObject getData(final double lon, final double lat) throws Exception {
         String query = this.config.getSql().
                 replace("${lon}", String.valueOf(lon)).
                 replace("${lat}", String.valueOf(lat));
 
-        return jdbcTemplate.query(query, new DataRowMapper());
+        JSONObject res = new JSONObject();
+        res.put("data", new JSONArray(jdbcTemplate.query(query, new DataRowMapper())));
+
+        return res;
     }
 
 }

@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class IndicatorController {
 
 	private static final Log LOG = LogFactory.getLog(IndicatorController.class.getName());
 
-	@RequestMapping(value = "/", method = RequestMethod.GET, produces="application/json;charset=utf-8")
+	@RequestMapping(value = "/", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public byte[] findAll(HttpServletRequest request, HttpServletResponse response ) throws IOException {
 		try {
@@ -39,7 +40,8 @@ public class IndicatorController {
 			for(Indicator indicator : this.indicatorRepository.findAll()) {
 				ret.put(indicator.toJSON());
 			}
-			return ret.toString().getBytes("UTF-8");
+			//return ret.toString().getBytes("UTF-8");
+			return ret.toString().getBytes();
 
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
@@ -136,22 +138,4 @@ public class IndicatorController {
 		this.indicatorRepository.delete(id);
 	}
 
-	@RequestMapping(value = "/test/{lon}/{lat}", method = RequestMethod.POST, produces="application/json; charset=utf-8")
-	@ResponseBody
-	public String test(@RequestParam String config,
-                       @PathVariable String lon,
-                       @PathVariable String lat) throws JSONException {
-
-		try {
-            PostgresDataSourceConfig dsConfig = new PostgresDataSourceConfig(config);
-            LoaderPostgres loader = new LoaderPostgres(dsConfig);
-
-            loader.connect();
-            return loader.getData(Double.parseDouble(lon), Double.parseDouble(lat)).toString();
-
-		}
-		catch(JSONException e) {
-            throw e;
-		}
-    }
 }

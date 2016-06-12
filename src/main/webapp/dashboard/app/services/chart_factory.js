@@ -2,7 +2,7 @@ var module = angular.module('geodash');
 
 
 
-var ChartFactory = function($http, $q) {
+var ChartFactory = function($http, $q, appFlash) {
 
   this.getChart = function(type) {
 
@@ -24,10 +24,19 @@ var ChartFactory = function($http, $q) {
       }
     });
   };
+
+  this.render = function(selector, config) {
+    try {
+      $(selector).highcharts(config);
+    }
+    catch (e) {
+      appFlash.create('danger', 'chart.render.error');
+    }
+  };
 };
 
 angular.module('geodash')
-    .service('ChartFactory', ['$http', '$q', ChartFactory]);
+    .service('ChartFactory', ['$http', '$q', 'appFlash', ChartFactory]);
 
 
 var chartConfig = {

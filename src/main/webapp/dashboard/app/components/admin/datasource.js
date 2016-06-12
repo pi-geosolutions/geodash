@@ -17,13 +17,14 @@ module.directive('gdDatasourceForm', function() {
 });
 
 var GdDatasourceController =
-    function($scope, $http, gdUtils, Transformer, IndicatorService) {
+    function($scope, $http, gdUtils, Transformer, IndicatorService, ChartFactory) {
 
       this.$scope = $scope;
       this.$http = $http;
       this.gdUtils = gdUtils;
       this.Transformer = Transformer;
       this.IndicatorService = IndicatorService;
+      this.ChartFactory = ChartFactory;
 
       $scope.$watch(function(){
         return this.datasource;
@@ -49,8 +50,14 @@ GdDatasourceController.prototype.test = function() {
 
   this.IndicatorService.getSerie(
       this.datasource, this.lonlat[0], this.lonlat[1]).then(function(data){
-    this.testData = this.gdUtils.aceStringify(data);
-    this.testError = null;
+
+    if(data.error) {
+      this.testError = data.error;
+    }
+    else {
+      this.testData = this.gdUtils.aceStringify(data);
+      this.testError = null;
+    }
   }.bind(this), function(response) {
     this.testError = response.statusText;
     this.testData = null;
@@ -66,7 +73,9 @@ GdDatasourceController.prototype.exportData = function() {
 
 GdDatasourceController.prototype.viewChart = function() {
 
-  var serie = JSON.parse(this.testData);
+  var datas = JSON.parse(this.testData);
+  var serie = datas.data;
+  var categories = datas.categories;
 
   var simpleChart = {
     series: [{
@@ -75,8 +84,12 @@ GdDatasourceController.prototype.viewChart = function() {
       data: serie
     }]
   };
-
-  $('#testSerieChart').highcharts(simpleChart);
+  if(categories) {
+    simpleChart.xAxis = {
+      categories: categories
+    }
+  }
+  this.ChartFactory.render("#testSerieChart", simpleChart);
 };
 GdDatasourceController.prototype.showCoordsPicker = function() {
   this.$scope.$broadcast('showMap');
@@ -89,7 +102,7 @@ GdDatasourceController.prototype.resetForm = function() {
 };
 
 module.controller('GdDatasourceController', [
-  '$scope', '$http', 'gdUtils', 'Transformer', 'IndicatorService',
+  '$scope', '$http', 'gdUtils', 'Transformer', 'IndicatorService', 'ChartFactory',
   GdDatasourceController]
 );
 
