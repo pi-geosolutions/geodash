@@ -1,9 +1,9 @@
 module.exports = config:
   conventions: {
-    assets: /assets\/private[\\/]/
+    assets: /assets\/public[\\/]/
   }
   paths: {
-    public: 'private'
+    public: 'public'
   }
 
   plugins:
@@ -25,6 +25,7 @@ module.exports = config:
           'vendor/angular-chosen.js',
           'vendor/highcharts.js',
           'vendor/highcharts-3d.js',
+          'vendor/exporting.js',
           'vendor/highcharts-more.js',
           'vendor/angular-flash.js',
           'vendor/angular-translate.js',

@@ -1,22 +1,15 @@
 package fr.pigeo.geodash.indicator;
 
-import fr.pigeo.geodash.indicator.config.DataSourceConfig;
 import fr.pigeo.geodash.indicator.config.FileSystemDataSourceConfig;
-import fr.pigeo.geodash.indicator.config.PostgresDataSourceConfig;
 import fr.pigeo.geodash.mvc.services.GetDataService;
-import fr.pigeo.geodash.util.JdbcUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.nio.file.Path;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +43,8 @@ public class LoaderFileSystem extends Loader {
         GetDataService service = new GetDataService();
         List<List<Double>> values = new ArrayList<List<Double>>();
 
-        final List<String> dates = new ArrayList<String>();
+        // Used to have a sorted map with date as keys
+        final Map<String,File> filesMap = new TreeMap<String, File>();
 
         String placeholder = null;
         String pattern = config.getPattern();
@@ -69,7 +63,7 @@ public class LoaderFileSystem extends Loader {
 
                 Matcher m = Pattern.compile(fPattern).matcher(name);
                 if (m.matches()) {
-                    dates.add(m.group(1));
+                    filesMap.put(m.group(1), new File(dir, name));
                     return true;
                 }
                 return false;
@@ -80,24 +74,35 @@ public class LoaderFileSystem extends Loader {
             throw new NoSuchElementException("filesystem.getData.nofile");
         }
 
-        int nbFiles = Math.max(matchingFiles.length-config.getAmount(), 0);
-        File[] files = Arrays.copyOfRange(matchingFiles, nbFiles, matchingFiles.length);
-        List<String> finalDates = new ArrayList<String>(dates.subList(nbFiles, matchingFiles.length));
+        int nbStart = 0;
+        if(config.getAmount() > 0 ) {
+            nbStart = Math.max(matchingFiles.length-config.getAmount(), 0);
+        }
 
-        for(File file : files) {
+        int i = -1;
+        List<String> dates = new ArrayList<String>();
+        for(Map.Entry<String,File> entry : filesMap.entrySet()) {
+            i++;
+            if(i < nbStart || i == filesMap.entrySet().size()-1) {
+                continue;
+            }
+            String date = entry.getKey();
+            File file = entry.getValue();
+
             double[] value = service.getValue(file, lon, lat);
             List<Double> v = new ArrayList<Double>();
             v.add(value[0]);
             values.add(v);
+            dates.add(date);
         }
+
         JSONObject res = new JSONObject();
         res.put("data", new JSONArray(values));
 
         if(dates.size() > 0 && placeholder.equals("year")) {
-            res.put("categories", new JSONArray(finalDates));
+            res.put("categories", new JSONArray(dates));
         }
 
         return res;
     }
-
 }

@@ -4,11 +4,8 @@ Array.prototype.move = function(from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);
 };
 
-var CHART_HEIGHT = 300;
-
 module.component('gdMyboard', {
     bindings: {
-      editing: '='
     },
     controller: 'MyboardController',
     controllerAs: 'ctrl',
@@ -23,14 +20,23 @@ module.component('gdMyboard', {
  * @param $scope
  * @constructor
  */
-var MyboardController = function ($timeout, Indicator, ChartFactory, $scope) {
+var MyboardController = function ($scope, $timeout, Indicator, ChartFactory,
+                                  appFlash) {
   this.$timeout = $timeout;
   this.ChartFactory = ChartFactory;
   this.$scope = $scope;
+  this.appFlash = appFlash;
 
   this.indicatorsToAdd = [];
   this.indicatorsIdToAdd = [];
 
+  this.parseCoordinates();
+  if(!this.lon || !this.lat) {
+    this.appFlash.create('danger', 'noparam.error');
+    return;
+  }
+
+  // get All indicators from server and build dashboard from locaStorage
   this.allIndicators = Indicator.getAll({}, function() {
     var myconfig = localStorage.geodash;
     if(myconfig) {
@@ -88,6 +94,7 @@ MyboardController.prototype.saveState = function() {
     output.push(indicator.id);
   });
   localStorage.geodash = output;
+  this.appFlash.create('success', 'board.saved.ok');
 };
 
 /**
@@ -99,6 +106,7 @@ MyboardController.prototype.cancelState = function() {
   if(this.dirty) {
     this.indicators = this.backup;
     this.renderGraphs_();
+    this.appFlash.create('success', 'board.cancel.ok');
   }
 };
 
@@ -120,11 +128,8 @@ MyboardController.prototype.open = function(indicator) {
   this.zoom = indicator;
   this.$timeout(function() {
     var selector = '#board_zoom_' + indicator.id + '_chart';
-    this.ChartFactory.getChart(indicator.name).then(
-        function(chart) {
-          chart.chart.height = $('.full-view').height() - 100;
-          $(selector).highcharts(chart);
-        });
+    this.ChartFactory.renderIndicator(
+        indicator, selector, this.lon, this.lat, $('.full-view').height() - 100);
   }.bind(this));
 };
 
@@ -139,6 +144,9 @@ MyboardController.prototype.remove = function (indicator) {
       var idx = this.indicators.indexOf(indicator);
       this.indicators.splice(idx, 1);
       this.dirty = true;
+      this.appFlash.create('success', 'indicator.removed', {
+        name: indicator.config.label || indicator.name
+      });
     }.bind(this)
   };
 };
@@ -179,11 +187,7 @@ MyboardController.prototype.renderGraphs_ = function() {
     this.indicators.forEach(function(board) {
 
       var selector = '#board_' + board.id + '_chart';
-      this.ChartFactory.getChart(board.name).then(
-          function(chart) {
-            chart.chart.height = CHART_HEIGHT;
-            $(selector).highcharts(chart);
-          });
+      this.ChartFactory.renderIndicator(board, selector, this.lon, this.lat);
     }.bind(this));
   }.bind(this));
 };
@@ -223,11 +227,25 @@ MyboardController.prototype.confirmAdd = function() {
   this.cancelAdd();
 };
 
+MyboardController.prototype.parseCoordinates = function() {
+  var query = location.search.substr(1);
+  var p = {};
+  query.split("&").forEach(function(part) {
+    var item = part.split("=");
+    p[item[0]] = decodeURIComponent(item[1]);
+  });
+  this.lon = parseFloat(p.lon);
+  this.lat = parseFloat(p.lat);
+};
+
+
+
+/**
+ * Main controller
+ * @param $scope
+ * @constructor
+ */
 var DashboardController = function ($scope) {
-  this.config = localStorage.geodash || ['averagerain', 'dailyrain'];
-  this.$scope = $scope;
-  this.loadMyIndicators = function() {
-  };
 };
 
 
@@ -235,5 +253,5 @@ var DashboardController = function ($scope) {
 module.controller('DashboardController', DashboardController);
 module.controller('MyboardController', MyboardController);
 
-MyboardController.$inject = ['$timeout', 'Indicator', 'ChartFactory', '$scope'];
+MyboardController.$inject = ['$scope', '$timeout', 'Indicator', 'ChartFactory', 'appFlash'];
 DashboardController.$inject = ['$scope'];

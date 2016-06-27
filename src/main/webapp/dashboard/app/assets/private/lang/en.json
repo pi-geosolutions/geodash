@@ -4,5 +4,6 @@
   "filesystem.getData.nofile": "No matching file in the folder for the given pattern.",
   "filesystem.getvalue.format": "Error while reading a file.",
   "chart.json.parse": "Error while parsing chart config. Check it is a valid JSON.",
-  "chart.render.error": "Error while rendering chart, HighChart config might be wrong."
+  "chart.render.error": "Error while rendering chart, HighChart config might be wrong.",
+  "chart.noconfig": "No chart config found for indicator {{name}}"
 }

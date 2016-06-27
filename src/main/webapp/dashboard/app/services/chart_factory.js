@@ -1,8 +1,9 @@
 var module = angular.module('geodash');
 
 
+var CHART_HEIGHT = 300;
 
-var ChartFactory = function($http, $q, appFlash) {
+var ChartFactory = function($http, $q, appFlash, IndicatorService) {
 
   this.getChart = function(type) {
 
@@ -25,6 +26,44 @@ var ChartFactory = function($http, $q, appFlash) {
     });
   };
 
+  /**
+   * Render the indicator chart.
+   *
+   * @param indicator The full object representing the DB indicator
+   * @param selector The css selector to target the graph
+   * @param lon Coordinates
+   * @param lat Coordinates
+   * @param height Height of the chart, only for zoom mode
+   */
+  this.renderIndicator = function(indicator, selector, lon, lat, height) {
+    var h = height;
+    IndicatorService.getGraph(indicator.config, lon, lat).then(
+        function(chartConfig) {
+          if(!chartConfig) {
+            appFlash.create('warning', 'chart.noconfig', {
+              name: indicator.config.label || indicator.name
+            });
+          }
+          else {
+            // disable export button if not zoom mode
+            chartConfig.exporting = {
+              enabled: !!h
+            };
+            // Set height in highchart config object
+            var height = h || CHART_HEIGHT;
+            chartConfig.chart ? chartConfig.chart.height = height :
+                chartConfig.chart = {height:height};
+            this.render(selector, chartConfig);
+          }
+        }.bind(this));
+  };
+
+  /**
+   * Render a chart in a specific selector
+   *
+   * @param selector The css selector to target the graph
+   * @param config The full (datas) Highchart config object for the graph
+   */
   this.render = function(selector, config) {
     try {
       $(selector).highcharts(config);
@@ -36,7 +75,8 @@ var ChartFactory = function($http, $q, appFlash) {
 };
 
 angular.module('geodash')
-    .service('ChartFactory', ['$http', '$q', 'appFlash', ChartFactory]);
+    .service('ChartFactory', ['$http', '$q', 'appFlash', 'IndicatorService',
+      ChartFactory]);
 
 
 var chartConfig = {

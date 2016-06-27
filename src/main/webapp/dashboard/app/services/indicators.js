@@ -27,54 +27,61 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
     }
 
     var nextIdx = -1;
-    datasources.forEach(function(ds, idx) {
+    try {
+      datasources.forEach(function (ds, idx) {
 
-      var data = ds.data;
-      var categories = ds.categories;
+        var data = ds.data;
+        var categories = ds.categories;
 
-      // Multiple series
-      if(angular.isArray(data[0][0])) {
-        data.forEach(function(serie, i) {
-          chartConfig.series[++nextIdx].data = serie;
-        });
-      }
-      else { // single serie
-
-        var c = config.datasources[idx];
-        // Merge with previous serie
-        if(c.merge && idx) {
-          var previous = chartConfig.series[nextIdx].data;
-          if(!c.mergeType || c.mergeType == 'concat') {
-            chartConfig.series[nextIdx].data = previous.map(function(value, i) {
-              return value.concat(data[i]);
-            });
-          }
-          else if(c.mergeType == 'percentage'){
-            chartConfig.series[nextIdx].data = previous.map(function(value, i) {
-              return [parseFloat(((value[0] * 100) / data[i][0]).toFixed(2))];
-            });
-          }
+        // Multiple series
+        if (angular.isArray(data[0][0])) {
+          data.forEach(function (serie, i) {
+            chartConfig.series[++nextIdx].data = serie;
+          });
         }
-        else {
-          chartConfig.series[++nextIdx].data = data;
-        }
-      }
+        else { // single serie
 
-      // Add categories if found in datasource
-      if(categories) {
-        if(!chartConfig.xAxis) {
-          chartConfig.xAxis = {
-            categories: categories
+          var c = config.datasources[idx];
+          // Merge with previous serie
+          if (c.merge && idx) {
+            var previous = chartConfig.series[nextIdx].data;
+            if (!c.mergeType || c.mergeType == 'concat') {
+              chartConfig.series[nextIdx].data = previous.map(function (value, i) {
+                return value.concat(data[i]);
+              });
+            }
+            else if (c.mergeType == 'percentage') {
+              chartConfig.series[nextIdx].data = previous.map(function (value, i) {
+                return [parseFloat(((value[0] * 100) / data[i][0]).toFixed(2))];
+              });
+            }
+          }
+          else {
+            chartConfig.series[++nextIdx].data = data;
           }
         }
-        else {
-          if(!chartConfig.xAxis.categories) {
-            chartConfig.xAxis.categories = categories;
+
+        // Add categories if found in datasource
+        if (categories) {
+          if (!chartConfig.xAxis) {
+            chartConfig.xAxis = {
+              categories: categories
+            }
+          }
+          else {
+            if (!chartConfig.xAxis.categories) {
+              chartConfig.xAxis.categories = categories;
+            }
           }
         }
-      }
-    });
+      });
 
+    }
+    catch(e) {
+      this.appFlash.create('danger', 'chart.serie.error',  {
+        name: config.label
+      });
+    }
     return chartConfig;
   }.bind(this));
 };

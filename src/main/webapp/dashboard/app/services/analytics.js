@@ -51,12 +51,6 @@ angular.module('geodash').service('Maths', [
         return transformer.buildSeries();
       }
     };
-
-    this.extractData = function() {
-
-    }
-
-
   }]);
 
 var TransformerSerie = function(input, config, Maths) {
