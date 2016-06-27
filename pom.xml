@@ -231,7 +231,12 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>2.6</version>
         <configuration>
-          <packagingExcludes>WEB-INF/lib/postgresql-8.4-701.jdbc3.jar,dashboard/node_modules</packagingExcludes>
+          <packagingExcludes>WEB-INF/lib/postgresql-8.4-701.jdbc3.jar,
+            dashboard/node_modules/,
+            WEB-INF/classes/02_moyennes_pluies/,
+            WEB-INF/classes/03_rainy_season/,
+            WEB-INF/classes/daily_corrected_ref/
+          </packagingExcludes>
         </configuration>
       </plugin>
       <plugin>
