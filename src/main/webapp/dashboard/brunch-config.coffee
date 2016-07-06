@@ -1,9 +1,9 @@
 module.exports = config:
   conventions: {
-    assets: /assets\/public[\\/]/
+    assets: /assets\/private[\\/]/
   }
   paths: {
-    public: 'public'
+    public: 'private'
   }
 
   plugins:

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,6 +59,7 @@ public class LoaderFileSystem extends Loader {
 
         final String fPattern = pattern;
 
+        // get files that match the pattern
         File[] matchingFiles = this.folder.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
 
@@ -74,6 +76,7 @@ public class LoaderFileSystem extends Loader {
             throw new NoSuchElementException("filesystem.getData.nofile");
         }
 
+        // only get last files depending on config amount
         int nbStart = 0;
         if(config.getAmount() > 0 ) {
             nbStart = Math.max(matchingFiles.length-config.getAmount(), 0);
@@ -91,7 +94,15 @@ public class LoaderFileSystem extends Loader {
 
             double[] value = service.getValue(file, lon, lat);
             List<Double> v = new ArrayList<Double>();
-            v.add(value[0]);
+
+            // generate UTC date for datetime chart type
+            if(placeholder.equals("date")) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyymmdd");
+                Date ddate = dateFormat.parse(date);
+                Long dateUTC = ddate.getTime();
+                v.add((double)dateUTC);
+            }
+            v.add(round(value[0], 2));
             values.add(v);
             dates.add(date);
         }
@@ -102,7 +113,16 @@ public class LoaderFileSystem extends Loader {
         if(dates.size() > 0 && placeholder.equals("year")) {
             res.put("categories", new JSONArray(dates));
         }
-
         return res;
     }
+
+    private double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
+
 }

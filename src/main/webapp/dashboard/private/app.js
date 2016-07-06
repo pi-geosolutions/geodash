@@ -314,7 +314,35 @@ AdminController.prototype.viewChart = function(selector) {
 
   this.IndicatorService.getGraph(this.current.config, -14.326, 13.923).then(
       function(chartConfig) {
-        this.ChartFactory.render(selector, chartConfig);
+        var conf = angular.copy(chartConfig);
+        conf.exporting = {
+          enabled: false
+        };
+
+        conf.series.forEach(function(serie) {
+          if(serie.color && serie.color.linearGradient) {
+            var newData = [];
+            serie.data.forEach(function(d) {
+              if(angular.isArray(d)) {
+                var color = serie.color;
+                var value = d[0];
+                var newStops = [];
+                color.stops.forEach(function(stop) {
+                  newStops.push([stop[0] == 0 || stop[0] == 1 ? stop[0] : value ? stop[0] / value : 1 || 0, stop[1]]);
+                });
+                newData.push({
+                  y: value,
+                  color: {
+                    linearGradient: serie.color.linearGradient,
+                    stops: newStops
+                  }
+                });
+              }
+            });
+            serie.data = newData;
+          }
+        });
+        this.ChartFactory.render(selector, conf);
       }.bind(this));
 };
 
@@ -644,11 +672,8 @@ Array.prototype.move = function(from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);
 };
 
-var CHART_HEIGHT = 300;
-
 module.component('gdMyboard', {
     bindings: {
-      editing: '='
     },
     controller: 'MyboardController',
     controllerAs: 'ctrl',
@@ -663,14 +688,23 @@ module.component('gdMyboard', {
  * @param $scope
  * @constructor
  */
-var MyboardController = function ($timeout, Indicator, ChartFactory, $scope) {
+var MyboardController = function ($scope, $timeout, Indicator, ChartFactory,
+                                  appFlash) {
   this.$timeout = $timeout;
   this.ChartFactory = ChartFactory;
   this.$scope = $scope;
+  this.appFlash = appFlash;
 
   this.indicatorsToAdd = [];
   this.indicatorsIdToAdd = [];
 
+  this.parseCoordinates();
+  if(!this.lon || !this.lat) {
+    this.appFlash.create('danger', 'noparam.error');
+    return;
+  }
+
+  // get All indicators from server and build dashboard from locaStorage
   this.allIndicators = Indicator.getAll({}, function() {
     var myconfig = localStorage.geodash;
     if(myconfig) {
@@ -728,6 +762,7 @@ MyboardController.prototype.saveState = function() {
     output.push(indicator.id);
   });
   localStorage.geodash = output;
+  this.appFlash.create('success', 'board.saved.ok');
 };
 
 /**
@@ -739,6 +774,7 @@ MyboardController.prototype.cancelState = function() {
   if(this.dirty) {
     this.indicators = this.backup;
     this.renderGraphs_();
+    this.appFlash.create('success', 'board.cancel.ok');
   }
 };
 
@@ -760,11 +796,8 @@ MyboardController.prototype.open = function(indicator) {
   this.zoom = indicator;
   this.$timeout(function() {
     var selector = '#board_zoom_' + indicator.id + '_chart';
-    this.ChartFactory.getChart(indicator.name).then(
-        function(chart) {
-          chart.chart.height = $('.full-view').height() - 100;
-          $(selector).highcharts(chart);
-        });
+    this.ChartFactory.renderIndicator(
+        indicator, selector, this.lon, this.lat, $('.full-view').height() - 100);
   }.bind(this));
 };
 
@@ -779,6 +812,9 @@ MyboardController.prototype.remove = function (indicator) {
       var idx = this.indicators.indexOf(indicator);
       this.indicators.splice(idx, 1);
       this.dirty = true;
+      this.appFlash.create('success', 'indicator.removed', {
+        name: indicator.config.label || indicator.name
+      });
     }.bind(this)
   };
 };
@@ -819,11 +855,7 @@ MyboardController.prototype.renderGraphs_ = function() {
     this.indicators.forEach(function(board) {
 
       var selector = '#board_' + board.id + '_chart';
-      this.ChartFactory.getChart(board.name).then(
-          function(chart) {
-            chart.chart.height = CHART_HEIGHT;
-            $(selector).highcharts(chart);
-          });
+      this.ChartFactory.renderIndicator(board, selector, this.lon, this.lat);
     }.bind(this));
   }.bind(this));
 };
@@ -863,11 +895,25 @@ MyboardController.prototype.confirmAdd = function() {
   this.cancelAdd();
 };
 
+MyboardController.prototype.parseCoordinates = function() {
+  var query = location.search.substr(1);
+  var p = {};
+  query.split("&").forEach(function(part) {
+    var item = part.split("=");
+    p[item[0]] = decodeURIComponent(item[1]);
+  });
+  this.lon = parseFloat(p.lon);
+  this.lat = parseFloat(p.lat);
+};
+
+
+
+/**
+ * Main controller
+ * @param $scope
+ * @constructor
+ */
 var DashboardController = function ($scope) {
-  this.config = localStorage.geodash || ['averagerain', 'dailyrain'];
-  this.$scope = $scope;
-  this.loadMyIndicators = function() {
-  };
 };
 
 
@@ -875,7 +921,7 @@ var DashboardController = function ($scope) {
 module.controller('DashboardController', DashboardController);
 module.controller('MyboardController', MyboardController);
 
-MyboardController.$inject = ['$timeout', 'Indicator', 'ChartFactory', '$scope'];
+MyboardController.$inject = ['$scope', '$timeout', 'Indicator', 'ChartFactory', 'appFlash'];
 DashboardController.$inject = ['$scope'];
 
 });
@@ -934,12 +980,6 @@ angular.module('geodash').service('Maths', [
         return transformer.buildSeries();
       }
     };
-
-    this.extractData = function() {
-
-    }
-
-
   }]);
 
 var TransformerSerie = function(input, config, Maths) {
@@ -988,8 +1028,9 @@ require.register("services/chart_factory", function(exports, require, module) {
 var module = angular.module('geodash');
 
 
+var CHART_HEIGHT = 300;
 
-var ChartFactory = function($http, $q, appFlash) {
+var ChartFactory = function($http, $q, appFlash, IndicatorService) {
 
   this.getChart = function(type) {
 
@@ -1012,6 +1053,44 @@ var ChartFactory = function($http, $q, appFlash) {
     });
   };
 
+  /**
+   * Render the indicator chart.
+   *
+   * @param indicator The full object representing the DB indicator
+   * @param selector The css selector to target the graph
+   * @param lon Coordinates
+   * @param lat Coordinates
+   * @param height Height of the chart, only for zoom mode
+   */
+  this.renderIndicator = function(indicator, selector, lon, lat, height) {
+    var h = height;
+    IndicatorService.getGraph(indicator.config, lon, lat).then(
+        function(chartConfig) {
+          if(!chartConfig) {
+            appFlash.create('warning', 'chart.noconfig', {
+              name: indicator.config.label || indicator.name
+            });
+          }
+          else {
+            // disable export button if not zoom mode
+            chartConfig.exporting = {
+              enabled: !!h
+            };
+            // Set height in highchart config object
+            var height = h || CHART_HEIGHT;
+            chartConfig.chart ? chartConfig.chart.height = height :
+                chartConfig.chart = {height:height};
+            this.render(selector, chartConfig);
+          }
+        }.bind(this));
+  };
+
+  /**
+   * Render a chart in a specific selector
+   *
+   * @param selector The css selector to target the graph
+   * @param config The full (datas) Highchart config object for the graph
+   */
   this.render = function(selector, config) {
     try {
       $(selector).highcharts(config);
@@ -1023,7 +1102,8 @@ var ChartFactory = function($http, $q, appFlash) {
 };
 
 angular.module('geodash')
-    .service('ChartFactory', ['$http', '$q', 'appFlash', ChartFactory]);
+    .service('ChartFactory', ['$http', '$q', 'appFlash', 'IndicatorService',
+      ChartFactory]);
 
 
 var chartConfig = {
@@ -1211,54 +1291,61 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
     }
 
     var nextIdx = -1;
-    datasources.forEach(function(ds, idx) {
+    try {
+      datasources.forEach(function (ds, idx) {
 
-      var data = ds.data;
-      var categories = ds.categories;
+        var data = ds.data;
+        var categories = ds.categories;
 
-      // Multiple series
-      if(angular.isArray(data[0][0])) {
-        data.forEach(function(serie, i) {
-          chartConfig.series[++nextIdx].data = serie;
-        });
-      }
-      else { // single serie
-
-        var c = config.datasources[idx];
-        // Merge with previous serie
-        if(c.merge && idx) {
-          var previous = chartConfig.series[nextIdx].data;
-          if(!c.mergeType || c.mergeType == 'concat') {
-            chartConfig.series[nextIdx].data = previous.map(function(value, i) {
-              return value.concat(data[i]);
-            });
-          }
-          else if(c.mergeType == 'percentage'){
-            chartConfig.series[nextIdx].data = previous.map(function(value, i) {
-              return [parseFloat(((value[0] * 100) / data[i][0]).toFixed(2))];
-            });
-          }
+        // Multiple series
+        if (angular.isArray(data[0][0])) {
+          data.forEach(function (serie, i) {
+            chartConfig.series[++nextIdx].data = serie;
+          });
         }
-        else {
-          chartConfig.series[++nextIdx].data = data;
-        }
-      }
+        else { // single serie
 
-      // Add categories if found in datasource
-      if(categories) {
-        if(!chartConfig.xAxis) {
-          chartConfig.xAxis = {
-            categories: categories
+          var c = config.datasources[idx];
+          // Merge with previous serie
+          if (c.merge && idx) {
+            var previous = chartConfig.series[nextIdx].data;
+            if (!c.mergeType || c.mergeType == 'concat') {
+              chartConfig.series[nextIdx].data = previous.map(function (value, i) {
+                return value.concat(data[i]);
+              });
+            }
+            else if (c.mergeType == 'percentage') {
+              chartConfig.series[nextIdx].data = previous.map(function (value, i) {
+                return [parseFloat(((value[0] * 100) / data[i][0]).toFixed(2))];
+              });
+            }
+          }
+          else {
+            chartConfig.series[++nextIdx].data = data;
           }
         }
-        else {
-          if(!chartConfig.xAxis.categories) {
-            chartConfig.xAxis.categories = categories;
+
+        // Add categories if found in datasource
+        if (categories) {
+          if (!chartConfig.xAxis) {
+            chartConfig.xAxis = {
+              categories: categories
+            }
+          }
+          else {
+            if (!chartConfig.xAxis.categories) {
+              chartConfig.xAxis.categories = categories;
+            }
           }
         }
-      }
-    });
+      });
 
+    }
+    catch(e) {
+      this.appFlash.create('danger', 'chart.serie.error',  {
+        name: config.label
+      });
+    }
     return chartConfig;
   }.bind(this));
 };
@@ -1295,9 +1382,11 @@ require.register("services/messages", function(exports, require, module) {
 angular.module('geodash').service('appFlash',
   ['Flash', '$translate', function(Flash, $translate) {
 
-    this.create = function(type, text, addClass ) {
-      $translate(text).then(function(translation) {
+    this.create = function(type, text, replacements, addClass ) {
+      $translate(text, replacements).then(function(translation) {
         return Flash.create(type, translation, addClass);
+      }, function() {
+        return Flash.create(type, text, addClass);
       });
     };
   }]);
@@ -1334,6 +1423,7 @@ var module = angular.module('geodash');
 angular.module('geodash')
     .service('gdUtils', [function() {
 
+      var MONTH_SHORT_FR = ['jan', 'fev', 'mar', 'avr', 'mai', 'juin', 'juil', 'aou', 'sep', 'oct', 'nov', 'dec'];
       var getDay = function() {
         var now = new Date();
         var start = new Date(now.getFullYear(), 0, 0);
@@ -1344,12 +1434,19 @@ angular.module('geodash')
       };
 
       var monthInYearAxisLabelFormatter = function() {
-        return this.value / 30;
+        return MONTH_SHORT_FR[Math.round(this.value / 30.41)];
       };
 
       var periodFormatter = function() {
         return '<b>Début</b>: ' + this.point.low + '<sub>ème</sub> jours<br>' +
         '<b>Durée</b>: ' + (this.point.high - this.point.low) + ' jours';
+      };
+
+      var monthInYearAxisLabelPositioner = function() {
+        var months = [0,1,2,3,4,5,6,7,8,9,10,11,12];
+        return months.map(function(v) {
+          return v*30.41;
+        });
       };
 
       this.aceStringify = function(obj) {

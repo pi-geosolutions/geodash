@@ -143,7 +143,36 @@ AdminController.prototype.viewChart = function(selector) {
 
   this.IndicatorService.getGraph(this.current.config, -14.326, 13.923).then(
       function(chartConfig) {
-        this.ChartFactory.render(selector, chartConfig);
+        var conf = angular.copy(chartConfig);
+        conf.exporting = {
+          enabled: false
+        };
+
+        conf.series.forEach(function(serie) {
+          if(serie.color && serie.color.linearGradient) {
+            var newData = [];
+            serie.data.forEach(function(d) {
+              if(angular.isArray(d)) {
+                var color = serie.color;
+                var value = d[0];
+                var newStops = [];
+                color.stops.forEach(function(stop) {
+                  newStops.push([stop[0] == 0 || stop[0] == 1 ? stop[0] :
+                      value ? stop[0] / value : 1 || 0, stop[1]]);
+                });
+                newData.push({
+                  y: value,
+                  color: {
+                    linearGradient: serie.color.linearGradient,
+                    stops: newStops
+                  }
+                });
+              }
+            });
+            serie.data = newData;
+          }
+        });
+        this.ChartFactory.render(selector, conf);
       }.bind(this));
 };
 

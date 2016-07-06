@@ -2,6 +2,7 @@ var module = angular.module('geodash');
 angular.module('geodash')
     .service('gdUtils', [function() {
 
+      var MONTH_SHORT_FR = ['jan', 'fev', 'mar', 'avr', 'mai', 'juin', 'juil', 'aou', 'sep', 'oct', 'nov', 'dec'];
       var getDay = function() {
         var now = new Date();
         var start = new Date(now.getFullYear(), 0, 0);
@@ -12,12 +13,19 @@ angular.module('geodash')
       };
 
       var monthInYearAxisLabelFormatter = function() {
-        return this.value / 30;
+        return MONTH_SHORT_FR[Math.round(this.value / 30.41)];
       };
 
       var periodFormatter = function() {
         return '<b>Début</b>: ' + this.point.low + '<sub>ème</sub> jours<br>' +
         '<b>Durée</b>: ' + (this.point.high - this.point.low) + ' jours';
+      };
+
+      var monthInYearAxisLabelPositioner = function() {
+        var months = [0,1,2,3,4,5,6,7,8,9,10,11,12];
+        return months.map(function(v) {
+          return v*30.41;
+        });
       };
 
       this.aceStringify = function(obj) {
