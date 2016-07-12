@@ -16,7 +16,7 @@
 
     <!--New indicator button-->
     <button class="btn btn-geodash" ng-click="admin.initNew()">
-      <span translate="">new</span>
+      <span translate="">indicator.new</span>
     </button>
 
   </div>
@@ -37,13 +37,13 @@
       <!--Tab menu-->
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active">
-          <a href="admin" data-target="#global" aria-controls="global" role="tab" data-toggle="tab">global</a>
+          <a href="admin" data-target="#global" aria-controls="global" role="tab" data-toggle="tab" translate="" title="{{'globalT'|translate}}">global</a>
         </li>
         <li role="presentation">
-          <a href="admin" data-target="#datasource" aria-controls="datasource" role="tab" data-toggle="tab">datasource</a>
+          <a href="admin" data-target="#datasource" aria-controls="datasource" role="tab" data-toggle="tab" translate="" title="{{'datasourceT'|translate}}">datasource</a>
         </li>
         <li role="presentation">
-          <a href="admin" data-target="#graph" aria-controls="graph" role="tab" data-toggle="tab">graph</a>
+          <a href="admin" data-target="#graph" aria-controls="graph" role="tab" data-toggle="tab" translate="" title="{{'graphT'|translate}}">graph</a>
         </li>
 
         <button class="pull-right btn btn-danger" ng-click="admin.delete()">

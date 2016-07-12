@@ -7,6 +7,13 @@
   "chart.render.error": "Error while rendering chart, HighChart config might be wrong.",
   "chart.noconfig": "No chart config found for indicator {{name}}",
   "basedOnDs": "Based on another datasource",
-  "dburl": "URL",
-  "sqlquery": "SQL query"
+  "dburl": "Database URL",
+  "sqlquery": "SQL query",
+  "indicator.new": "Add new",
+  "global": "Global",
+  "datasource": "Data source",
+  "graph": "Chart",
+  "globalT": "Global informations about the indicator",
+  "datasourceT": "Configure the datasources that feed the chart",
+  "graphT": "Define the chart"
 }
