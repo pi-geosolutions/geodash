@@ -5,5 +5,8 @@
   "filesystem.getvalue.format": "Error while reading a file.",
   "chart.json.parse": "Error while parsing chart config. Check it is a valid JSON.",
   "chart.render.error": "Error while rendering chart, HighChart config might be wrong.",
-  "chart.noconfig": "No chart config found for indicator {{name}}"
+  "chart.noconfig": "No chart config found for indicator {{name}}",
+  "basedOnDs": "Based on another datasource",
+  "dburl": "URL",
+  "sqlquery": "SQL query"
 }

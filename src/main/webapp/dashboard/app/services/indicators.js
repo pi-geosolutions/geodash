@@ -1,14 +1,14 @@
 var module = angular.module('geodash');
 
-
-
-var Indicator = function($http, $q, Transformer, gdUtils, appFlash) {
+var Indicator = function($http, $q, Transformer, gdUtils, appFlash, gdSerieFn) {
   this.$http = $http;
   this.$q = $q;
   this.Transformer = Transformer;
   this.gdUtils = gdUtils;
   this.appFlash = appFlash;
+  this.gdSerieFn = gdSerieFn;
 };
+
 
 Indicator.prototype.getGraph = function(config, lon, lat) {
 
@@ -27,11 +27,17 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
     }
 
     var nextIdx = -1;
+    var mainSerieCount = 0;
+
     try {
       datasources.forEach(function (ds, idx) {
 
         var data = ds.data;
         var categories = ds.categories;
+
+        if(idx === 0) {
+          mainSerieCount = data.length;
+        }
 
         // Multiple series
         if (angular.isArray(data[0][0])) {
@@ -40,8 +46,8 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
           });
         }
         else { // single serie
-
           var c = config.datasources[idx];
+
           // Merge with previous serie
           if (c.merge && idx) {
             var previous = chartConfig.series[nextIdx].data;
@@ -56,8 +62,19 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
               });
             }
           }
+          else if(angular.isDefined(c.basedOnDs) ){
+            var bs = chartConfig.series[c.basedOnDs].data;
+            chartConfig.series[++nextIdx].data = bs.map(function(v, i, a) {
+              return this.gdSerieFn[c.basedOnDsFn](data, v,i,a);
+            }.bind(this));
+          }
           else {
             chartConfig.series[++nextIdx].data = data;
+          }
+          if(c.amount === 1) {
+            for(var i=1;i<mainSerieCount;i++) {
+              chartConfig.series[nextIdx].data[i] = chartConfig.series[nextIdx].data[0];
+            }
           }
         }
 
@@ -74,7 +91,7 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
             }
           }
         }
-      });
+      }.bind(this));
 
     }
     catch(e) {
@@ -108,6 +125,6 @@ Indicator.prototype.getSerie = function(datasource, lon, lat) {
 
 angular.module('geodash')
     .service('IndicatorService', ['$http', '$q', 'Transformer', 'gdUtils',
-      'appFlash',
+      'appFlash', 'gdSerieFn',
       Indicator]);
 

@@ -50,6 +50,7 @@ public class LoaderFileSystem extends Loader {
         String placeholder = null;
         String pattern = config.getPattern();
 
+
         Matcher matcher = Pattern.compile("\\$(\\w*?)\\$").matcher(pattern);
         while (matcher.find()) {
             placeholder = matcher.group(1);
@@ -59,13 +60,37 @@ public class LoaderFileSystem extends Loader {
 
         final String fPattern = pattern;
 
+        String tsDateFormat = null;
+        if(placeholder != null && placeholder.startsWith("date")) {
+            tsDateFormat = placeholder.substring(4);
+            placeholder = "date";
+        }
+        final String sDateFormat = tsDateFormat;
+
         // get files that match the pattern
         File[] matchingFiles = this.folder.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
 
                 Matcher m = Pattern.compile(fPattern).matcher(name);
                 if (m.matches()) {
-                    filesMap.put(m.group(1), new File(dir, name));
+                    try {
+                        // only return past dates within the current year
+                        // for date in the year (MMdd) only
+                        if(sDateFormat != null && sDateFormat.indexOf("YY") < 0) {
+                            Date today = new Date();
+                            SimpleDateFormat dateFormat = new SimpleDateFormat(sDateFormat);
+                            Date ddate = dateFormat.parse(m.group(1));
+                            ddate.setYear(today.getYear());
+                            if(ddate.getTime() > today.getTime()) {
+                                return false;
+                            }
+                        }
+                        filesMap.put(m.group(1), new File(dir, name));
+                    }
+                    catch(Exception e) {
+                        // key doesn't matter cause no pattern found
+                        filesMap.put(m.group(0), new File(dir, name));
+                    }
                     return true;
                 }
                 return false;
@@ -76,6 +101,10 @@ public class LoaderFileSystem extends Loader {
             throw new NoSuchElementException("filesystem.getData.nofile");
         }
 
+        if(placeholder == null) {
+            placeholder = "";
+        }
+
         // only get last files depending on config amount
         int nbStart = 0;
         if(config.getAmount() > 0 ) {
@@ -83,10 +112,14 @@ public class LoaderFileSystem extends Loader {
         }
 
         int i = -1;
+        int last = filesMap.entrySet().size();
+        if(placeholder.equals("year")) {
+            last -= 1;
+        }
         List<String> dates = new ArrayList<String>();
         for(Map.Entry<String,File> entry : filesMap.entrySet()) {
             i++;
-            if(i < nbStart || i == filesMap.entrySet().size()-1) {
+            if(i < nbStart || i == last) {
                 continue;
             }
             String date = entry.getKey();
@@ -97,8 +130,11 @@ public class LoaderFileSystem extends Loader {
 
             // generate UTC date for datetime chart type
             if(placeholder.equals("date")) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyymmdd");
+                SimpleDateFormat dateFormat = new SimpleDateFormat(sDateFormat);
                 Date ddate = dateFormat.parse(date);
+                if(sDateFormat.indexOf("YY") < 0) {
+                    ddate.setYear(new Date().getYear());
+                }
                 Long dateUTC = ddate.getTime();
                 v.add((double)dateUTC);
             }
@@ -110,7 +146,8 @@ public class LoaderFileSystem extends Loader {
         JSONObject res = new JSONObject();
         res.put("data", new JSONArray(values));
 
-        if(dates.size() > 0 && placeholder.equals("year")) {
+        if(dates.size() > 0 &&
+                (placeholder.equals("year") || placeholder.equals("month"))) {
             res.put("categories", new JSONArray(dates));
         }
         return res;

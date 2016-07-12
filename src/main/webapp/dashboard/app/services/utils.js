@@ -13,7 +13,16 @@ angular.module('geodash')
       };
 
       var monthInYearAxisLabelFormatter = function() {
-        return MONTH_SHORT_FR[Math.round(this.value / 30.41)];
+        var value = this.value;
+        // "01" is Janv
+        if(angular.isString(value)) {
+          value = parseInt(value) -1;
+        }
+        // value is the number of the day in the year
+        else {
+          value = Math.round(value / 30.41);
+        }
+        return MONTH_SHORT_FR[value];
       };
 
       var periodFormatter = function() {

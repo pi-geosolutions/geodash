@@ -32,6 +32,7 @@ var GdDatasourcesController = function($scope, $http, gdUtils) {
     var chart = $('#chartDemo').highcharts();
     if(chart) chart.destroy();
   }.bind(this));
+
 };
 
 GdDatasourcesController.prototype.new = function() {
@@ -58,7 +59,7 @@ GdDatasourcesController.prototype.show = function(ds) {
 GdDatasourcesController.prototype.isValid = function(datasource) {
   var ds = datasource || this.current;
   return ds && ds.name && ds.type &&
-      ((ds.type == 'filesystem' && ds.path && ds.pattern && ds.amount) ||
+      ((ds.type == 'filesystem' && ds.path && ds.pattern && ds.amount >= 0) ||
       (ds.type == 'database' && ds.url && ds.sql));
 };
 

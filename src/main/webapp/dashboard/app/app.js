@@ -45,6 +45,7 @@ require('./services/chart_factory');
 require('./services/utils');
 require('./services/rest/indicators');
 require('./services/indicators');
+require('./services/seriefn');
 
 function AppController($router) {
   $router.config([

@@ -103,7 +103,7 @@
 
           <div class="modal-body">
             <div class="list-group">
-              <a href="" ng-repeat="indicator in ctrl.allIndicators" class="list-group-item" ng-if="ctrl.indicators.indexOf(indicator) < 0"
+              <a href="" ng-repeat="indicator in ctrl.allIndicators" class="list-group-item" ng-if="ctrl.isAvailable(indicator)"
                  ng-click="ctrl.selectToAdd(indicator)" ng-class="{active: ctrl.indicatorsIdToAdd.indexOf(indicator.id) >= 0}">
                 <span>{{indicator.config.label || indicator.name}}</span>
               </a>

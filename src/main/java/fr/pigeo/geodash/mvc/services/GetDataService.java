@@ -1,6 +1,5 @@
 package fr.pigeo.geodash.mvc.services;
 
-import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -9,15 +8,8 @@ import org.geotools.geometry.DirectPosition2D;
 import org.opengis.geometry.DirectPosition;
 import org.springframework.stereotype.Service;
 
-import javax.media.jai.iterator.RandomIter;
-import javax.media.jai.iterator.RandomIterFactory;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by fgravin on 25/04/2016.

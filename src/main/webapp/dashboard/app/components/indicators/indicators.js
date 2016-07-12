@@ -239,6 +239,11 @@ MyboardController.prototype.parseCoordinates = function() {
 };
 
 
+MyboardController.prototype.isAvailable = function(indicator) {
+  return !this.indicators.some(function(ind) {
+    return indicator.name == ind.name;
+  });
+};
 
 /**
  * Main controller
@@ -255,3 +260,4 @@ module.controller('MyboardController', MyboardController);
 
 MyboardController.$inject = ['$scope', '$timeout', 'Indicator', 'ChartFactory', 'appFlash'];
 DashboardController.$inject = ['$scope'];
+

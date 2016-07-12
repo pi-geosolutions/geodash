@@ -12,12 +12,13 @@ module.directive('gdDatasourceForm', function() {
     templateUrl: 'components/admin/datasource.tpl.html',
     require: {
       sourcesCtrl: '^^gdDatasources'
-    }
+  }
   };
 });
 
 var GdDatasourceController =
-    function($scope, $http, gdUtils, Transformer, IndicatorService, ChartFactory) {
+    function($scope, $http, gdUtils, Transformer, IndicatorService,
+             ChartFactory, gdSerieFn) {
 
       this.$scope = $scope;
       this.$http = $http;
@@ -25,12 +26,20 @@ var GdDatasourceController =
       this.Transformer = Transformer;
       this.IndicatorService = IndicatorService;
       this.ChartFactory = ChartFactory;
+      this.gdSerieFn = gdSerieFn;
 
       $scope.$watch(function(){
         return this.datasource;
       }.bind(this), function(n) {
         this.resetForm();
       }.bind(this));
+
+      $scope.$watchCollection(function(){
+        return this.sourcesCtrl.datasource;
+      }.bind(this), function(n) {
+        this.otherDs = this.getOtherDatasources();
+      }.bind(this));
+
     };
 
 GdDatasourceController.prototype.save = function() {
@@ -71,6 +80,19 @@ GdDatasourceController.prototype.exportData = function() {
           JSON.parse(this.datasource.transform)));
 };
 
+/**
+ * Return a list of all datasources of this indicator, except the current one.
+ */
+GdDatasourceController.prototype.getOtherDatasources = function() {
+  var dss = [{name: ''}];
+  this.sourcesCtrl.datasources.forEach(function(ds, i) {
+    if(ds !== this.datasource) {
+      dss.push({idx: i, name: ds.name});
+    }
+  }.bind(this));
+  return dss;
+};
+
 GdDatasourceController.prototype.viewChart = function() {
 
   var datas = JSON.parse(this.testData);
@@ -102,7 +124,8 @@ GdDatasourceController.prototype.resetForm = function() {
 };
 
 module.controller('GdDatasourceController', [
-  '$scope', '$http', 'gdUtils', 'Transformer', 'IndicatorService', 'ChartFactory',
+  '$scope', '$http', 'gdUtils', 'Transformer', 'IndicatorService',
+  'ChartFactory', 'gdSerieFn',
   GdDatasourceController]
 );
 

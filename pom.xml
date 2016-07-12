@@ -235,7 +235,9 @@
             dashboard/node_modules/,
             WEB-INF/classes/02_moyennes_pluies/,
             WEB-INF/classes/03_rainy_season/,
-            WEB-INF/classes/daily_corrected_ref/
+            WEB-INF/classes/daily_corrected_ref/,
+            WEB-INF/classes/06_mean3j_rain/,
+            WEB-INF/classes/17_mean_mois_rain/
           </packagingExcludes>
         </configuration>
       </plugin>

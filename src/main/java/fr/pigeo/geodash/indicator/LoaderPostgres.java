@@ -37,7 +37,6 @@ public class LoaderPostgres extends Loader {
     @Override
     public void connect() {
         try {
-
             DataSource dataSource = JdbcUtils.getDataSource(this.config.getUrl());
             jdbcTemplate = new JdbcTemplate(dataSource);
         } catch (SQLException e) {

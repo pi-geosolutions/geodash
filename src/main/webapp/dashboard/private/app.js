@@ -157,6 +157,7 @@ require('./services/chart_factory');
 require('./services/utils');
 require('./services/rest/indicators');
 require('./services/indicators');
+require('./services/seriefn');
 
 function AppController($router) {
   $router.config([
@@ -328,7 +329,8 @@ AdminController.prototype.viewChart = function(selector) {
                 var value = d[0];
                 var newStops = [];
                 color.stops.forEach(function(stop) {
-                  newStops.push([stop[0] == 0 || stop[0] == 1 ? stop[0] : value ? stop[0] / value : 1 || 0, stop[1]]);
+                  newStops.push([stop[0] == 0 || stop[0] == 1 ? stop[0] :
+                      value ? stop[0] / value : 1 || 0, stop[1]]);
                 });
                 newData.push({
                   y: value,
@@ -372,12 +374,13 @@ module.directive('gdDatasourceForm', function() {
     templateUrl: 'components/admin/datasource.tpl.html',
     require: {
       sourcesCtrl: '^^gdDatasources'
-    }
+  }
   };
 });
 
 var GdDatasourceController =
-    function($scope, $http, gdUtils, Transformer, IndicatorService, ChartFactory) {
+    function($scope, $http, gdUtils, Transformer, IndicatorService,
+             ChartFactory, gdSerieFn) {
 
       this.$scope = $scope;
       this.$http = $http;
@@ -385,12 +388,20 @@ var GdDatasourceController =
       this.Transformer = Transformer;
       this.IndicatorService = IndicatorService;
       this.ChartFactory = ChartFactory;
+      this.gdSerieFn = gdSerieFn;
 
       $scope.$watch(function(){
         return this.datasource;
       }.bind(this), function(n) {
         this.resetForm();
       }.bind(this));
+
+      $scope.$watchCollection(function(){
+        return this.sourcesCtrl.datasource;
+      }.bind(this), function(n) {
+        this.otherDs = this.getOtherDatasources();
+      }.bind(this));
+
     };
 
 GdDatasourceController.prototype.save = function() {
@@ -431,6 +442,19 @@ GdDatasourceController.prototype.exportData = function() {
           JSON.parse(this.datasource.transform)));
 };
 
+/**
+ * Return a list of all datasources of this indicator, except the current one.
+ */
+GdDatasourceController.prototype.getOtherDatasources = function() {
+  var dss = [{name: ''}];
+  this.sourcesCtrl.datasources.forEach(function(ds, i) {
+    if(ds !== this.datasource) {
+      dss.push({idx: i, name: ds.name});
+    }
+  }.bind(this));
+  return dss;
+};
+
 GdDatasourceController.prototype.viewChart = function() {
 
   var datas = JSON.parse(this.testData);
@@ -462,7 +486,8 @@ GdDatasourceController.prototype.resetForm = function() {
 };
 
 module.controller('GdDatasourceController', [
-  '$scope', '$http', 'gdUtils', 'Transformer', 'IndicatorService', 'ChartFactory',
+  '$scope', '$http', 'gdUtils', 'Transformer', 'IndicatorService',
+  'ChartFactory', 'gdSerieFn',
   GdDatasourceController]
 );
 
@@ -507,6 +532,7 @@ var GdDatasourcesController = function($scope, $http, gdUtils) {
     var chart = $('#chartDemo').highcharts();
     if(chart) chart.destroy();
   }.bind(this));
+
 };
 
 GdDatasourcesController.prototype.new = function() {
@@ -533,7 +559,7 @@ GdDatasourcesController.prototype.show = function(ds) {
 GdDatasourcesController.prototype.isValid = function(datasource) {
   var ds = datasource || this.current;
   return ds && ds.name && ds.type &&
-      ((ds.type == 'filesystem' && ds.path && ds.pattern && ds.amount) ||
+      ((ds.type == 'filesystem' && ds.path && ds.pattern && ds.amount >= 0) ||
       (ds.type == 'database' && ds.url && ds.sql));
 };
 
@@ -1264,15 +1290,15 @@ var chartConfig = {
 require.register("services/indicators", function(exports, require, module) {
 var module = angular.module('geodash');
 
-
-
-var Indicator = function($http, $q, Transformer, gdUtils, appFlash) {
+var Indicator = function($http, $q, Transformer, gdUtils, appFlash, gdSerieFn) {
   this.$http = $http;
   this.$q = $q;
   this.Transformer = Transformer;
   this.gdUtils = gdUtils;
   this.appFlash = appFlash;
+  this.gdSerieFn = gdSerieFn;
 };
+
 
 Indicator.prototype.getGraph = function(config, lon, lat) {
 
@@ -1291,11 +1317,17 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
     }
 
     var nextIdx = -1;
+    var mainSerieCount = 0;
+
     try {
       datasources.forEach(function (ds, idx) {
 
         var data = ds.data;
         var categories = ds.categories;
+
+        if(idx === 0) {
+          mainSerieCount = data.length;
+        }
 
         // Multiple series
         if (angular.isArray(data[0][0])) {
@@ -1304,8 +1336,8 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
           });
         }
         else { // single serie
-
           var c = config.datasources[idx];
+
           // Merge with previous serie
           if (c.merge && idx) {
             var previous = chartConfig.series[nextIdx].data;
@@ -1320,8 +1352,19 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
               });
             }
           }
+          else if(angular.isDefined(c.basedOnDs) ){
+            var bs = chartConfig.series[c.basedOnDs].data;
+            chartConfig.series[++nextIdx].data = bs.map(function(v, i, a) {
+              return this.gdSerieFn[c.basedOnDsFn](data, v,i,a);
+            }.bind(this));
+          }
           else {
             chartConfig.series[++nextIdx].data = data;
+          }
+          if(c.amount === 1) {
+            for(var i=1;i<mainSerieCount;i++) {
+              chartConfig.series[nextIdx].data[i] = chartConfig.series[nextIdx].data[0];
+            }
           }
         }
 
@@ -1338,7 +1381,7 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
             }
           }
         }
-      });
+      }.bind(this));
 
     }
     catch(e) {
@@ -1372,7 +1415,7 @@ Indicator.prototype.getSerie = function(datasource, lon, lat) {
 
 angular.module('geodash')
     .service('IndicatorService', ['$http', '$q', 'Transformer', 'gdUtils',
-      'appFlash',
+      'appFlash', 'gdSerieFn',
       Indicator]);
 
 
@@ -1418,6 +1461,39 @@ angular.module('geodash').factory('Indicator',
 
 });
 
+require.register("services/seriefn", function(exports, require, module) {
+var module = angular.module('geodash');
+
+angular.module('geodash')
+    .value('gdSerieFn', {
+      std1: function(data, value, i) {
+        if(value.length == 2) {
+          var ET = data.length == 1 ? data[0][1] : data[i][1];
+          return [value[0], Math.max(0, value[1] - ET), value[1] + ET];
+        }
+        else {
+          // single value serie, use it to build all output
+          var ET = data.length == 1 ? data[0][0] : data[i][0];
+          return [Math.max(0, value[0] - ET), value[0] + ET];
+        }
+      },
+      std2: function(data, value, i) {
+        if(value.length == 2) {
+          var ET = data.length == 1 ? data[0][1] : data[i][1];
+          ET = 2 * ET;
+          return [value[0], Math.max(0, value[1] - ET), value[1] + ET];
+        }
+        else {
+          // single value serie, use it to build all output
+          var ET = data.length == 1 ? data[0][0] : data[i][0];
+          ET = 2 * ET;
+          return [Math.max(0, value[0] - ET), value[0] + ET];
+        }
+      }
+    });
+
+});
+
 require.register("services/utils", function(exports, require, module) {
 var module = angular.module('geodash');
 angular.module('geodash')
@@ -1434,7 +1510,16 @@ angular.module('geodash')
       };
 
       var monthInYearAxisLabelFormatter = function() {
-        return MONTH_SHORT_FR[Math.round(this.value / 30.41)];
+        var value = this.value;
+        // "01" is Janv
+        if(angular.isString(value)) {
+          value = parseInt(value) -1;
+        }
+        // value is the number of the day in the year
+        else {
+          value = Math.round(value / 30.41);
+        }
+        return MONTH_SHORT_FR[value];
       };
 
       var periodFormatter = function() {
