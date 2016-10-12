@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="/geodash/dashboard/public/">
+
+  <link rel="stylesheet" href="libraries.css">
+  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+
+  <title>Geo Dashboard</title>
+</head>
+
+<body ng-app="geodash" ng-strict-di ng-controller="DashboardController as mainCtrl">
+
+  <div flash-message="3000"></div>
+
+  <div class="container-fluid">
+    <gd-myboard class="app-dashboard"></gd-myboard>
+  </div>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+  <script src="libraries.js"></script>
+  <script src="templates.js"></script>
+  <script src="app.js"></script>
+  <script>require('app');</script>
+
+</body>

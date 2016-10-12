@@ -1,0 +1,22 @@
+{
+  "configboard"       : "Configurer le tableau de bord",
+  "stopconfigboard"   : "Sortir de la configuration",
+  "delete.confirm"    : "Voulez-vous supprimer cet indicateur ?",
+  "modal.cancel"      : "Annuler",
+  "modal.ok"          : "Ok",
+  "state.save"        : "Sauvegarder les modifications sur le tableau de bord.",
+  "state.cancel"      : "Annuler les dernières modifications.",
+  "edit.save"         : "Sauvegarder",
+  "edit.cancel"       : "Annuler",
+  "addIndicator"      : "Ajouter un indicateur",
+  "modal.add"         : "Ajouter",
+  "modal.add.title"   : "Ajouter des indicateur au tableau de bord",
+  "chart.noconfig"    : "Aucune configuration trouvée pour le graphique {{name}}",
+  "board.saved.ok"    : "Tableau de bord sauvegardé.",
+  "board.saved.ko"    : "Erreur lors de l'enregistrement du tableau de bord",
+  "board.cancel.ok"   : "Dernières modifications annulées",
+  "indicator.removed" : "L'indicateur '{{name}}' a été supprimé",
+  "indicator.added"   : "L'indicateur '{{name}}' a été ajouté",
+  "noparam.error"     : "Veuillez fournir des parmètres pour la lattitude et la longitude",
+  "chart.serie.error" : "Erreur lors de la récupération des données qui alimentent la série. '{{name}}'"
+}

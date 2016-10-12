@@ -1,0 +1,22 @@
+{
+  "configboard"       : "Config your dashboard",
+  "stopconfigboard"   : "Exit from configuration",
+  "delete.confirm"    : "Are you sure you want to delete this indicator ?",
+  "modal.cancel"      : "Cancel",
+  "modal.ok"          : "Ok",
+  "state.save"        : "Save the changes to my dashboard.",
+  "state.cancel"      : "Cancel the last changes.",
+  "edit.save"         : "Save",
+  "edit.cancel"       : "Cancel",
+  "addIndicator"      : "Add a new indicator",
+  "modal.add"         : "Add",
+  "modal.add.title"   : "Add new indicators to your board",
+  "chart.noconfig"    : "No chart config found for indicator {{name}}",
+  "board.saved.ok"    : "Dashboard saved.",
+  "board.saved.ko"    : "Error while saving your dashboard.",
+  "board.cancel.ok"   : "Dashboard last changes canceled.",
+  "indicator.removed" : "Indicator '{{name}}' removed",
+  "indicator.added"   : "Indicator '{{name}}' added",
+  "noparam.error"     : "Please specify lon & lat parameters",
+  "chart.serie.error" : "Error occured while retrieving datas for chart series. '{{name}}'"
+}
