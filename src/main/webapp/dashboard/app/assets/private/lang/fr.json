@@ -1,0 +1,19 @@
+{
+  "addDatasource": "Ajouter une nouvelle source de données",
+  "filesystem.loader.connect.error": "Impossible de se connecter à la source - Le répertoire n'existe pas.",
+  "filesystem.getData.nofile": "Aucun fichier ne correspond au pattern.",
+  "filesystem.getvalue.format": "Erreur lors du chargement d'un fichier.",
+  "chart.json.parse": "Erreur dans la config du graphique. Vérifier le format JSON.",
+  "chart.render.error": "Erreur lors du rendu du graphique, la config HighChart ne semble pas valide.",
+  "chart.noconfig": "Aucune config trouvée pour l'indicateur {{name}}",
+  "basedOnDs": "Basé sur une autre source de donnée",
+  "dburl": "URL",
+  "sqlquery": "Requête SQL",
+  "indicator.new": "Ajouter",
+  "global": "Global",
+  "datasource": "Sources de données",
+  "graph": "Graphique",
+  "globalT": "Informations globales de l'indicateur",
+  "datasourceT": "Configuration des sources de données",
+  "graphT": "Définition du graphique"
+}

@@ -1,0 +1,58 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cm="http://camel.apache.org/schema/spring"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://activemq.apache.org/schema/core
+        http://activemq.apache.org/schema/core/activemq-core.xsd
+        http://camel.apache.org/schema/spring
+        http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+  <bean id="harvesterRouteBuilder"
+        class="fr.pigeo.geodash.harvesters.worker.HarvesterRouteBuilder">
+  </bean>
+
+
+  <cm:camelContext id="harvest-indicator"
+                   useMDCLogging="true">
+    <cm:jmxAgent id="agent" disabled="false"/>
+
+    <cm:routeBuilder ref="harvesterRouteBuilder"/>
+
+    <cm:threadPoolProfile id="harvest-thread-pool"
+                          defaultProfile="true"
+                          poolSize="3"
+                          maxPoolSize="9"
+                          maxQueueSize="1000"
+                          rejectedPolicy="CallerRuns"/>
+  </cm:camelContext>
+
+  <amq:broker useJmx="false" persistent="false" useShutdownHook="false">
+    <amq:transportConnectors>
+      <amq:transportConnector uri="${jms.url}" />
+    </amq:transportConnectors>
+  </amq:broker>
+
+  <bean id="jmsMessager"
+        class="fr.pigeo.geodash.messaging.JMSMessager">
+    <property name="jmsUrl" value="${jms.url}"/>
+  </bean>
+
+  <bean id="activemq"
+        class="org.apache.activemq.camel.component.ActiveMQComponent"><!-- destroy-method="shutdown">-->
+    <property name="connectionFactory">
+      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${jms.url}"/>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="gson" class="org.apache.camel.component.gson.GsonDataFormat">
+    <property name="fieldNamingPolicy" value="LOWER_CASE_WITH_UNDERSCORES"/>
+  </bean>
+
+</beans>

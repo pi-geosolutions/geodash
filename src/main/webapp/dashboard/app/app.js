@@ -39,6 +39,8 @@ require('./components/coordspicker/coordspicker');
 require('./components/coordspicker/coordspicker.tpl');
 require('./components/indicators/indicators');
 require('./components/indicators/indicators.tpl');
+require('./components/harvesters/harvesters');
+require('./components/harvesters/harvesters.tpl');
 require('./services/analytics');
 require('./services/messages');
 require('./services/chart_factory');
@@ -51,6 +53,7 @@ function AppController($router) {
   $router.config([
     { path: '/'                 , component: 'admin' },
     { path: '/admin'             , component: 'admin' },
+    { path: '/harvesters'             , component: 'harvesters' },
   ]);
 }
 
