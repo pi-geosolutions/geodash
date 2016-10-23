@@ -1,15 +1,15 @@
 angular.module('geodash').factory('gdHarvesterResource',
   ['$resource', function($resource) {
 
-    var url = '../../harvester';
-    return $resource(url, { id: '@uid' }, {
-      list: {
+    var url = '../../harvesters/:id';
+    return $resource(url, { id: '@_id' }, {
+      query: {
         cache   : false,
         method  : 'GET',
         isArray : true
       },
       update: {
-        method: 'PUT'
+        method: 'PUT' // this method issues a PUT request
       }
     });
   }]

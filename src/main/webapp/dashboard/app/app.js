@@ -26,7 +26,12 @@ angular.module('geodash', [
 
 }]).config(['$resourceProvider', function($resourceProvider) {
   $resourceProvider.defaults.stripTrailingSlashes = false;
-}]);
+}]).filter('gdFromNow', function() {
+  return function(dateString) {
+    return moment(new Date(dateString)).fromNow();
+  };
+});
+;
 
 
 require('./components/admin/admin');
@@ -41,19 +46,21 @@ require('./components/indicators/indicators');
 require('./components/indicators/indicators.tpl');
 require('./components/harvesters/harvesters');
 require('./components/harvesters/harvesters.tpl');
+require('./components/harvesters/scheduler.tpl');
 require('./services/analytics');
 require('./services/messages');
 require('./services/chart_factory');
 require('./services/utils');
 require('./services/rest/indicators');
+require('./services/rest/harvesters');
 require('./services/indicators');
 require('./services/seriefn');
 
 function AppController($router) {
   $router.config([
     { path: '/'                 , component: 'admin' },
-    { path: '/admin'             , component: 'admin' },
-    { path: '/harvesters'             , component: 'harvesters' },
+    { path: '/admin'            , component: 'admin' },
+    { path: '/harvesters'       , component: 'harvesters' },
   ]);
 }
 

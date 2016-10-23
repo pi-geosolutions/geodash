@@ -1,4 +1,141 @@
-<div>
-  harvesters
-  {{harvesters}}
-</div>
+<section class="geodash-admin harvesters">
+
+    <!--Left panel-->
+    <div class="col-sm-4 left-panel">
+        <h4 translate="">Harvesters</h4>
+
+        <!--Harvesters list-->
+        <ul class="list-group">
+            <li class="list-group-item"
+                ng-repeat="harvester in harvesters.list"
+                ng-class="{active: harvesters.current == harvester}"
+                ng-click="harvesters.current = harvester">
+                {{::harvester.name}}
+            </li>
+        </ul>
+
+        <!--New indicator button-->
+        <button class="btn btn-geodash" ng-click="harvesters.initNew()">
+            <span translate="">harvester.new</span>
+        </button>
+
+    </div>
+
+    <form novalidate name="indicatorForm" class="form-horizontal">
+
+        <!--Right panel-->
+        <div class="col-sm-8" ng-if="harvesters.current">
+
+            <h4 translate="" class="col-md-offset-2 text-success">{{harvesters.current.name}}</h4>
+
+            <!--Create new alert message-->
+            <div ng-if="!harvesters.current.id" class="alert alert-success" role="alert">
+                createNew
+            </div>
+
+            <!--Harvester form inputs-->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    <span translate="">Name</span>
+                </label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control"
+                           ng-model="harvesters.current.name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">
+                    <span translate="">Url</span>
+                </label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control"
+                           ng-model="harvesters.current.url">
+                </div>
+            </div>
+
+            <div gd-harvester-schedule="harvesters.current" class="form-group"/>
+
+            <!--Buttons save & delete-->
+            <div class="nav harvester-btns" role="tablist">
+                <button class="btn btn-success" ng-click="harvesters.run()" ng-disabled="indicatorForm.$dirty">
+                    <span ng-if="harvesters.running" class="glyphicon glyphicon-refresh fa-counter-spin"></span>
+                    <span class="glyphicon glyphicon-play"></span>&nbsp;<span translate="">Harvest</span>
+                </button>
+                <button class=" btn btn-success" ng-click="harvesters.save()">
+                    <span translate="">Save</span>
+                </button>
+                <button class=" btn btn-warning" ng-click="harvesters.deleteIndicators()">
+                    <span translate="">indicators.delete</span>
+                </button>
+                <button class=" btn btn-danger" ng-click="harvesters.delete()">
+                    <span translate="">Delete</span>
+                </button>
+            </div>
+
+            <!--Harvester history-->
+            <div class="harvester-history">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span translate="">harvesters.history</span>
+                        <i data-ng-show="isLoadingHarvesterHistory" class="fa fa-spinner fa-spin"></i>
+                        <div class="btn-toolbar">
+                            <button type="button" class="btn btn-primary pull-right btn-danger"
+                                    data-ng-hide="harvesters.history.length === 0"
+                                    data-ng-click="harvesters.deleteHistory()">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                <span translate="">harvesters.history.delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="alert alert-info" data-ng-show="harvesters.history.length === 0">
+                            <strong data-translate="">harvesters.history.none</strong>
+                        </div>
+                        <ul class="timeline timeline-1-col" data-ng-show="harvesters.history.length !== 0">
+                            <li class="timeline-inverted"
+                                data-ng-repeat="h in harvesters.history">
+                                <div class="timeline-badge"
+                                     data-ng-class="h.deleted == 'y' ? 'warning' : (h.deleted == 'n' ? 'success' : 'danger')">
+                                    <i class="glyphicon" data-ng-class="h.deleted != 'n' ? 'glyphicon-remove' : 'glyphicon-chevron-right'"></i>
+                                </div>
+                                <div class="timeline-panel">
+                                    <div class="timeline-heading">
+                                        <h5 data-ng-show="h.deleted=='y'">
+                                            <strong>{{::h.info.removed}}</strong>
+                                            <span data-translate="">harvesters.history.indicatorsremoved</span></h5>
+                                        <h5 data-ng-show="h.deleted=='e'">
+                                            <span data-translate="">harvesters.history.error</span></h5>
+                                        <h5 data-ng-show="h.deleted == 'n'" class="timeline-title">
+                                            <strong>{{::h.info.total}}</strong>
+                                            <span data-translate="">harvesters.history.indicatorsin</span>
+                                            <strong>{{::h.elapsedtime/1000}}</strong>
+                                            <span data-translate="">seconds</span>
+                                        </h5>
+                                        <p>
+                                            <small class="text-muted">
+                                                <i class="glyphicon glyphicon-time"></i>
+                                                {{:: h.harvestDate | gdFromNow }}
+                                            </small>
+                                        </p>
+                                    </div>
+                                    <div class="timeline-body">
+                                        <p>
+                                        <ul>
+                                            <li data-ng-repeat="(k, v) in h.info"
+                                                data-ng-show="v > -1">
+                                                {{k}}: {{v}}
+                                            </li>
+                                        </ul>
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+</section>

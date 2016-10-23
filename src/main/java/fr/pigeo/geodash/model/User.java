@@ -20,8 +20,8 @@ public class User {
     private String login;
     private String password;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REFRESH)
-    private List<Indicator> indicators;
+    /*@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.REFRESH)
+    private List<Indicator> indicators;*/
 
     public Long getId() {
         return id;
@@ -61,14 +61,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public List<Indicator> getIndicators() {
-        return indicators;
-    }
-
-    public void setIndicators(List<Indicator> indicators) {
-        this.indicators = indicators;
     }
 
     @Override

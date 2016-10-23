@@ -46,6 +46,7 @@ module.exports = config:
           'vendor/ace/mode-json.js',
           'vendor/ace/mode-sql.js',
           'vendor/ace/theme-tomorrow.js'
+          'vendor/moment+langs.min.js'
         ]
     stylesheets:
       joinTo:

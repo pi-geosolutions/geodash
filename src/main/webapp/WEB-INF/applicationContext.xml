@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="
                 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
                 http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.0.xsd">
@@ -15,7 +15,7 @@
   </bean>
 
   <!-- Directory to scan for repository classes -->
-  <jpa:repositories base-package="fr.pigeo.geodash.dao" />
+  <jpa:repositories base-package="fr.pigeo.geodash.dao"/>
 
   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
     <property name="driverClassName" value="${driverClassName}"/>
@@ -25,12 +25,12 @@
   </bean>
 
   <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-    <property name="dataSource" ref="dataSource" />
-    <property name="persistenceUnitName" value="myPU" />
+    <property name="dataSource" ref="dataSource"/>
+    <property name="persistenceUnitName" value="myPU"/>
     <property name="persistenceXmlLocation" value="classpath:persistence.xml"/>
 
     <property name="jpaVendorAdapter">
-      <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+      <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
     </property>
     <property name="jpaProperties">
       <props>
@@ -43,11 +43,16 @@
   </bean>
 
   <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-    <property name="entityManagerFactory" ref="entityManagerFactory" />
+    <property name="entityManagerFactory" ref="entityManagerFactory"/>
   </bean>
 
   <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-    <property name="dataSource" ref="dataSource" />
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
+
+  <bean id="jpa" class="org.apache.camel.component.jpa.JpaComponent">
+    <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    <property name="transactionManager" ref="transactionManager"/>
   </bean>
 
 </beans>

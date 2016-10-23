@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.persistence.*;
+import java.util.Map;
 
 @Entity
 @Table(schema = "public", name = "indicator")
@@ -14,14 +15,17 @@ public class Indicator {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "indicator_seq")
     private Long id;
 
+    private String uuid;
     private String name;
 
     @Column(columnDefinition = "TEXT")
     private String config;
 
-    @ManyToOne(fetch= FetchType.EAGER)
+    private Long harvesterid;
+
+    /*@ManyToOne(fetch= FetchType.EAGER)
     @JoinColumn(name="userid")
-    private User user;
+    private User user;*/
 
     public Long getId() {
         return id;
@@ -39,14 +43,6 @@ public class Indicator {
         this.name = name;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public String getConfig() {
         return config;
     }
@@ -55,17 +51,41 @@ public class Indicator {
         this.config = config;
     }
 
+    public Long getHarvesterid() {
+        return harvesterid;
+    }
+
+    public void setHarvesterid(Long harvesterid) {
+        this.harvesterid = harvesterid;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public JSONObject toJSON() throws JSONException {
         JSONObject res = new JSONObject();
         res.put("id", this.id);
+        res.put("uuid", this.uuid);
         res.put("name", this.name);
-        res.put("userid", this.user.getId());
+        res.put("harvesterid", this.harvesterid);
 
         if(config != null && !config.equals("")) {
             JSONObject config = new JSONObject(this.config);
             res.put("config", config);
         }
         return res;
+    }
+
+    public void fromGsonMap(Map<String, Object> map) {
+        setName((String)map.get("name"));
+        setUuid((String)map.get("uuid"));
+        JSONObject json = new JSONObject((Map< String, String>)map.get("config"));
+        setConfig(json.toString());
     }
 
 }

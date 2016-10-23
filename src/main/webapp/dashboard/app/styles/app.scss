@@ -22,6 +22,10 @@ body {
   }
 }
 
+.list-group-item {
+  cursor: pointer;
+}
+
 groups input {
   margin-bottom: 1em;
 }

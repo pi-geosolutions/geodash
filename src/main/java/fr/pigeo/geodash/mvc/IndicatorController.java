@@ -56,6 +56,9 @@ public class IndicatorController {
 			@PathVariable Long userid,
 			HttpServletRequest request,
 			HttpServletResponse response ) throws IOException {
+
+		return "deprecated";
+/*
 		try {
 			User user = this.userRepository.findOne(userid);
 			JSONArray ret = new JSONArray();
@@ -69,15 +72,14 @@ public class IndicatorController {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			throw new IOException(e);
 		}
+*/
 	}
 
 	@RequestMapping(value = "/add/{userid}/{name}", method = RequestMethod.GET, produces="application/json; charset=utf-8")
 	@ResponseBody
 	public String add(@PathVariable Long userid, @PathVariable String name){
 
-		User user = this.userRepository.findOne(userid);
 		Indicator indicator = new Indicator();
-		indicator.setUser(user);
 		indicator.setName(name);
 		this.indicatorRepository.save(indicator);
 
@@ -92,7 +94,6 @@ public class IndicatorController {
 			@RequestParam String name,
 			@RequestParam String config) throws JSONException {
 
-        User user = this.userRepository.findOne(userid);
         Indicator indicator;
 
         if(id != null) {
@@ -100,9 +101,7 @@ public class IndicatorController {
         }
         else {
             indicator = new Indicator();
-            indicator.setUser(user);
         }
-
         indicator.setName(name);
         indicator.setConfig(config);
         this.indicatorRepository.save(indicator);
@@ -123,7 +122,6 @@ public class IndicatorController {
 		else {
 			indicator = new Indicator();
             User user = this.userRepository.findOne(new Long(1));
-            indicator.setUser(user);
         }
 
 		indicator.setName(name);

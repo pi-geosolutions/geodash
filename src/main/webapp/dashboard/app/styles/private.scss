@@ -162,4 +162,19 @@ $color_500: #86b3ff;
     margin: 15px;
   }
 
+  &.harvesters {
+    .harvester-btns {
+      text-align: right;
+      margin-top: 50px;
+    }
+    [gd-harvester-schedule] {
+      .input-group {
+        padding-right: 15px;
+        padding-left: 15px;
+      }
+    }
+  }
+  .harvester-history{
+    margin-top: 50px;
+  }
 }

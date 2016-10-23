@@ -9,11 +9,11 @@ import java.util.Map;
 /**
  * Created by florent on 13/10/16.
  */
-@XmlRootElement(name = "wfs")
 public class HarvesterParameter implements Serializable {
-    private String metadataUuid;
 
     private String url;
+    private Long id;
+    private String harvestUuid;
 
     private int timeOut = 60000;
 
@@ -29,6 +29,21 @@ public class HarvesterParameter implements Serializable {
         this.url = url;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getHarvestUuid() {
+        return harvestUuid;
+    }
+
+    public void setHarvestUuid(String harvestUuid) {
+        this.harvestUuid = harvestUuid;
+    }
 
     @Override
     public String toString() {

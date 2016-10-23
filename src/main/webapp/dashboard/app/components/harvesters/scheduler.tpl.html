@@ -1,0 +1,23 @@
+    <label class="col-sm-2 control-label" data-translate="">frequency</label>
+    <div class="input-group col-sm-8">
+      <input type="text" class="form-control" data-ng-model="harvester.cron"/>
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          <i class="glyphicon glyphicon-time"></i>&nbsp;<span class="caret"/>
+        </button>
+        <ul class="dropdown-menu pull-right">
+          <li data-ng-repeat="exp in cronExp">
+            <span data-ng-click="setSchedule(exp)" title="{{exp}}">{{('cron-' + exp) |
+              translate}}</span>
+          </li>
+          <li class="divider"/>
+          <li>
+            <a class="btn btn-link" target="_blank"
+               href="http://quartz-scheduler.org/documentation/quartz-2.x/tutorials/crontrigger"
+               data-translate="">moreExamples</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+

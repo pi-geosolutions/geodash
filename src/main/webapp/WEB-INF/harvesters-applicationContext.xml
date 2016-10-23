@@ -16,6 +16,9 @@
         class="fr.pigeo.geodash.harvesters.worker.HarvesterRouteBuilder">
   </bean>
 
+  <bean id="getdataService" class="fr.pigeo.geodash.mvc.services.GetDataService"></bean>
+  <bean id="harvesterService" class="fr.pigeo.geodash.mvc.services.HarvesterService"></bean>
+  <bean id="noErrorHandler" class="org.apache.camel.builder.NoErrorHandlerBuilder"/>
 
   <cm:camelContext id="harvest-indicator"
                    useMDCLogging="true">
@@ -49,10 +52,6 @@
         <property name="brokerURL" value="${jms.url}"/>
       </bean>
     </property>
-  </bean>
-
-  <bean id="gson" class="org.apache.camel.component.gson.GsonDataFormat">
-    <property name="fieldNamingPolicy" value="LOWER_CASE_WITH_UNDERSCORES"/>
   </bean>
 
 </beans>

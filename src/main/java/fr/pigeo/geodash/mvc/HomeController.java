@@ -22,7 +22,7 @@ public class HomeController {
 
     @RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
     public ModelAndView  homePage(ModelMap model) {
-         return new ModelAndView("redirect:" + "geodash/public/");
+         return new ModelAndView("redirect:" + "dashboard/public/");
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)

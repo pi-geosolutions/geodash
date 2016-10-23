@@ -10,10 +10,19 @@
   "dburl": "Database URL",
   "sqlquery": "SQL query",
   "indicator.new": "Add new",
+  "harvester.new": "Add new",
   "global": "Global",
   "datasource": "Data source",
   "graph": "Chart",
   "globalT": "Global informations about the indicator",
   "datasourceT": "Configure the datasources that feed the chart",
-  "graphT": "Define the chart"
+  "graphT": "Define the chart",
+  "seconds": "seconds",
+  "indicators.delete": "Delete indicators",
+  "harvesters.history" : "Harvesting history",
+  "harvesters.history.none" : "No harvesting history",
+  "harvesters.history.indicatorsin" : "harvested indicators in",
+  "harvesters.history.indicatorsremoved" : "removed indicators",
+  "harvesters.history.delete" : "Delete",
+  "harvesters.history.error" : "Error during harvesting"
 }
