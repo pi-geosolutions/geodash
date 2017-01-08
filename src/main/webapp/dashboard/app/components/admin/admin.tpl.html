@@ -13,6 +13,15 @@
         <span ng-if="indicator.harvesterid" class="glyphicon glyphicon-cloud"></span>
         {{indicator.config.label || indicator.name}}
       </a>
+
+      <a href="admin" class="list-group-item remote-item"
+         ng-repeat="remote in admin.remotes"
+         ng-class="{active: admin.current == remote}"
+         ng-click="admin.current = remote">
+        <span class="glyphicon glyphicon-link"></span>
+        {{remote.name}} <span ng-if="remote.nodeLabel">({{remote.nodeLabel}})</span>
+      </a>
+
     </div>
 
     <!--New indicator button-->
@@ -25,7 +34,7 @@
   <form novalidate name="indicatorForm" class="form-horizontal">
 
     <!--Right panel-->
-    <div class="col-sm-8" ng-if="admin.current">
+    <div class="col-sm-8" ng-if="admin.current && admin.current.config">
 
       <h4 translate="">{{admin.current.config.label || admin.current.name}}</h4>
 
@@ -160,6 +169,16 @@
         </div>
       </div>
 
+    </div>
+
+    <!--Remote Panel-->
+    <div class="col-sm-8" ng-if="admin.current && !admin.current.config">
+      <h4 translate="">{{admin.current.name}}</h4>
+      <div class="btn-block">
+        <button class="btn btn-danger" ng-click="admin.deleteRemote()">
+          <span translate="">Delete</span>
+        </button>
+      </div>
     </div>
   </form>
 

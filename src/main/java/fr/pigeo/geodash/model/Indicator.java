@@ -22,6 +22,7 @@ public class Indicator {
     private String config;
 
     private Long harvesterid;
+    private String nodeurl;
 
     /*@ManyToOne(fetch= FetchType.EAGER)
     @JoinColumn(name="userid")
@@ -59,6 +60,14 @@ public class Indicator {
         this.harvesterid = harvesterid;
     }
 
+    public String getNodeurl() {
+        return nodeurl;
+    }
+
+    public void setNodeurl(String nodeurl) {
+        this.nodeurl = nodeurl;
+    }
+
     public String getUuid() {
         return uuid;
     }
@@ -73,6 +82,7 @@ public class Indicator {
         res.put("uuid", this.uuid);
         res.put("name", this.name);
         res.put("harvesterid", this.harvesterid);
+        res.put("nodeurl", this.nodeurl);
 
         if(config != null && !config.equals("")) {
             JSONObject config = new JSONObject(this.config);

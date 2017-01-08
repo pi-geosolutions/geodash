@@ -24,5 +24,8 @@
   "harvesters.history.indicatorsin" : "harvested indicators in",
   "harvesters.history.indicatorsremoved" : "removed indicators",
   "harvesters.history.delete" : "Delete",
-  "harvesters.history.error" : "Error during harvesting"
+  "harvesters.history.error" : "Error during harvesting",
+  "nodeurl": "Node Url",
+  "nodelabel": "Node Label",
+  "addSelection": "Add selected indicators"
 }

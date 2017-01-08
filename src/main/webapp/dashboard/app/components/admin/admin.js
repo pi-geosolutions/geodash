@@ -87,7 +87,12 @@ var AdminController = function($routeParams, $http, $location, Indicator,
         name: ''
       };
     }
+  }.bind(this));
 
+  $http.get('../../remotes/').then(function(response) {
+    this.remotes = response.data;
+  }.bind(this), function() {
+    this.remotes = [];
   }.bind(this));
 };
 
@@ -114,15 +119,17 @@ AdminController.prototype.save = function() {
 };
 
 AdminController.prototype.delete = function() {
-  var form = {
-    name: this.current.name,
-    id: this.current.id,
-    config: JSON.stringify(this.current.config)
-  };
-
   this.$http({
     url : '../../indicators/delete/' + this.current.id,
     method: 'DELETE'
+  });
+};
+
+AdminController.prototype.deleteRemote = function() {
+  this.$http({
+    url : '../../remotes/',
+    method: 'DELETE',
+    data: this.current
   });
 };
 

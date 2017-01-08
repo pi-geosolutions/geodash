@@ -7,8 +7,19 @@
   <http auto-config="true" >
     <csrf disabled="true"/>
     <intercept-url pattern="/" access="permitAll" />
-    <intercept-url pattern="/indicators/**" access="permitAll" />
     <intercept-url pattern="/dashboard/private/**" access="hasRole('ADMIN')" />
+    <intercept-url pattern="/indicators/**" access="permitAll" />
+    <intercept-url pattern="/harvesters/**" access="permitAll" />
+    <intercept-url pattern="/remotes/**" access="permitAll" />
+    <intercept-url pattern="/indicators/**" method="POST" access="hasRole('ADMIN')"/>
+    <intercept-url pattern="/indicators/**" method="PUT" access="hasRole('ADMIN')"/>
+    <intercept-url pattern="/indicators/**" method="DELETE" access="hasRole('ADMIN')"/>
+    <intercept-url pattern="/remotes/**" method="POST" access="hasRole('ADMIN')"/>
+    <intercept-url pattern="/remotes/**" method="PUT" access="hasRole('ADMIN')"/>
+    <intercept-url pattern="/remotes/**" method="DELETE" access="hasRole('ADMIN')"/>
+    <intercept-url pattern="/harvesters/**" method="POST" access="hasRole('ADMIN')"/>
+    <intercept-url pattern="/harvesters/**" method="PUT" access="hasRole('ADMIN')"/>
+    <intercept-url pattern="/harvesters/**" method="DELETE" access="hasRole('ADMIN')"/>
     <form-login  login-page="/login" username-parameter="ssoId" password-parameter="password" authentication-failure-url="/login?error" />
   </http>
 

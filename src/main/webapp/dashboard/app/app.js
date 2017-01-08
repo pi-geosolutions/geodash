@@ -44,6 +44,8 @@ require('./components/coordspicker/coordspicker');
 require('./components/coordspicker/coordspicker.tpl');
 require('./components/indicators/indicators');
 require('./components/indicators/indicators.tpl');
+require('./components/remotes/remotes');
+require('./components/remotes/remotes.tpl');
 require('./components/harvesters/harvesters');
 require('./components/harvesters/harvesters.tpl');
 require('./components/harvesters/scheduler.tpl');
@@ -61,6 +63,7 @@ function AppController($router) {
     { path: '/'                 , component: 'admin' },
     { path: '/admin'            , component: 'admin' },
     { path: '/harvesters'       , component: 'harvesters' },
+    { path: '/remotes'          , component: 'remotes' }
   ]);
 }
 

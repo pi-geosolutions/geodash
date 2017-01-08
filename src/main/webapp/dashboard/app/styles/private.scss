@@ -1,4 +1,6 @@
 $color_500: #86b3ff;
+$green_color_500: #4CAF50;
+$green_color_200: #A5D6A7;
 
 
 .geodash-admin {
@@ -19,6 +21,16 @@ $color_500: #86b3ff;
       }
       &:hover {
         background-color: lighten($color_500, 10);
+      }
+      &.remote-item {
+        background-color: $green_color_500;
+        &.active, &:focus {
+          background-color: darken($green_color_500, 15);
+        }
+        &:hover {
+          background-color: lighten($green_color_500, 10);
+        }
+
       }
     }
   }
@@ -177,4 +189,27 @@ $color_500: #86b3ff;
   .harvester-history{
     margin-top: 50px;
   }
+}
+
+table {
+  margin-top: 30px;
+}
+.table-striped > tbody {
+  tr {
+    cursor: pointer;
+    &:hover {
+      background-color: #cadbe0;
+    }
+    &:nth-of-type(odd) {
+      background-color: #dde0f3;
+      &:hover {
+        background-color: #cadbe0;
+      }
+
+    }
+  }
+}
+.btn-block {
+  margin-top: 30px;
+  text-align: center;
 }

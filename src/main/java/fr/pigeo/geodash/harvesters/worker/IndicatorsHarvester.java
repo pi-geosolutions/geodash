@@ -69,7 +69,7 @@ public class IndicatorsHarvester {
 
         exchange.setProperty("harvestInfo", info);
         IndicatorDao indicatorDao = (IndicatorDao)exchange.getContext().getRegistry().lookupByName("indicatorDao");
-        //indicatorDao.deleteByHarvesterid(configuration.getId());
+        indicatorDao.deleteByHarvesterid(configuration.getId());
     }
 
     public void storeIndicator(Exchange exchange) throws InvalidArgumentException {

@@ -15,5 +15,18 @@
   "graph": "Graphique",
   "globalT": "Informations globales de l'indicateur",
   "datasourceT": "Configuration des sources de données",
-  "graphT": "Définition du graphique"
+  "graphT": "Définition du graphique",
+  "datasourceT": "Configure the datasources that feed the chart",
+  "graphT": "Define the chart",
+  "seconds": "seconds",
+  "indicators.delete": "Supprimer les indicateurs",
+  "harvesters.history" : "Historique du moissonnage",
+  "harvesters.history.none" : "Aucun historique",
+  "harvesters.history.indicatorsin" : "Indicateurs moissonnés en",
+  "harvesters.history.indicatorsremoved" : "indicateurs supprimés",
+  "harvesters.history.delete" : "Supprimer",
+  "harvesters.history.error" : "Erreur pendant le moissonnage",
+  "nodeurl": "Url du noeud",
+  "nodelabel": "Label du noeud",
+  "addSelection": "Ajouter les indicateurs sélectionnés"
 }

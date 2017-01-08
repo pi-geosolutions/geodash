@@ -74,8 +74,10 @@ public class HarvesterRouteBuilder extends RouteBuilder {
 
         //from("quartz2://myGroup/myTimerName?cron=0/2+*+*+*+*+?").to("activemq:Totally.Rocks");
 
+/*
         from("activemq:queue:Totally.Rocks?concurrentConsumers=5")
                  .log(LoggingLevel.INFO, LOGGER_NAME, "****** CRON message received.");
+*/
 
         /*from("jpa:fr.pigeo.geodash.model.Harvester?consumer.query=select h.id, h.name from fr.pigeo.geodash.model.Harvester h")
                 .routePolicy(policy)
