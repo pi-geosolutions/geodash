@@ -19,6 +19,9 @@ module.exports = config:
     ng_templates:
       module: 'geodash'
       relativePath: 'app/'
+    babel:
+      pattern: /\.es6/
+      plugins: [ "transform-class-properties" ]
   files:
     javascripts:
       joinTo:

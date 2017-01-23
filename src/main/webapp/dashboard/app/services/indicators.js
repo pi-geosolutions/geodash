@@ -14,7 +14,7 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
 
   var promises = [];
   config.datasources.forEach(function(ds) {
-    promises.push(this.getSerie(ds, lon, lat));
+    promises.push(this.getSerie(ds, lon, lat, config.url));
   }.bind(this));
 
   return this.$q.all(promises).then(function(datasources) {
@@ -103,9 +103,11 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
   }.bind(this));
 };
 
-Indicator.prototype.getSerie = function(datasource, lon, lat) {
+Indicator.prototype.getSerie = function(datasource, lon, lat, remoteUrl) {
+
+  var path = remoteUrl || '../..'
   return this.$http({
-    url : '../../geodata/serie/' + lon + '/' + lat + '/',
+    url : `${path}/geodata/serie/${lon}/${lat}/`,
     method: 'POST',
     data: $.param({
       config: JSON.stringify(datasource)
@@ -120,7 +122,9 @@ Indicator.prototype.getSerie = function(datasource, lon, lat) {
           JSON.parse(datasource.transform));
     }
     return serie;
-  }.bind(this));
+  }.bind(this), () => {
+
+  });
 };
 
 angular.module('geodash')

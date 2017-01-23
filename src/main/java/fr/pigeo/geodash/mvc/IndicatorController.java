@@ -15,12 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Controller
+@RestController
+@EnableWebMvc
 @RequestMapping("/indicators")
 public class IndicatorController {
 
@@ -33,6 +35,7 @@ public class IndicatorController {
 	private static final Log LOG = LogFactory.getLog(IndicatorController.class.getName());
 
 	@RequestMapping(value = "/", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@CrossOrigin(origins = "*")
 	@ResponseBody
 	public byte[] findAll(HttpServletRequest request, HttpServletResponse response ) throws IOException {
 		try {
@@ -50,31 +53,23 @@ public class IndicatorController {
 		}
 	}
 
-	@RequestMapping(value = "/user/{userid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ResponseBody
-	public String findByUserid(
-			@PathVariable Long userid,
-			HttpServletRequest request,
-			HttpServletResponse response ) throws IOException {
+	public byte[]  findByUserid(
+			@PathVariable Long id,
+			HttpServletResponse response) throws IOException {
 
-		return "deprecated";
-/*
 		try {
-			User user = this.userRepository.findOne(userid);
-			JSONArray ret = new JSONArray();
-			for(Indicator indicator : user.getIndicators()) {
-				ret.put(indicator.toJSON());
-			}
-			return ret.toString();
+			return this.indicatorRepository.findOne(id).toJSON().toString().getBytes();
 
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			throw new IOException(e);
 		}
-*/
 	}
 
+/*
 	@RequestMapping(value = "/add/{userid}/{name}", method = RequestMethod.GET, produces="application/json; charset=utf-8")
 	@ResponseBody
 	public String add(@PathVariable Long userid, @PathVariable String name){
@@ -85,6 +80,7 @@ public class IndicatorController {
 
 		return "Indicator created with ID : " + indicator.getId();
 	}
+*/
 
 	@RequestMapping(value = "/create/{userid}/", method = RequestMethod.POST, produces="application/json; charset=utf-8")
 	@ResponseBody

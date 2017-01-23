@@ -24,9 +24,6 @@ public class RemoteController {
 	private static final Log LOG = LogFactory.getLog(RemoteController.class.getName());
 
 	@Autowired
-	private ApplicationContext appContext;
-
-	@Autowired
 	private RemoteDao remoteDao;
 
 

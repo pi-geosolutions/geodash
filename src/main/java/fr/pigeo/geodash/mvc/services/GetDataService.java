@@ -33,6 +33,8 @@ public class GetDataService {
             cov = reader.read(null);
         } catch (IOException giveUp) {
             throw new RuntimeException(giveUp);
+        } finally {
+            reader.dispose();
         }
 
         DirectPosition pos = new DirectPosition2D(cov.getCoordinateReferenceSystem(),lat, lon);

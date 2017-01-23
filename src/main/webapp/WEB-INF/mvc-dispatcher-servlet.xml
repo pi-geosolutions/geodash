@@ -16,7 +16,13 @@
     </bean>
 
     <mvc:cors>
-        <mvc:mapping path="/**" />
+        <mvc:mapping path="/**"
+                     allowed-origins="*"
+                     allowed-methods="GET, PUT"
+                     allowed-headers="header1, header2, header3"
+                     exposed-headers="header1, header2"
+                     allow-credentials="false"
+        />
     </mvc:cors>
 
 </beans>

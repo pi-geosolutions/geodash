@@ -19,7 +19,7 @@
             </div>
 
             <!--Node Label-->
-            <div class="form-group" ng-class="{'has-error': newRemoteForm.nodeLabel.$invalid}">
+            <div class="form-group" ng-class="{'has-error': newRemoteForm.nodeLabel.$invalid}" ng-show="remotes.geodashUrl">
                 <label class="col-sm-2 control-label">
                     <span translate="">nodelabel</span>
                 </label>
