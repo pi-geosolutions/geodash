@@ -148,7 +148,9 @@ AdminController.prototype.initNew = function() {
 
 AdminController.prototype.viewChart = function(selector) {
 
-  this.IndicatorService.getGraph(this.current.config, -14.326, 13.923).then(
+  var optYear = new Date().getFullYear();
+
+  this.IndicatorService.getGraph(this.current.config, -14.326, 13.923, optYear).then(
       function(chartConfig) {
         var conf = angular.copy(chartConfig);
         conf.exporting = {

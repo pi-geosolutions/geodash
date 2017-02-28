@@ -9,6 +9,7 @@ import org.json.JSONObject;
 public class DataSourceConfig {
 
     protected String type;
+    protected String optYear;
 
     static public final String DATASOURCE_TYPE_DATABASE = "database";
     static public final String DATASOURCE_TYPE_FILESYSTEM = "filesystem";
@@ -40,5 +41,13 @@ public class DataSourceConfig {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getOptYear() {
+        return optYear;
+    }
+
+    public void setOptYear(String optYear) {
+        this.optYear = optYear;
     }
 }

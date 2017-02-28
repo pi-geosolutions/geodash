@@ -73,6 +73,19 @@ $panel-color: #A9D0A2;
         text-transform: uppercase;
       }
     }
+    > .panel-body {
+      position: relative;
+      .year-input {
+        position: absolute;
+        z-index: 10;
+        right: 0;
+        top: 0;
+        width: 75px;
+        border-radius: 0;        
+        border-top:none;
+        border-right:none;
+      }
+    }
   }
   .full-view {
     position: absolute;

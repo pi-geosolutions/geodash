@@ -58,7 +58,7 @@ GdDatasourceController.prototype.isValid = function() {
 GdDatasourceController.prototype.test = function() {
 
   this.IndicatorService.getSerie(
-      this.datasource, this.lonlat[0], this.lonlat[1]).then(function(data){
+      this.datasource, this.lonlat[0], this.lonlat[1], null, this.optYear).then(function(data){
 
     if(data.error) {
       this.testError = data.error;

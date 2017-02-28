@@ -29,6 +29,7 @@
   </nav>
 
 
+  <!--Indicator panel in grid-->
   <section>
 
     <div id="sortable" class="ui-sortable" ng-hide="ctrl.zoom">
@@ -40,6 +41,7 @@
           </h3>
         </div>
         <div class="panel-body">
+          <input type="number" ng-init="indicator.optYear = 2017" class="year-input form-control" ng-model="indicator.optYear" ng-change="ctrl.renderGraph(indicator)" ng-if="ctrl.hasYear(indicator)">
           <div id="board_{{indicator.rid || indicator.id}}_chart">
           </div>
           <div class="delete-btn"><span class="glyphicon glyphicon-trash" ng-click="ctrl.remove(indicator)" data-toggle="modal" data-target="#modalok"></span></div>
@@ -47,6 +49,7 @@
       </div>
     </div>
 
+    <!--Full screen indicator-->
     <div class="full-view" ng-show="ctrl.zoom">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -58,6 +61,7 @@
           </button>
         </div>
         <div class="panel-body">
+          <input type="number" ng-init="ctrl.zoom.optYear = 2017" class="year-input form-control" ng-model="ctrl.zoom.optYear" ng-change="ctrl.renderGraphZoom(ctrl.zoom)" ng-if="ctrl.hasYear(ctrl.zoom)">
           <div id="board_zoom_{{ctrl.zoom.rid || ctrl.zoom.id}}_chart">
           </div>
         </div>

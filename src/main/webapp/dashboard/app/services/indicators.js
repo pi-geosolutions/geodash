@@ -9,12 +9,21 @@ var Indicator = function($http, $q, Transformer, gdUtils, appFlash, gdSerieFn) {
   this.gdSerieFn = gdSerieFn;
 };
 
-
-Indicator.prototype.getGraph = function(config, lon, lat) {
+/**
+ * Get chart config and feed it with serie datas
+ *
+ * @param config
+ * @param lon
+ * @param lat
+ * @param optYear
+ * @returns {*|Promise.<TResult>}
+ */
+Indicator.prototype.getGraph = function(config, lon, lat, optYear) {
 
   var promises = [];
   config.datasources.forEach(function(ds) {
-    promises.push(this.getSerie(ds, lon, lat, config.url));
+    var year = optYear + (ds.nrelative || 0);
+    promises.push(this.getSerie(ds, lon, lat, config.url, year));
   }.bind(this));
 
   return this.$q.all(promises).then(function(datasources) {
@@ -38,6 +47,11 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
         if(idx === 0) {
           mainSerieCount = data.length;
         }
+
+        // Replace year in legend if user can choose year
+        chartConfig.series[idx].name =
+          chartConfig.series[idx].name.replace('----',
+            optYear + (config.datasources[idx].nrelative || 0));
 
         // Multiple series
         if (angular.isArray(data[0][0])) {
@@ -103,14 +117,15 @@ Indicator.prototype.getGraph = function(config, lon, lat) {
   }.bind(this));
 };
 
-Indicator.prototype.getSerie = function(datasource, lon, lat, remoteUrl) {
+Indicator.prototype.getSerie = function(datasource, lon, lat, remoteUrl, optYear) {
 
   var path = remoteUrl || '../..'
   return this.$http({
     url : `${path}/geodata/serie/${lon}/${lat}/`,
     method: 'POST',
     data: $.param({
-      config: JSON.stringify(datasource)
+      config: JSON.stringify(datasource),
+      year: optYear
     }),
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'

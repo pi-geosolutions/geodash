@@ -240,6 +240,15 @@ MyboardController.prototype.renderGraphs_ = function() {
   }.bind(this));
 };
 
+MyboardController.prototype.renderGraph = function(indicator) {
+    var selector = `#board_${indicator.rid || indicator.id}_chart`;
+    this.ChartFactory.renderIndicator(indicator, selector, this.lon, this.lat);
+};
+MyboardController.prototype.renderGraphZoom = function(indicator) {
+    var selector = `#board_zoom_${indicator.rid || indicator.id}_chart`;
+    this.ChartFactory.renderIndicator(indicator, selector, this.lon, this.lat);
+};
+
 /**
  * Add indicators to your selection. The selection means the indicators
  * you gonna add to your dashboard.
@@ -291,6 +300,12 @@ MyboardController.prototype.isAvailable = function(indicator) {
   return !this.indicators.some(function(ind) {
     return indicator.name == ind.name;
   });
+};
+
+
+MyboardController.prototype.hasYear = function(indicator) {
+  var c = indicator.config || indicator.rconfig;
+  return c.datasources[0].pattern.indexOf('----') >= 0;
 };
 
 /**

@@ -44,6 +44,7 @@ public class LoaderFileSystem extends Loader {
         GetDataService service = new GetDataService();
         List<List<Double>> values = new ArrayList<List<Double>>();
 
+
         // Used to have a sorted map with date as keys
         final Map<String,File> filesMap = new TreeMap<String, File>();
 
@@ -58,13 +59,31 @@ public class LoaderFileSystem extends Loader {
         pattern = pattern.replaceAll("([?.])", "\\\\$1");
         pattern = pattern.replaceAll("\\$"+placeholder+"\\$", "([\\\\w\\\\s]+?)");
 
+        //Year can be a input
+        if(pattern.indexOf("----") >= 0) {
+            pattern = pattern.replaceAll("----", this.config.getOptYear());
+        }
+
         final String fPattern = pattern;
 
         String tsDateFormat = null;
+        // It's a date, will be a datetime type graph
         if(placeholder != null && placeholder.startsWith("date")) {
             tsDateFormat = placeholder.substring(4);
             placeholder = "date";
         }
+
+        // restrict matching from 1 janv to today in the year
+        final boolean restrictInYear;
+        if(tsDateFormat != null && tsDateFormat.startsWith("restrict")) {
+            tsDateFormat = placeholder.substring(8);
+            restrictInYear = true;
+        }
+        else {
+            restrictInYear = false;
+        }
+
+
         final String sDateFormat = tsDateFormat;
 
         // get files that match the pattern
@@ -76,7 +95,7 @@ public class LoaderFileSystem extends Loader {
                     try {
                         // only return past dates within the current year
                         // for date in the year (MMdd) only
-                        if(sDateFormat != null && sDateFormat.indexOf("YY") < 0) {
+                        if(sDateFormat != null && restrictInYear) {
                             Date today = new Date();
                             SimpleDateFormat dateFormat = new SimpleDateFormat(sDateFormat);
                             Date ddate = dateFormat.parse(m.group(1));

@@ -37,7 +37,7 @@ var ChartFactory = function($http, $q, appFlash, IndicatorService) {
    */
   this.renderIndicator = function(indicator, selector, lon, lat, height) {
     var h = height;
-    IndicatorService.getGraph(indicator.config || indicator.rconfig, lon, lat).then(
+    IndicatorService.getGraph(indicator.config || indicator.rconfig, lon, lat, indicator.optYear).then(
         function(chartConfig) {
           if(!chartConfig) {
             appFlash.create('warning', 'chart.noconfig', {

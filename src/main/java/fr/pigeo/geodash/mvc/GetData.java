@@ -49,11 +49,13 @@ public class GetData
     public String getSerie(HttpServletRequest request,
                        HttpServletResponse response,
                        @RequestParam String config,
+                       @RequestParam (required = false) String year,
                        @PathVariable String lon,
                        @PathVariable String lat) throws Exception {
 
         JSONObject res = null;
         DataSourceConfig dsConfig = DataSourceConfig.createConfig(config);
+        dsConfig.setOptYear(year);
         Indicator indicator = new Indicator(dsConfig);
 
         try {

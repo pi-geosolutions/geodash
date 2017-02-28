@@ -59,7 +59,7 @@ GdDatasourcesController.prototype.show = function(ds) {
 GdDatasourcesController.prototype.isValid = function(datasource) {
   var ds = datasource || this.current;
   return ds && ds.name && ds.type &&
-      ((ds.type == 'filesystem' && ds.path && ds.pattern && ds.amount >= 0) ||
+      ((ds.type == 'filesystem' && ds.path && ds.pattern && angular.isDefined(ds.amount)) ||
       (ds.type == 'database' && ds.url && ds.sql));
 };
 
