@@ -10,7 +10,7 @@
   <properties>
     <spring.version>4.2.3.RELEASE</spring.version>
     <spring-security.version>4.0.2.RELEASE</spring-security.version>
-    <geotools.version>8.6</geotools.version>
+    <geotools.version>17.0</geotools.version>
     <camel.version>2.14.0</camel.version>
     <log4j.version>1.2.17</log4j.version>
     <slf4j.version>1.7.7</slf4j.version>
@@ -310,11 +310,6 @@
     </dependency>
     <dependency>
       <groupId>org.geotools</groupId>
-      <artifactId>gt-wfs</artifactId>
-      <version>${geotools.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
       <artifactId>gt-wms</artifactId>
       <version>${geotools.version}</version>
     </dependency>
@@ -326,6 +321,11 @@
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-geotiff</artifactId>
+      <version>${geotools.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-image</artifactId>
       <version>${geotools.version}</version>
     </dependency>
     <dependency>
