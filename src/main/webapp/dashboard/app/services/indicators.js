@@ -107,6 +107,30 @@ Indicator.prototype.getGraph = function(config, lon, lat, optYear) {
         }
       }.bind(this));
 
+      // update ESA colors and labels
+      if(chartConfig.colors == 'esa') {
+        var colors = [];
+        // consider color table is generated from first serie
+        var esaSerie = chartConfig.series[0];
+
+        esaSerie.data.forEach( v => {
+          var p = this.gdUtils.getEsaDef(v[0]);
+          if(p) {
+            colors.push(`rgb(${p.R},${p.G},${p.B})`)
+          }
+        });
+        chartConfig.colors = colors;
+
+      }
+
+      // check for regression
+      if(chartConfig.series[0].regression) {
+        var s = chartConfig.series[0];
+        s.data.forEach(function(d, i) {
+          d.unshift(i);
+        })
+      }
+
     }
     catch(e) {
       this.appFlash.create('danger', 'chart.serie.error',  {
