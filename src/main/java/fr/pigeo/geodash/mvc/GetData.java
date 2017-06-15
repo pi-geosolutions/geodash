@@ -64,6 +64,7 @@ public class GetData
             res = new JSONObject();
             res.put("error", e.getMessage());
             res.put("cause", e.getCause());
+            throw e;
         }
         return res.toString();
     }
