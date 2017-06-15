@@ -308,8 +308,7 @@ MyboardController.prototype.hasYear = function(indicator) {
   try {
     var c = indicator.config || indicator.rconfig;
     return c.datasources[0].pattern.indexOf('----') >= 0;
-  }
-  catch (e) {
+  } catch(e) {
     return false;
   }
 };

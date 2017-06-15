@@ -40,6 +40,7 @@ var ChartFactory = function($http, $q, appFlash, IndicatorService) {
     IndicatorService.getGraph(indicator.config || indicator.rconfig, lon, lat, indicator.optYear).then(
         function(chartConfig) {
           if(!chartConfig) {
+            indicator.error = 'chart.noconfig';
             appFlash.create('warning', 'chart.noconfig', {
               name: indicator.config.label || indicator.name
             });
@@ -69,6 +70,7 @@ var ChartFactory = function($http, $q, appFlash, IndicatorService) {
       $(selector).highcharts(config);
     }
     catch (e) {
+      $(selector).remove();
       appFlash.create('danger', 'chart.render.error');
     }
   };
