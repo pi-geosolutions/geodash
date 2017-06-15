@@ -53,6 +53,25 @@ public class IndicatorController {
 		}
 	}
 
+	@RequestMapping(value = "/enabled/", method = RequestMethod.GET, produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@CrossOrigin(origins = "*")
+	@ResponseBody
+	public byte[] findAllEnabled(HttpServletRequest request, HttpServletResponse response ) throws IOException {
+		try {
+			JSONArray ret = new JSONArray();
+			for(Indicator indicator : this.indicatorRepository.findByEnabledTrue()) {
+				ret.put(indicator.toJSON());
+			}
+			//return ret.toString().getBytes("UTF-8");
+			return ret.toString().getBytes();
+
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			throw new IOException(e);
+		}
+	}
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public byte[]  findByUserid(
@@ -109,6 +128,7 @@ public class IndicatorController {
 	@ResponseBody
 	public String create(@RequestParam String name,
 						 @RequestParam(required = false) Long id,
+						 @RequestParam(required = false, defaultValue = "false") boolean enabled,
 						 @RequestParam String config) throws JSONException {
 
 		Indicator indicator;
@@ -122,6 +142,7 @@ public class IndicatorController {
 
 		indicator.setName(name);
 		indicator.setConfig(config);
+		indicator.setEnabled(enabled);
 		this.indicatorRepository.save(indicator);
 
 		return "{\"id\":" + indicator.getId() + "}";

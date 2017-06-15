@@ -19,4 +19,7 @@ public interface IndicatorDao extends CrudRepository<Indicator, Long> {
     @Transactional
     public List<Indicator> deleteByHarvesterid(Long harvesterid);
 
+    @Query
+    public List<Indicator> findByEnabledTrue();
+
 }
