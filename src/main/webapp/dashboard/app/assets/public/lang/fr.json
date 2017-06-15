@@ -18,5 +18,7 @@
   "indicator.removed" : "L'indicateur '{{name}}' a été supprimé",
   "indicator.added"   : "L'indicateur '{{name}}' a été ajouté",
   "noparam.error"     : "Veuillez fournir des parmètres pour la lattitude et la longitude",
-  "chart.serie.error" : "Erreur lors de la récupération des données qui alimentent la série. '{{name}}'"
+  "chart.serie.error" : "Erreur lors de la récupération des données qui alimentent la série. '{{name}}'",
+  "filter"            : "Filtrer",
+  "filter.clear"      : "Effacer"
 }

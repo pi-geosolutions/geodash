@@ -18,5 +18,7 @@
   "indicator.removed" : "Indicator '{{name}}' removed",
   "indicator.added"   : "Indicator '{{name}}' added",
   "noparam.error"     : "Please specify lon & lat parameters",
-  "chart.serie.error" : "Error occured while retrieving datas for chart series. '{{name}}'"
+  "chart.serie.error" : "Error occured while retrieving datas for chart series. '{{name}}'",
+  "filter"            : "Filter",
+  "filter.clear"      : "Clear"
 }

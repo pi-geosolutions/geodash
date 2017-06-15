@@ -4,10 +4,21 @@
   <div class="col-sm-4 left-panel">
     <h4 translate="">Indicators</h4>
 
+
+    <!--Filter input-->
+    <div class="filter-input">
+      <span class="glyphicon glyphicon-remove-sign clear"
+            ng-click="admin.listFilter = ''"
+            ng-show="admin.listFilter"
+            title="{{'Effacer' | translate}}">
+      </span>
+      <input type="text" class="form-control" placeholder="{{'Filtrer'|translate}}" data-ng-model="admin.listFilter" data-ng-model-options="{debounce: 300}">
+    </div>
+
     <!--Indicators list-->
     <div class="list-group">
       <a href="admin" class="list-group-item"
-         ng-repeat="indicator in admin.indicators"
+         ng-repeat="indicator in admin.indicators | filter:admin.listFilter"
          ng-class="{active: admin.current == indicator}"
          ng-click="admin.current = indicator">
         <span ng-if="indicator.harvesterid" class="glyphicon glyphicon-cloud"></span>
