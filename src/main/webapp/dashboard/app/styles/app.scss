@@ -152,3 +152,34 @@ geodash-coordspicker {
 #sortable li.ui-sortable-helper {
   opacity: 1;
 }
+
+.filter-input {
+  position: relative;
+  margin-bottom: 20px;
+  &::before {
+    content: "\e138";
+    font-family: 'Glyphicons Halflings';
+    float: right;
+    margin: 0.5em 0.4em 0 0;
+    font-size: 16px;
+    color: #d3d3d3;
+  }
+  .clear {
+    right: 2em;
+    position: absolute;
+    top: .75em;
+    color: #666;
+    &:hover {
+      cursor: pointer;
+      color: #222;
+    }
+  }
+
+  input[type='text'] {
+    border: none;
+    border-bottom: 1px solid #4BA2D9;
+    border-radius: 0;
+    box-shadow: none;
+    width: 90%;
+  }
+}
