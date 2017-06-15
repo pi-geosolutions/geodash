@@ -39,6 +39,7 @@ module.exports = config:
           'vendor/highcharts-3d.js',
           'vendor/exporting.js',
           'vendor/highcharts-more.js',
+          'vendor/highcharts-regression.js',
           'vendor/angular-flash.js',
           'vendor/angular-translate.js',
           'vendor/angular-translate-loader-static-files.js'

@@ -157,6 +157,7 @@ AdminController.prototype.viewChart = function(selector) {
           enabled: false
         };
 
+        // compute linear gradient
         conf.series.forEach(function(serie) {
           if(serie.color && serie.color.linearGradient) {
             var newData = [];

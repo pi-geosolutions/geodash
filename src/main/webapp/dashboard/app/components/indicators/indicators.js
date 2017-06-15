@@ -246,7 +246,8 @@ MyboardController.prototype.renderGraph = function(indicator) {
 };
 MyboardController.prototype.renderGraphZoom = function(indicator) {
     var selector = `#board_zoom_${indicator.rid || indicator.id}_chart`;
-    this.ChartFactory.renderIndicator(indicator, selector, this.lon, this.lat);
+    this.ChartFactory.renderIndicator(indicator, selector,
+      this.lon, this.lat, $('.full-view').height() - 100);
 };
 
 /**
@@ -304,8 +305,13 @@ MyboardController.prototype.isAvailable = function(indicator) {
 
 
 MyboardController.prototype.hasYear = function(indicator) {
-  var c = indicator.config || indicator.rconfig;
-  return c.datasources[0].pattern.indexOf('----') >= 0;
+  try {
+    var c = indicator.config || indicator.rconfig;
+    return c.datasources[0].pattern.indexOf('----') >= 0;
+  }
+  catch (e) {
+    return false;
+  }
 };
 
 /**

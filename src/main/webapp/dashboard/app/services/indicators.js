@@ -49,9 +49,11 @@ Indicator.prototype.getGraph = function(config, lon, lat, optYear) {
         }
 
         // Replace year in legend if user can choose year
-        chartConfig.series[idx].name =
-          chartConfig.series[idx].name.replace('----',
-            optYear + (config.datasources[idx].nrelative || 0));
+        if(idx <= chartConfig.series.length-1) {
+          chartConfig.series[idx].name =
+            chartConfig.series[idx].name.replace('----',
+              optYear + (config.datasources[idx].nrelative || 0));
+        }
 
         // Multiple series
         if (angular.isArray(data[0][0])) {

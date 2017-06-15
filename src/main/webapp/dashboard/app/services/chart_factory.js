@@ -9,6 +9,8 @@ var ChartFactory = function($http, $q, appFlash, IndicatorService) {
 
     var defer = $q.defer();
     var config = chartConfig[type];
+
+    console.log(type);
     if(!config) {
       console.warn('no config defined for chart: ' + type);
       defer.resolve(chartConfig.default);

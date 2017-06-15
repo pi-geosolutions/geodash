@@ -25,11 +25,11 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 public class GetDataServiceTest {
 
-    final String  tifFolder = "E:\\Users\\Documents\\GitHub\\geoDash\\src\\main\\resources\\02_moyennes_pluies\\";
+    final String  tifFolder = "/home/florent/dev/DATA_DIR/img/03_rainy_season/";
 
     @Test
     public void testGetValue() throws Exception {
-        File file = new File(tifFolder + "RainMm_2001_days.tif");
+        File file = new File(tifFolder + "2001_RSRainMm+0_v2.tif");
 
         assertTrue(file.exists());
         //mockMvc.
