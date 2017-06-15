@@ -42,7 +42,7 @@ var MyboardController = function ($scope, $timeout, $http, $q, Indicator,
 
   // retrieve all local indicators and remotes one
   // merge both arrays and filter on localStorage config
-  promises_.push($http.get('../../indicators/').then(response => {
+  promises_.push($http.get('../../indicators/enabled/').then(response => {
       indicators_ = response.data;
     }),
     $http.get('../../remotes/').then(response => {

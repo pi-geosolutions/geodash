@@ -18,6 +18,9 @@ public class Indicator {
     private String uuid;
     private String name;
 
+    @Column(columnDefinition = "boolean default true", nullable = false)
+    private boolean enabled;
+
     @Column(columnDefinition = "TEXT")
     private String config;
 
@@ -42,6 +45,14 @@ public class Indicator {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getConfig() {
@@ -81,6 +92,7 @@ public class Indicator {
         res.put("id", this.id);
         res.put("uuid", this.uuid);
         res.put("name", this.name);
+        res.put("enabled", this.enabled);
         res.put("harvesterid", this.harvesterid);
         res.put("nodeurl", this.nodeurl);
 
@@ -94,6 +106,7 @@ public class Indicator {
     public void fromGsonMap(Map<String, Object> map) {
         setName((String)map.get("name"));
         setUuid((String)map.get("uuid"));
+        setEnabled((boolean)map.get("enabled"));
         JSONObject json = new JSONObject((Map< String, String>)map.get("config"));
         setConfig(json.toString());
     }

@@ -101,6 +101,7 @@ AdminController.prototype.save = function() {
   var form = {
     name: this.current.name,
     id: this.current.id,
+    enabled: this.current.enabled,
     config: JSON.stringify(this.current.config)
   };
 

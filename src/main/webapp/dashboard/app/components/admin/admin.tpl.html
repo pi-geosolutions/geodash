@@ -11,6 +11,7 @@
          ng-class="{active: admin.current == indicator}"
          ng-click="admin.current = indicator">
         <span ng-if="indicator.harvesterid" class="glyphicon glyphicon-cloud"></span>
+        <span ng-if="!indicator.enabled" class="glyphicon glyphicon-off"></span>
         {{indicator.config.label || indicator.name}}
       </a>
 
@@ -76,6 +77,15 @@
             <div class="col-sm-8">
               <input type="text" class="form-control"
                      ng-model="admin.current.name">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="admin.current.enabled"><span translate="">enabled</span>
+                </label>
+              </div>
             </div>
           </div>
           <div class="form-group">
