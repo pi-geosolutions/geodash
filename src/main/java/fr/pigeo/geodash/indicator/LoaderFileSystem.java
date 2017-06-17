@@ -141,28 +141,33 @@ public class LoaderFileSystem extends Loader {
             if(i < nbStart || i == last) {
                 continue;
             }
-            String date = entry.getKey();
-            File file = entry.getValue();
 
-            double[] value = service.getValue(file, lon, lat);
-            List<Double> v = new ArrayList<Double>();
+            try {
+                String date = entry.getKey();
+                File file = entry.getValue();
 
-            // generate UTC date for datetime chart type
-            if(placeholder.equals("date")) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat(sDateFormat);
-                Date ddate = dateFormat.parse(date);
+                double[] value = service.getValue(file, lon, lat);
+                List<Double> v = new ArrayList<Double>();
 
-                // If no year is given in format, then we just catch month/day
-                // for the current year.
-                if(sDateFormat.toLowerCase().indexOf("yy") < 0) {
-                    ddate.setYear(new Date().getYear());
+                // generate UTC date for datetime chart type
+                if(placeholder.equals("date")) {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(sDateFormat);
+                    Date ddate = dateFormat.parse(date);
+
+                    // If no year is given in format, then we just catch month/day
+                    // for the current year.
+                    if(sDateFormat.toLowerCase().indexOf("yy") < 0) {
+                        ddate.setYear(new Date().getYear());
+                    }
+                    Long dateUTC = ddate.getTime();
+                    v.add((double)dateUTC);
                 }
-                Long dateUTC = ddate.getTime();
-                v.add((double)dateUTC);
+                v.add(round(value[0], 2));
+                values.add(v);
+                dates.add(date);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            v.add(round(value[0], 2));
-            values.add(v);
-            dates.add(date);
         }
 
         JSONObject res = new JSONObject();
