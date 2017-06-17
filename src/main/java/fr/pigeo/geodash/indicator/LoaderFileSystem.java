@@ -51,7 +51,7 @@ public class LoaderFileSystem extends Loader {
         String placeholder = null;
         String pattern = config.getPattern();
 
-
+        // Extract placeholders identifiers ($year$)
         Matcher matcher = Pattern.compile("\\$(\\w*?)\\$").matcher(pattern);
         while (matcher.find()) {
             placeholder = matcher.group(1);
@@ -70,6 +70,7 @@ public class LoaderFileSystem extends Loader {
         // It's a date, will be a datetime type graph
         if(placeholder != null && placeholder.startsWith("date")) {
             tsDateFormat = placeholder.substring(4);
+            tsDateFormat = tsDateFormat.replace("T", "'T'");
             placeholder = "date";
         }
 
@@ -82,7 +83,6 @@ public class LoaderFileSystem extends Loader {
         else {
             restrictInYear = false;
         }
-
 
         final String sDateFormat = tsDateFormat;
 
@@ -151,7 +151,10 @@ public class LoaderFileSystem extends Loader {
             if(placeholder.equals("date")) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat(sDateFormat);
                 Date ddate = dateFormat.parse(date);
-                if(sDateFormat.indexOf("YY") < 0) {
+
+                // If no year is given in format, then we just catch month/day
+                // for the current year.
+                if(sDateFormat.toLowerCase().indexOf("yy") < 0) {
                     ddate.setYear(new Date().getYear());
                 }
                 Long dateUTC = ddate.getTime();
