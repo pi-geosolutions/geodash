@@ -27,5 +27,7 @@
   "harvesters.history.error" : "Error during harvesting",
   "nodeurl": "Node Url",
   "nodelabel": "Node Label",
-  "addSelection": "Add selected indicators"
+  "addSelection": "Add selected indicators",
+  "toggleMap": "Toggle map",
+  "map": "map"
 }

@@ -126,28 +126,6 @@ a {
 
 }
 
-.coordspicker-map {
-  height: 220px;
-  width: 100%;
-  position: relative;
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAAAAABzHgM7AAAAAnRSTlMAAHaTzTgAAAARSURBVHgBY3iKBFEAOp/+MgB+UQnYeBZPWAAAAABJRU5ErkJggg==');
-  .btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 50;
-  }
-}
-
-geodash-coordspicker {
-  .form {
-    margin-top:20px;
-    padding: 10px;
-  }
-}
-
-
-
 
 #sortable li.ui-sortable-helper {
   opacity: 1;

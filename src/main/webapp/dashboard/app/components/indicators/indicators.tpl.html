@@ -33,7 +33,7 @@
   <section>
 
     <div id="sortable" class="ui-sortable" ng-hide="ctrl.zoom">
-      <div ng-repeat="indicator in ctrl.indicators track by indicator.id" id="board_{{indicator.rid || indicator.id}}" ng-if="indicator.enabled && !indicator.error"
+      <div ng-repeat="indicator in ctrl.indicators track by indicator.id" id="board_{{indicator.rid || indicator.id}}" ng-if="(indicator.rconfig || indicator.enabled) && !indicator.error"
            class="ui-sortable-handle panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title" ng-click="ctrl.open(indicator)">

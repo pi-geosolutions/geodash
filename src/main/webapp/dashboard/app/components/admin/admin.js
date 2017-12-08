@@ -63,7 +63,8 @@ var chartConfig = {
 };
 
 var AdminController = function($routeParams, $http, $location, Indicator,
-                               Transformer, IndicatorService, ChartFactory) {
+                               Transformer, IndicatorService, ChartFactory,
+                               coordinates) {
 
   this.aceOptions = {
     mode: 'json',
@@ -74,6 +75,8 @@ var AdminController = function($routeParams, $http, $location, Indicator,
   this.IndicatorService = IndicatorService;
   this.ChartFactory = ChartFactory;
 
+  this.lonlat = coordinates.value;
+  this.coordinates = coordinates;
   this.indicators = Indicator.getAll(undefined, function() {
     this.indicators.forEach(function(indicator) {
       if (!indicator.config.datasources) {
@@ -151,7 +154,10 @@ AdminController.prototype.viewChart = function(selector) {
 
   var optYear = new Date().getFullYear();
 
-  this.IndicatorService.getGraph(this.current.config, -14.326, 13.923, optYear).then(
+  this.IndicatorService.getGraph(this.current.config,
+    this.coordinates.lonlat[0],
+    this.coordinates.lonlat[1],
+    optYear).then(
       function(chartConfig) {
         var conf = angular.copy(chartConfig);
         conf.exporting = {
@@ -193,5 +199,8 @@ AdminController.prototype.viewChart = function(selector) {
 angular.module('geodash')
     .controller('AdminController', [
       '$routeParams', '$http', '$location', 'Indicator', 'Transformer',
-      'IndicatorService', 'ChartFactory', AdminController
-    ]);
+      'IndicatorService', 'ChartFactory', 'coordinates', AdminController
+    ])
+  .value('coordinates', {
+    lonlat: []
+  });

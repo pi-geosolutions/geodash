@@ -40,9 +40,10 @@ var ChartFactory = function($http, $q, appFlash, IndicatorService) {
     IndicatorService.getGraph(indicator.config || indicator.rconfig, lon, lat, indicator.optYear).then(
         function(chartConfig) {
           if(!chartConfig) {
+            let config = indicator.config || indicator.rconfig;
             indicator.error = 'chart.noconfig';
             appFlash.create('warning', 'chart.noconfig', {
-              name: indicator.config.label || indicator.name
+              name: config.label || indicator.name
             });
           }
           else {

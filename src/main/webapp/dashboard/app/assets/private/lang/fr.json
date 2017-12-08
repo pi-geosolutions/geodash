@@ -28,5 +28,7 @@
   "harvesters.history.error" : "Erreur pendant le moissonnage",
   "nodeurl": "Url du noeud",
   "nodelabel": "Label du noeud",
-  "addSelection": "Ajouter les indicateurs sélectionnés"
+  "addSelection": "Ajouter les indicateurs sélectionnés",
+  "toggleMap": "Afficher/masquer la carte",
+  "map": "carte"
 }

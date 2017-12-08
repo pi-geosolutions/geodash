@@ -111,16 +111,19 @@
 </div>
 
 <!--Merge with another datasource section-->
-<div class="checkbox col-sm-offset-2" ng-show="$parent.$first == false">
-  <label>
-    <input type="checkbox" ng-model="ctrl.datasource.merge"><span translate="">Merge with previous</span>
-  </label>
-  <div class="app-mergetype" ng-if="ctrl.datasource.merge">
-    <label><input type="radio" ng-model="ctrl.datasource.mergeType" checked value="concat"><span translate="">Concat</span> </label>
-    <label><input type="radio" ng-model="ctrl.datasource.mergeType" value="percentage"><span translate="">Percentage</span> </label>
+<div class="form-group">
+  <div class="col-sm-offset-2 col-sm-10">
+    <div class="checkbox " ng-show="$parent.$first == false">
+      <label>
+        <input type="checkbox" ng-model="ctrl.datasource.merge"><span translate="">Merge with previous</span>
+      </label>
+      <div class="app-mergetype" ng-if="ctrl.datasource.merge">
+        <label><input type="radio" ng-model="ctrl.datasource.mergeType" checked value="concat"><span translate="">Concat</span> </label>
+        <label><input type="radio" ng-model="ctrl.datasource.mergeType" value="percentage"><span translate="">Percentage</span> </label>
+      </div>
+    </div>
   </div>
 </div>
-
 <!--Compute from another datasource section-->
 <div class="form-group" ng-if="!ctrl.datasource.merge && ctrl.sourcesCtrl.datasources.length > 1">
   <label class="col-sm-2 control-label">
@@ -146,10 +149,10 @@
       <a href="" data-target="{{::'#testdatapane' + ctrl.datasource.$$hashKey.replace(':', '_')}}" aria-controls="global" role="tab" data-toggle="tab">data</a>
     </li>
     <li role="presentation" ng-if="ctrl.testData">
-      <a href="" data-target="#testtransformpane" aria-controls="datasource" role="tab" data-toggle="tab">transform</a>
+      <a href="" data-target="{{::'#testtransformpane' + ctrl.datasource.$$hashKey.replace(':', '_')}}" aria-controls="datasource" role="tab" data-toggle="tab">transform</a>
     </li>
     <li role="presentation" ng-if="ctrl.testData">
-      <a href="" data-target="#viewserie" aria-controls="datasource" role="tab" data-toggle="tab">view</a>
+      <a href="" data-target="{{::'#viewserie' + ctrl.datasource.$$hashKey.replace(':', '_')}}" aria-controls="datasource" role="tab" data-toggle="tab">view</a>
     </li>
   </ul>
 
@@ -157,10 +160,6 @@
 
     <!--Test request-->
     <div role="tabpanel" class="tab-pane" id="{{::'testdatapane' + ctrl.datasource.$$hashKey.replace(':', '_')}}">
-
-      <!--Coordinates picker-->
-      <geodash-coordspicker coordinates="ctrl.lonlat">
-      </geodash-coordspicker>
 
       <div class="form-group col-md-4">
         <label class="control-label">
@@ -184,7 +183,7 @@
     </div>
 
     <!--Transform config & test content-->
-    <div role="tabpanel" class="tab-pane" id="testtransformpane">
+    <div role="tabpanel" class="tab-pane" id="{{::'testtransformpane' + ctrl.datasource.$$hashKey.replace(':', '_')}}">
       <label translate="">transformConfig</label>
 
       <!--Transform config-->
@@ -201,7 +200,7 @@
     </div>
 
     <!--view serie-->
-    <div role="tabpanel" class="tab-pane" id="viewserie">
+    <div role="tabpanel" class="tab-pane" id="{{::'viewserie' + ctrl.datasource.$$hashKey.replace(':', '_')}}">
       <input type="text" class="form-control input-sm"
              placeholder="{{::'Name' | translate}}"
              ng-model="ctrl.serieChart.name">

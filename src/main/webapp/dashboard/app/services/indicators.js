@@ -163,9 +163,7 @@ Indicator.prototype.getSerie = function(datasource, lon, lat, remoteUrl, optYear
           JSON.parse(datasource.transform));
     }
     return serie;
-  }.bind(this), () => {
-
-  });
+  }.bind(this), () => {});
 };
 
 angular.module('geodash')

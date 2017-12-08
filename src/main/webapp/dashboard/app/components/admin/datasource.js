@@ -18,7 +18,7 @@ module.directive('gdDatasourceForm', function() {
 
 var GdDatasourceController =
     function($scope, $http, gdUtils, Transformer, IndicatorService,
-             ChartFactory, gdSerieFn) {
+             ChartFactory, gdSerieFn, coordinates) {
 
       this.$scope = $scope;
       this.$http = $http;
@@ -27,6 +27,7 @@ var GdDatasourceController =
       this.IndicatorService = IndicatorService;
       this.ChartFactory = ChartFactory;
       this.gdSerieFn = gdSerieFn;
+      this.coordinates = coordinates;
 
       $scope.$watch(function(){
         return this.datasource;
@@ -58,9 +59,12 @@ GdDatasourceController.prototype.isValid = function() {
 GdDatasourceController.prototype.test = function() {
 
   this.IndicatorService.getSerie(
-      this.datasource, this.lonlat[0], this.lonlat[1], null, this.optYear).then(function(data){
+      this.datasource, this.coordinates.lonlat[0], this.coordinates.lonlat[1], null, this.optYear).then(function(data){
 
-    if(data.error) {
+    if(!data) {
+      this.testError = 'No value';
+    }
+    else if(data.error) {
       this.testError = data.error;
     }
     else {
@@ -70,6 +74,7 @@ GdDatasourceController.prototype.test = function() {
   }.bind(this), function(response) {
     this.testError = response.statusText;
     this.testData = null;
+    this.datasource.transform = null;
   }.bind(this));
 };
 
@@ -125,7 +130,7 @@ GdDatasourceController.prototype.resetForm = function() {
 
 module.controller('GdDatasourceController', [
   '$scope', '$http', 'gdUtils', 'Transformer', 'IndicatorService',
-  'ChartFactory', 'gdSerieFn',
+  'ChartFactory', 'gdSerieFn', 'coordinates',
   GdDatasourceController]
 );
 
