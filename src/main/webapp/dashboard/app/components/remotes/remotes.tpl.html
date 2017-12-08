@@ -11,15 +11,28 @@
                     <span translate="">nodeurl</span>
                 </label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control"
-                           ng-model="remotes.geodashUrl"
-                           ng-change="remotes.getIndicators()"
-                    ng-model-options="{debounce: 600}">
+                    <div class="dropdown">
+                        <input class="form-control" type="text" data-toggle="dropdown"
+                               data-ng-model="remotes.currentNode.url"
+                               data-ng-change="remotes.getIndicators()"
+                               data-ng-model-options="{debounce:500}"
+                               placeholder="{{'remoteUrl' | translate}}"/>
+                        <ul class="dropdown-menu" role="menu" data-ng-show="remotes.nodes.length > 0">
+                            <li data-ng-repeat="node in remotes.nodes">
+                                <a href="remotes" data-ng-click="$event.stopPropagation();remotes.onNodeChoose(node)" title="{{node.url}}">
+                                    {{node.name}}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
 
+
+
             <!--Node Label-->
-            <div class="form-group" ng-class="{'has-error': newRemoteForm.nodeLabel.$invalid}" ng-show="remotes.geodashUrl">
+            <div class="form-group" ng-class="{'has-error': newRemoteForm.nodeLabel.$invalid}" ng-show="remotes.currentNode.url">
                 <label class="col-sm-2 control-label">
                     <span translate="">nodelabel</span>
                 </label>
@@ -27,21 +40,28 @@
                     <input type="text" class="form-control"
                            required
                            name="nodeLabel"
-                           ng-model="remotes.nodeLabel">
+                           ng-model="remotes.currentNode.name">
                 </div>
+            </div>
+            <div class="pull-right">
+                <button class="btn btn-geodash"
+                        ng-click="remotes.clearSelection()" ng-show="remotes.indicators.length">
+                    <span translate>clear</span></button>
             </div>
             <table class="table table-striped">
                 <tr ng-repeat="indicator in remotes.indicators"
                     ng-class="{success: remotes.isSelected(indicator.id)}"
                     ng-click="remotes.select(indicator.id)">
                     <td>{{indicator.id}}</td>
-                    <td>{{indicator.config.label || indicator.name}}</td>
+                    <td>{{indicator.config.label || indicator.name}}
+                        <span ng-if="remotes.isSelected(indicator.id)" class="pull-right glyphicon glyphicon-check"></span>
+                    </td>
                 </tr>
             </table>
 
             <div class="btn-block">
-                <button ng-show="remotes.selection.length > 0"
-                        ng-disabled="!remotes.nodeLabel"
+                <button ng-show="remotes.indicators.length > 0"
+                        ng-disabled="!remotes.currentNode.name"
                         class="btn btn-geodash"
                         ng-click="remotes.join()">
                     <span translate="">addSelection</span>

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLDecoder;
 
 @RestController
 @RequestMapping("/remotes")
@@ -72,10 +74,19 @@ public class RemoteController {
 
 	@RequestMapping(value="/", method=RequestMethod.DELETE)
 	@ResponseBody
-	public String delete(@RequestBody String config) throws Exception {
-		Remote remote = new Remote();
-		remote.fromJSON(config);
-		this.remoteDao.delete(remote);
+	public String delete(
+			@RequestBody (required = false) String config,
+			@RequestParam (required = false) String url
+			) throws Exception {
+
+		if(config != null) {
+			Remote remote = new Remote();
+			remote.fromJSON(config);
+			this.remoteDao.delete(remote);
+		}
+		else if(url != null) {
+			this.remoteDao.deleteByRemotePK_Url(URLDecoder.decode(url, "UTF-8"));
+		}
 		return "{\"success\":\"true\"}";
 	}
 

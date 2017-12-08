@@ -7,12 +7,18 @@ var RemotesController = function($http) {
   this.$http = $http;
   this.geodashUrl;
   this.selection = [];
+  this.getAllRemotes();
+  this.currentNode = {
+    url: '',
+    name: ''
+  };
 };
 
 RemotesController.prototype.getIndicators = function() {
-  this.$http.get(this.geodashUrl + SUFFIX_PATH).then(function(response){
+  this.$http.get(this.currentNode.url + SUFFIX_PATH).then(function(response){
     this.selection = [];
     this.indicators = response.data;
+    this.initSelection();
   }.bind(this), function() {
     this.indicators = [];
     this.selection = [];
@@ -38,19 +44,64 @@ RemotesController.prototype.join = function(id) {
     return this.isSelected(ind.id);
   }.bind(this));
 
-  list.forEach(function(ind) {
-    this.$http.post('../../remotes/' , {
-      id: ind.id,
-      name: ind.name,
-      url: this.geodashUrl,
-      nodeLabel: this.nodeLabel
-    }).then(function() {
-      console.log('pushed');
-    })
-  }.bind(this));
-
+  this.$http.delete('../../remotes/', {
+    params: {
+      url: this.currentNode.url
+    }
+  }).then(() => {
+    list.forEach((ind) => {
+      this.$http.post('../../remotes/' , {
+        id: ind.id,
+        name: ind.name,
+        label: ind.config.label,
+        url: this.currentNode.url,
+        nodeLabel: this.currentNode.name
+      }).then(function() {
+        console.log('pushed');
+      })
+    });
+  });
 };
 
+RemotesController.prototype.getAllRemotes = function() {
+  this.$http.get('../../remotes/').then((response) => {
+    this.localRemotes = response.data;
+    this.nodes = this.localRemotes.reduce((distinctNodes, remote) => {
+      if(!distinctNodes.some((node) => {
+          return node.url == remote.url;
+        })) {
+        distinctNodes.push({
+          url: remote.url,
+          name: remote.name
+        });
+      }
+      return distinctNodes;
+    }, [{
+      url: 'http://dev.padre2.pigeo.fr/geodash',
+      name: 'AFO'
+    }]);
+  });
+};
+
+RemotesController.prototype.initSelection = function() {
+  this.indicators.forEach((indicator) => {
+    if(this.localRemotes.some((remote) => {
+        return indicator.id == remote.id &&
+            remote.url == this.currentNode.url
+      })) {
+      this.selection.push(indicator.id);
+    }
+  });
+};
+
+RemotesController.prototype.onNodeChoose = function(node) {
+  this.currentNode = node;
+  this.getIndicators();
+};
+
+RemotesController.prototype.clearSelection = function() {
+  this.selection = [];
+};
 
 module
   .controller('RemotesController', [

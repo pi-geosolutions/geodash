@@ -31,7 +31,7 @@
          ng-class="{active: admin.current == remote}"
          ng-click="admin.current = remote">
         <span class="glyphicon glyphicon-link"></span>
-        {{remote.name}} <span ng-if="remote.nodeLabel">({{remote.nodeLabel}})</span>
+        {{remote.label || remote.name}} <span ng-if="remote.nodeLabel">({{remote.nodeLabel}})</span>
       </a>
 
     </div>
@@ -59,13 +59,13 @@
       <!--Tab menu-->
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active">
-          <a href="admin" data-target="#global" aria-controls="global" role="tab" data-toggle="tab" translate="" title="{{'globalT'|translate}}">global</a>
+          <a href="" data-target="#global" aria-controls="global" role="tab" data-toggle="tab" translate="" title="{{'globalT'|translate}}">global</a>
         </li>
         <li role="presentation">
-          <a href="admin" data-target="#datasource" aria-controls="datasource" role="tab" data-toggle="tab" translate="" title="{{'datasourceT'|translate}}">datasource</a>
+          <a href="" data-target="#datasource" aria-controls="datasource" role="tab" data-toggle="tab" translate="" title="{{'datasourceT'|translate}}">datasource</a>
         </li>
         <li role="presentation">
-          <a href="admin" data-target="#graph" aria-controls="graph" role="tab" data-toggle="tab" translate="" title="{{'graphT'|translate}}">graph</a>
+          <a href="" data-target="#graph" aria-controls="graph" role="tab" data-toggle="tab" translate="" title="{{'graphT'|translate}}">graph</a>
         </li>
 
         <button class="pull-right btn btn-danger" ng-click="admin.delete()">
@@ -194,51 +194,44 @@
 
     <!--Remote Panel-->
     <div class="col-sm-8" ng-if="admin.current && !admin.current.config">
-      <h4 translate="">{{admin.current.name}}</h4>
-      <!--
-            <div class="form-group">
-              <label class="col-sm-2 control-label">
-                <span translate="">Name</span>
-              </label>
-              <div class="col-sm-8">
-                <input type="text" class="form-control" disabled
-                       ng-model="admin.current.name">
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="col-sm-offset-2 col-sm-8">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" ng-model="admin.current.enabled"><span translate="">enabled</span>
-                  </label>
-                </div>
-              </div>
-            </div>
+      <h4 translate="">{{admin.current.label || admin.current.name}}</h4>
 
-            <div class="form-group">
-              <label class="col-sm-2 control-label">
-                <span translate="">Label</span>
-              </label>
-              <div class="col-sm-8">
-                <input type="text" class="form-control" disabled
-                       ng-model="admin.current.rconfig.label">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label">
-                <span translate="">Description</span>
-              </label>
-              <div class="col-sm-8">
-                    <textarea type="text" class="form-control" rows="10" disabled
-                              ng-model="admin.current.rconfig.description"></textarea>
-              </div>
-            </div>
-      -->
+      <!--Tab menu-->
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+          <a href="" data-target="#globalremote" aria-controls="global" role="tab" data-toggle="tab" translate="" title="{{'globalT'|translate}}">global</a>
+        </li>
 
-      <div class="btn-block">
-        <button class="btn btn-danger" ng-click="admin.deleteRemote()">
+        <button class="pull-right btn btn-danger" ng-click="admin.deleteRemote()">
           <span translate="">Delete</span>
         </button>
+      </ul>
+
+
+      <div class="tab-content">
+
+        <!--Global tab content-->
+        <div role="tabpanel" class="tab-pane active" id="globalremote">
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">
+              <span translate="">Name</span>
+            </label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" disabled
+                     ng-model="admin.current.name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">
+              <span translate="">Label</span>
+            </label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" disabled
+                     ng-model="admin.current.label">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </form>

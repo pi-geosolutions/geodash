@@ -4,12 +4,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Embeddable
 public class RemotePK implements Serializable {
 
     private Long id;
+
+    @NotNull
     private String url;
 
     public Long getId() {

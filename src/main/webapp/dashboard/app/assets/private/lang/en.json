@@ -29,5 +29,7 @@
   "nodelabel": "Node Label",
   "addSelection": "Add selected indicators",
   "toggleMap": "Toggle map",
+  "clear": "Clear",
+  "remoteUrl": "Remote node url",
   "map": "map"
 }

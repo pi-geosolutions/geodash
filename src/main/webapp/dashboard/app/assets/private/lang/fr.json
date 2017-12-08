@@ -30,5 +30,7 @@
   "nodelabel": "Label du noeud",
   "addSelection": "Ajouter les indicateurs sélectionnés",
   "toggleMap": "Afficher/masquer la carte",
+  "clear": "Vider",
+  "remoteUrl": "Url du noeud distant",
   "map": "carte"
 }
