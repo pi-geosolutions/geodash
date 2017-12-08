@@ -20,7 +20,12 @@
     <intercept-url pattern="/harvesters/**" method="POST" access="hasRole('ADMIN')"/>
     <intercept-url pattern="/harvesters/**" method="PUT" access="hasRole('ADMIN')"/>
     <intercept-url pattern="/harvesters/**" method="DELETE" access="hasRole('ADMIN')"/>
-    <form-login  login-page="/login" username-parameter="ssoId" password-parameter="password" authentication-failure-url="/login?error" />
+    <form-login  login-page="/login"
+                 username-parameter="ssoId"
+                 password-parameter="password"
+                 authentication-failure-url="/login?error"
+                 default-target-url="/dashboard/private/index.html"
+                 always-use-default-target="true"/>
   </http>
 
   <authentication-manager >

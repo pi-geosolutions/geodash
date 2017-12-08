@@ -19,8 +19,8 @@
         <mvc:mapping path="/**"
                      allowed-origins="*"
                      allowed-methods="GET, PUT"
-                     allowed-headers="header1, header2, header3"
-                     exposed-headers="header1, header2"
+                     allowed-headers=""
+                     exposed-headers=""
                      allow-credentials="false"
         />
     </mvc:cors>
