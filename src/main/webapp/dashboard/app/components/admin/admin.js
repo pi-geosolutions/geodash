@@ -1,70 +1,7 @@
-var chartConfig = {
-  title: {
-    text: 'Average Rain fall'
-  },
-  xAxis: {
-    type: 'datetime'
-  },
-  yAxis: {
-    title: {
-      text: 'Rainfall',
-      style: {
-        color: Highcharts.getOptions().colors[0]
-      }
-    },
-    labels: {
-      format: '{value} mm',
-      style: {
-        color: Highcharts.getOptions().colors[0]
-      }
-    }
-  },
-  tooltip: {
-    crosshairs: true,
-    shared: true,
-    valueSuffix: 'mm'
-  },
-  series: [{
-    name: 'Daily rain',
-    zIndex: 2,
-    type: 'column',
-    tooltip: {
-      valueSuffix: ' mm'
-    }
-  }, {
-    name: 'Average',
-    color: 'green',
-    type: 'spline',
-    zIndex: 3,
-    marker: {
-      enabled: false
-    }
-  }, {
-    name: 'Standard variation',
-    color: 'grey',
-    type: 'areasplinerange',
-    lineWidth: 0,
-    marker: {
-      enabled: false
-    },
-    fillOpacity: 0.5,
-    zIndex: 1
-  }, {
-    name: 'Variance',
-    color: 'grey',
-    type: 'areasplinerange',
-    lineWidth: 0,
-    marker: {
-      enabled: false
-    },
-    fillOpacity: 0.2,
-    zIndex: 0
-  }]
-};
 
 var AdminController = function($routeParams, $http, $location, Indicator,
                                Transformer, IndicatorService, ChartFactory,
-                               coordinates) {
+                               coordinates, appFlash) {
 
   this.aceOptions = {
     mode: 'json',
@@ -73,7 +10,10 @@ var AdminController = function($routeParams, $http, $location, Indicator,
   this.$http = $http;
   this.Transformer = Transformer;
   this.IndicatorService = IndicatorService;
+  this.Indicator = Indicator;
   this.ChartFactory = ChartFactory;
+  this.appFlash = appFlash;
+  this.$location = $location;
 
   this.lonlat = coordinates.value;
   this.coordinates = coordinates;
@@ -92,13 +32,17 @@ var AdminController = function($routeParams, $http, $location, Indicator,
     }
   }.bind(this));
 
-  $http.get('../../remotes/').then(function(response) {
+  this.loadRemotes();
+};
+
+
+AdminController.prototype.loadRemotes = function() {
+  this.$http.get('../../remotes/').then(function(response) {
     this.remotes = response.data;
   }.bind(this), function() {
     this.remotes = [];
   }.bind(this));
-};
-
+}
 
 AdminController.prototype.save = function() {
   var form = {
@@ -126,6 +70,14 @@ AdminController.prototype.delete = function() {
   this.$http({
     url : '../../indicators/delete/' + this.current.id,
     method: 'DELETE'
+  }).then((response) => {
+    if(response.data.success == 'true') {
+      this.appFlash.create('success', 'indicators.delete.success');
+      this.indicators = this.Indicator.getAll();
+    }
+    else {
+      this.appFlash.create('danger', 'indicators.delete.error');
+    }
   });
 };
 
@@ -134,6 +86,14 @@ AdminController.prototype.deleteRemote = function() {
     url : '../../remotes/',
     method: 'DELETE',
     data: this.current
+  }).then((response) => {
+    if(response.data.success == 'true') {
+      this.appFlash.create('success', 'indicators.delete.success');
+      this.loadRemotes();
+    }
+    else {
+      this.appFlash.create('danger', 'indicators.delete.error');
+    }
   });
 };
 
@@ -199,7 +159,8 @@ AdminController.prototype.viewChart = function(selector) {
 angular.module('geodash')
     .controller('AdminController', [
       '$routeParams', '$http', '$location', 'Indicator', 'Transformer',
-      'IndicatorService', 'ChartFactory', 'coordinates', AdminController
+      'IndicatorService', 'ChartFactory', 'coordinates', 'appFlash',
+      AdminController
     ])
   .value('coordinates', {
     lonlat: []

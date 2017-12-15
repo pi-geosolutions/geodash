@@ -68,7 +68,7 @@
           <a href="" data-target="#graph" aria-controls="graph" role="tab" data-toggle="tab" translate="" title="{{'graphT'|translate}}">graph</a>
         </li>
 
-        <button class="pull-right btn btn-danger" ng-click="admin.delete()">
+        <button class="pull-right btn btn-danger" gd-confirm-click="{{'indicators.delete.confirm' | translate}}" ng-click="admin.delete()">
           <span translate="">Delete</span>
         </button>
         <button class="pull-right btn btn-success" ng-click="admin.save()">
@@ -202,7 +202,7 @@
           <a href="" data-target="#globalremote" aria-controls="global" role="tab" data-toggle="tab" translate="" title="{{'globalT'|translate}}">global</a>
         </li>
 
-        <button class="pull-right btn btn-danger" ng-click="admin.deleteRemote()">
+        <button class="pull-right btn btn-danger" gd-confirm-click="{{'indicators.delete.confirm' | translate}}" ng-click="admin.deleteRemote()">
           <span translate="">Delete</span>
         </button>
       </ul>

@@ -149,8 +149,10 @@ public class IndicatorController {
 	}
 
 	@RequestMapping(value= "/delete/{id}", method=RequestMethod.DELETE)
-	public void delete( HttpServletRequest request, HttpServletResponse response, @PathVariable Long id) throws IOException{
+	public String delete( HttpServletRequest request, HttpServletResponse response, @PathVariable Long id) throws IOException{
 		this.indicatorRepository.delete(id);
+		return "{\"success\":\"true\"}";
+
 	}
 
 }

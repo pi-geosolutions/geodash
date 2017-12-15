@@ -71,9 +71,25 @@ angular.module('geodash')
           return v;
         });
       };
-
     }]);
 
+module.directive('gdConfirmClick', [
+  function() {
+    return {
+      priority: -1,
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        element.bind('click', function(e) {
+          var message = attrs.gdConfirmClick;
+          if (message && !confirm(message)) {
+            e.stopImmediatePropagation();
+            e.preventDefault();
+          }
+        });
+      }
+    };
+  }
+]);
 
 
 var esaLandcoverage = [
