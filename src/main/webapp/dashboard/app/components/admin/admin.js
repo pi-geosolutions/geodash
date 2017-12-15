@@ -1,7 +1,7 @@
 
 var AdminController = function($routeParams, $http, $location, Indicator,
                                Transformer, IndicatorService, ChartFactory,
-                               coordinates, appFlash) {
+                               coordinates, appFlash, $rootScope) {
 
   this.aceOptions = {
     mode: 'json',
@@ -33,6 +33,12 @@ var AdminController = function($routeParams, $http, $location, Indicator,
   }.bind(this));
 
   this.loadRemotes();
+
+  $rootScope.$watch('admin.showMap', (mapActive) => {
+    if(mapActive && this.map) {
+      this.map.updateSize();
+    }
+  });
 };
 
 
@@ -159,7 +165,7 @@ AdminController.prototype.viewChart = function(selector) {
 angular.module('geodash')
     .controller('AdminController', [
       '$routeParams', '$http', '$location', 'Indicator', 'Transformer',
-      'IndicatorService', 'ChartFactory', 'coordinates', 'appFlash',
+      'IndicatorService', 'ChartFactory', 'coordinates', 'appFlash', '$rootScope',
       AdminController
     ])
   .value('coordinates', {

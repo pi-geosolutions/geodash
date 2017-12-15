@@ -142,10 +142,6 @@
               <!--Test request-->
               <div role="tabpanel" class="tab-pane" id="testdatapane">
 
-                <!--Coordinates picker-->
-                <geodash-coordspicker coordinates="admin.lonlat" ng-if="!indicatorForm.sqlquery.$invalid && !indicatorForm.dburl.$invalid">
-                </geodash-coordspicker>
-
                 <button class="btn btn-geodash test-btn" ng-disabled="admin.lonlat.length < 2" ng-click="admin.test()">
                   <span translate="">Test request</span>
                 </button>
@@ -236,8 +232,9 @@
     </div>
   </form>
 
-  <geodash-coordspicker ng-show="admin.showMap" class="coordpicker-fixed" coordinates="admin.coordinates.lonlat">
+  <geodash-coordspicker ng-show="admin.showMap" class="coordpicker-fixed" coordinates="admin.coordinates.lonlat" map="admin.map">
   </geodash-coordspicker>
+
   <button title="{{'toggleMap' | translate}}" class="map-toggle-btn" ng-click="admin.showMap = !admin.showMap">
     <i class="glyphicon" ng-class="admin.showMap ? 'glyphicon-chevron-right' : 'glyphicon-chevron-left'"></i>
     <b translate="">map</b>

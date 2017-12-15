@@ -1,7 +1,8 @@
 angular.module('geodash')
     .component('geodashCoordspicker', {
       bindings    : {
-        coordinates: '='
+        coordinates: '=',
+        map: '='
       },
       controller  : CoordspickerController,
       controllerAs: 'ctrl',
