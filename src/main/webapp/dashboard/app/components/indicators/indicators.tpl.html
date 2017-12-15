@@ -37,7 +37,7 @@
            class="ui-sortable-handle panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title" ng-click="ctrl.open(indicator)">
-            {{::indicator.config.label || indicator.name}}
+            {{::indicator.config.label || indicator.label || indicator.name}}
           </h3>
         </div>
         <div class="panel-body">
