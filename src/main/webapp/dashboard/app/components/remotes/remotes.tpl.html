@@ -50,7 +50,6 @@
             </div>
             <table class="table table-striped">
                 <tr ng-repeat="indicator in remotes.indicators"
-                    ng-class="{success: remotes.isSelected(indicator.id)}"
                     ng-click="remotes.select(indicator.id)">
                     <td>{{indicator.id}}</td>
                     <td>{{indicator.config.label || indicator.name}}

@@ -16,8 +16,13 @@ var RemotesController = function($http) {
 
 RemotesController.prototype.getIndicators = function() {
   this.$http.get(this.currentNode.url + SUFFIX_PATH).then(function(response){
+    var indicators = response.data;
+    this.indicators = indicators.filter(function(indicator) {
+      return indicator.enabled;
+    }).sort(function(a, b) {
+      return a.config.label > b.config.label ? 1 : -1;
+    });
     this.selection = [];
-    this.indicators = response.data;
     this.initSelection();
   }.bind(this), function() {
     this.indicators = [];

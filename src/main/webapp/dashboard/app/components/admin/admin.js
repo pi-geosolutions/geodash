@@ -24,6 +24,10 @@ var AdminController = function($routeParams, $http, $location, Indicator,
       }
     });
 
+    this.indicators = this.indicators.sort(function(a, b) {
+      return a.config.label > b.config.label ? 1 : -1;
+    });
+
     if($location.path().indexOf('new') >= 0) {
       this.create = true;
       this.current = {
@@ -44,7 +48,9 @@ var AdminController = function($routeParams, $http, $location, Indicator,
 
 AdminController.prototype.loadRemotes = function() {
   this.$http.get('../../remotes/').then(function(response) {
-    this.remotes = response.data;
+    this.remotes = response.data.sort(function(a, b) {
+      return a.nodeLabel > b.nodeLabel ? 1 : -1;
+    });
   }.bind(this), function() {
     this.remotes = [];
   }.bind(this));
