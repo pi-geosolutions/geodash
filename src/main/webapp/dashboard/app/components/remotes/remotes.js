@@ -77,13 +77,16 @@ RemotesController.prototype.getAllRemotes = function() {
         })) {
         distinctNodes.push({
           url: remote.url,
-          name: remote.name
+          name: remote.nodeLabel
         });
       }
       return distinctNodes;
     }, [{
       url: 'http://dev.padre2.pigeo.fr/geodash',
-      name: 'AFO'
+      name: 'old - AFO'
+    }], [{
+      url: 'http://afo.pigeosolutions.fr/geodash',
+      name: 'new - AFO'
     }]);
   });
 };
