@@ -56,6 +56,7 @@ var MyboardController = function ($scope, $timeout, $http, $q, Indicator,
           .then(response => {
             remote.rconfig = response.data.config;
             remote.rconfig.url = remote.url;
+            remote.enabled = response.data.enabled;
           }));
       });
     })
@@ -63,6 +64,9 @@ var MyboardController = function ($scope, $timeout, $http, $q, Indicator,
 
   $q.all(promises_).then( response => {
     $q.all(remotePromises_).then(() => {
+      remotes_ = remotes_.filter(function(remote) {
+        return remote.enabled;
+      });
       this.allIndicators = indicators_.concat(remotes_);
       var myconfig = localStorage.geodash;
       if(myconfig) {
