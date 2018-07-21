@@ -18,7 +18,7 @@
     <!--Indicators list-->
     <div class="list-group">
       <a href="admin" class="list-group-item"
-         ng-repeat="indicator in admin.indicators | filter:admin.listFilter"
+         ng-repeat="indicator in admin.indicators | filter:admin.listFilter | orderBy:['-enabled', 'config.label']"
          ng-class="{active: admin.current == indicator}"
          ng-click="admin.current = indicator">
         <span ng-if="indicator.harvesterid" class="glyphicon glyphicon-cloud"></span>
