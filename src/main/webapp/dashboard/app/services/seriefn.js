@@ -2,6 +2,7 @@ var module = angular.module('geodash');
 
 angular.module('geodash')
     .value('gdSerieFn', {
+      // return a range
       std1: function(data, value, i) {
         if(value.length == 2) {
           var ET = data.length == 1 ? data[0][1] : data[i][1];
@@ -24,6 +25,26 @@ angular.module('geodash')
           var ET = data.length == 1 ? data[0][0] : data[i][0];
           ET = 2 * ET;
           return [Math.max(0, value[0] - ET), value[0] + ET];
+        }
+      },
+      std1plus: function(data, value, i) {
+        if(value.length == 2) {
+          var ET = data.length == 1 ? data[0][1] : data[i][1];
+          return [value[0], value[1] + ET];
+        }
+        else {
+          var ET = data.length == 1 ? data[0][0] : data[i][0];
+          return [value[0] + ET];
+        }
+      },
+      std1moins: function(data, value, i) {
+        if(value.length == 2) {
+          var ET = data.length == 1 ? data[0][1] : data[i][1];
+          return [value[0], value[1] - ET];
+        }
+        else {
+          var ET = data.length == 1 ? data[0][0] : data[i][0];
+          return [value[0] - ET];
         }
       }
     });

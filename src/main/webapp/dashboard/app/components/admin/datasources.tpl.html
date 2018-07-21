@@ -2,7 +2,7 @@
   <li class="list-group-item"
       ng-repeat="ds in ctrl.datasources"
       ng-class="{active: ds == ctrl.current}"
-      ng-if="ds.name">
+      >
 
     <a ng-click="ctrl.show(ds)" href="">
       {{ds.name}}

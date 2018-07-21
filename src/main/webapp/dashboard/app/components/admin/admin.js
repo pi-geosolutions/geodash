@@ -175,5 +175,5 @@ angular.module('geodash')
       AdminController
     ])
   .value('coordinates', {
-    lonlat: []
+    lonlat: [2.109, 13.24]
   });

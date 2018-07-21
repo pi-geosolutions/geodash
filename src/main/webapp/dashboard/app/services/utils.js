@@ -12,6 +12,17 @@ angular.module('geodash')
         return day;
       };
 
+      var getLastDayEpoq = function() {
+        var now = new Date();
+        return now.setUTCHours(0,0,0,0);
+      };
+
+      var getBeforeLastDayEpoq = function() {
+        var msecPerDay = 24 * 60 * 60 * 1000;
+        var now = new Date();
+        return now.setUTCHours(0,0,0,0) - msecPerDay;
+      };
+
       var monthInYearAxisLabelFormatter = function() {
         var value = this.value;
         // "01" is Janv
@@ -23,6 +34,10 @@ angular.module('geodash')
           value = Math.round(value / 30.41);
         }
         return MONTH_SHORT_FR[value];
+      };
+
+      var percentFormatter = function() {
+        return (this.value || this.y) * 100 + ' %';
       };
 
       var periodFormatter = function() {

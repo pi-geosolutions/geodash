@@ -14,7 +14,7 @@ function CoordspickerController($scope, $timeout, $element,
 
   this.ngeoDecorateInteraction_ = ngeoDecorateInteraction;
   this.$scope = $scope;
-  this.coordinates = [];
+  this.coordinates = this.coordinates || [];
 
   this.map = new ol.Map({
     layers: [new ol.layer.Tile({
