@@ -72,6 +72,11 @@ Indicator.prototype.getGraph = function(config, lon, lat, optYear) {
                 return value.concat(data[i]);
               });
             }
+            else if (!c.mergeType || c.mergeType == 'concatplus') {
+              chartConfig.series[nextIdx].data = previous.map(function (value, i) {
+                return value.concat([data[i][0] + value[0]]);
+              });
+            }
             else if (c.mergeType == 'percentage') {
               chartConfig.series[nextIdx].data = previous.map(function (value, i) {
                 return [parseFloat(((value[0] * 100) / data[i][0]).toFixed(2))];
