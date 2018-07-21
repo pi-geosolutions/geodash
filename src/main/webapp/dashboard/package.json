@@ -11,6 +11,9 @@
   "bugs": {
     "url": ""
   },
+  "scripts": {
+    "build": "brunch b -e private && brunch b"
+  },
   "dependencies": {},
   "devDependencies": {
     "angular": "1.5.6",
