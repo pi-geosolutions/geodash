@@ -80,7 +80,7 @@ var MyboardController = function ($scope, $timeout, $http, $q, Indicator,
         });
       }
       else {
-        this.indicators = this.allIndicators;
+        this.indicators = angular.copy(this.allIndicators);
       }
       this.renderGraphs_();
     });
