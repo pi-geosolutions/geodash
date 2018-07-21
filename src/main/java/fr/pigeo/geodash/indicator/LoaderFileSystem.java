@@ -77,7 +77,7 @@ public class LoaderFileSystem extends Loader {
         // restrict matching from 1 janv to today in the year
         final boolean restrictInYear;
         if(tsDateFormat != null && tsDateFormat.startsWith("restrict")) {
-            tsDateFormat = placeholder.substring(8);
+            tsDateFormat = tsDateFormat.substring(8);
             restrictInYear = true;
         }
         else {
